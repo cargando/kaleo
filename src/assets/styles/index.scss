@@ -1,0 +1,58 @@
+@import 'grid';
+@import 'vars';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: $text-font;
+  font-style: normal;
+  font-weight: normal;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.no-pad-left {
+  padding-left: 0 !important;
+}
+.no-pad-right {
+  padding-right: 0 !important;
+}
+.no-pad {
+  padding: 0 !important;
+  &-res1136 {
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+  }
+}
+.column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $dark-color;
+  font-family: $header-font;
+  font-style: normal;
+  font-weight: normal;
+}
+
+.btn-black {
+  height: 56;
+  display: flex;
+  flex-direction: row;
+  padding: 18px 40px;
+  background: $transparent-bg;
+  border: 1px solid $black-color;
+  outline: none;
+  cursor: pointer;
+}

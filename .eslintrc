@@ -1,0 +1,74 @@
+{
+  "extends": [
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["react", "@typescript-eslint", "prettier", "jest"],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "tsconfigRootDir": "./",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    }
+  },
+  "globals": {
+    "window": true,
+    "document": true,
+    "localStorage": true,
+    "FormData": true,
+    "FileReader": true,
+    "Blob": true,
+    "navigator": true,
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "rules": {
+    "react/react-in-jsx-scope": 0,
+    "react/destructuring-assignment": 0,
+    "react/prop-types": 0,
+    "react/jsx-fragments": 0,
+    "react/jsx-filename-extension": 0,
+    "import/order": "warn",
+    "jsx-a11y/interactive-supports-focus": "warn",
+    "jsx-a11y/click-events-have-key-events": "warn",
+    "jsx-a11y/control-has-associated-label": "warn",
+    "jsx-a11y/no-static-element-interactions": "warn",
+    "react/button-has-type": "warn",
+    "import/prefer-default-export": "warn",
+    "no-unused-vars": "warn",
+    "no-plusplus": 0,
+    "no-else-return": 0,
+    "no-underscore-dangle": 0,
+    "no-lonely-if": 0,
+    "no-param-reassign": 0,
+    "import/imports-first": ["warn", "absolute-first"],
+    "import/newline-after-import": "error",
+    "no-use-before-define": ["error", { "functions": false, "classes": true }],
+    "react/require-default-props": 1,
+    "react/static-property-placement": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/forbid-prop-types": 0,
+    "object-curly-spacing": ["error", "always"],
+    "class-methods-use-this": 0,
+    "linebreak-style": "off",
+    "import/extensions": "off"
+  }
+}
