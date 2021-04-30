@@ -2,10 +2,15 @@ import React, { useLayoutEffect, useEffect, useState, useRef } from 'react';
 import { SCREEN } from 'utils/const';
 import get from 'lodash/get';
 
+export interface IWindowSize {
+  width: number;
+  height: number;
+}
+
 export function useResize() {
-  const [windowSize, setWindowSize] = useState({
-    width: null,
-    height: null,
+  const [windowSize, setWindowSize] = useState<IWindowSize>({
+    width: window.innerWidth,
+    height: window.innerHeight,
   });
 
   useEffect(() => {
@@ -45,18 +50,20 @@ export function useDebounce(value, delay) {
   return debouncedValue;
 }
 
-export function useThrottle(callback, delay, val, path = null) {
-  const timer = useRef(0);
+export function useThrottle(callback, delay, val, path = '') {
+  const timer = useRef<NodeJS.Timeout | null>(null);
 
-  const watchVal = path !== null ? get(val, path) : val;
+  const watchVal = path !== '' ? get(val, path) : val;
 
   useLayoutEffect(() => {
     if (timer.current) {
       clearTimeout(timer.current);
     }
-    timer.current = setTimeout(callback, delay, val);
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    timer.current = setTimeout(callback, delay, val) as NodeJS.Timeout;
 
-    return () => clearTimeout(timer.current);
+    return () => clearTimeout(timer.current as NodeJS.Timeout);
+    // eslint-disable-next-line
   }, [watchVal]);
 
   return timer;

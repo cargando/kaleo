@@ -18,9 +18,9 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 2020,
+    "ecmaVersion": "es2020",
     "sourceType": "module",
-    "project": "./tsconfig.json"
+    "project": "tsconfig.json"
   },
   "settings": {
     "import/resolver": {
@@ -61,7 +61,8 @@
     "no-param-reassign": 0,
     "import/imports-first": ["warn", "absolute-first"],
     "import/newline-after-import": "error",
-    "no-use-before-define": ["error", { "functions": false, "classes": true }],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error", { "functions": false, "classes": true }],
     "react/require-default-props": 1,
     "react/static-property-placement": 0,
     "react/jsx-props-no-spreading": 0,
