@@ -6,6 +6,31 @@ export const APP_CONF = { ...config };
 
 export { echo, fireError };
 
+export interface TMakeRequestParams {
+  method?: string;
+  url: string;
+  requestData?: any;
+  callback?: (p) => any | null;
+  okStatus?: number;
+  getImage?: boolean;
+}
+
+export interface TMakeRequestResponse {
+  status: number;
+  connectError: boolean;
+  error: boolean;
+  data: any;
+  requestDt: dayjs.Dayjs;
+}
+
+interface TdefaultMoneyParams {
+  intDelimiter?: string;
+  floatDelimiter?: string;
+  noFloat?: boolean;
+  currency?: string;
+  noCurrency?: boolean;
+}
+
 /* проверка является ли ответ ошибкой */
 export function handleError(response) {
   if (response instanceof Error) {
@@ -15,12 +40,14 @@ export function handleError(response) {
 }
 
 /* АПИ запросов */
-export function makeRequest(method, url, requestData, callback = null, okStatus = 200, getImage = false) {
+export function makeRequest(props: TMakeRequestParams): Promise<any> {
+  const { method = 'GET', url, requestData = null, callback = null, okStatus = 200, getImage = false } = props;
+
   if (!window.axiosAPI) {
     mkAxios();
   }
   const ax = window.axiosAPI;
-  const requestParams = { method, url };
+  const requestParams: any = { method, url }; // , withCredentials: true
   if (Object.keys(requestData).length) {
     requestParams.data = requestData;
   }
@@ -38,13 +65,14 @@ export function makeRequest(method, url, requestData, callback = null, okStatus 
         if (callback && typeof callback === 'function') {
           callback(response);
         }
-        resolve({
+        const result: TMakeRequestResponse = {
           status, // статус ответа
           connectError, // ошибка сети
           error, // ошибка (если статус ответа !== okStatus)
           data, // данные
           requestDt: dayjs(), // время ответа
-        });
+        };
+        resolve(result);
       })
       .catch(handleError);
   }); // end of Promise
@@ -63,7 +91,8 @@ export function hexToRgbA(hex, opacity) {
   }
   return '';
 }
-const defaultMoneyParams = {
+
+const defaultMoneyParams: TdefaultMoneyParams = {
   intDelimiter: ' ',
   floatDelimiter: '.',
   noFloat: true,
@@ -71,8 +100,8 @@ const defaultMoneyParams = {
   noCurrency: false,
 };
 
-export function printMoney(amount, params = {}) {
-  const localParams = {
+export function printMoney(amount, params: TdefaultMoneyParams = {}) {
+  const localParams: TdefaultMoneyParams = {
     ...defaultMoneyParams,
     ...params,
   };
@@ -123,7 +152,7 @@ export const mergeStateList = (oldData, newData, noId = false, print = false) =>
     });
     return merge;
   }
-  const result = [];
+  const result: Array<any> = [];
   const map = new Map();
   // eslint-disable-next-line no-restricted-syntax
   for (const item of data) {

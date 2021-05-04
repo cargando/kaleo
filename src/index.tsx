@@ -1,12 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'mobx-react';
 import './assets/styles/index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { MaterialsStore } from './store';
+
+declare global {
+  interface Window {
+    axiosAPI?: any;
+  }
+}
+
+const store = { MaterialsStore };
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider {...store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

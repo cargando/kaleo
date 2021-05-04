@@ -3,4 +3,4 @@ export const SCREEN = {
   desktop: 768,
   desktop992: 992,
   desktop1200: 1200,
-}
+};
