@@ -1,22 +1,19 @@
 import React, { ReactElement, useLayoutEffect } from 'react';
 import { observer, inject } from 'mobx-react';
-import Li from 'components/li';
+import { Layout } from 'components/layout';
 
-const App = inject('MaterialsStore')(
+interface TAppProps {
+  Materials?: any;
+  children?: React.ReactNode;
+}
+
+const App = inject('Materials')(
   observer(
-    (props: any): ReactElement => {
+    ({ Materials, children }: TAppProps): ReactElement => {
       useLayoutEffect(() => {
-        props.MaterialsStore.fetch();
+        Materials.fetch();
       }, []); // eslint-disable-line
-
-      const { cnt = 0, setCnt } = props.MaterialsStore;
-
-      console.log('Props:', props.MaterialsStore);
-      return (
-        <div className="App">
-          <Li value={cnt} onChange={setCnt} />
-        </div>
-      );
+      return <Layout>{children}</Layout>;
     },
   ),
 );

@@ -1,4 +1,4 @@
-@import "vars";
+@import 'vars';
 
 @function calcCol($num, $total) {
   @return calc(#{$num}/#{$total} * 100%);
@@ -16,7 +16,7 @@ $columns: 12;
   padding-right: 8px;
 }
 
-@mixin col-list($total_columns, $prefix: "") {
+@mixin col-list($total_columns, $prefix: '') {
   @for $i from 1 through $total_columns {
     .col#{$prefix}-#{$i} {
       @include column;
@@ -25,7 +25,7 @@ $columns: 12;
   }
 }
 
-@mixin col-offset-list($total_columns, $prefix: "") {
+@mixin col-offset-list($total_columns, $prefix: '') {
   @for $i from 1 through $total_columns {
     .offset#{$prefix}-#{$i} {
       margin-left: calcCol($i, $total_columns);
@@ -54,14 +54,14 @@ $columns: 12;
 @include col-offset-list($columns);
 
 /* XL - Large desktop >= 1400 */
-@media (min-width: 1400px) {
+@media (min-width: 1440px) {
   .container {
-    max-width: 1136px;
+    max-width: 100%;
   }
 }
 
 /* LG - desktop = 1200 to 1399 */
-@media (max-width: 1399px) {
+@media (max-width: 1439px) {
   .container {
     max-width: 1136px;
   }
@@ -76,8 +76,8 @@ $columns: 12;
 
 /* SM - tablets = 768 to 991 */
 @media (max-width: 991px) {
-  @include col-list(4, "-sm");
-  @include col-offset-list(4, "-sm");
+  @include col-list(4, '-sm');
+  @include col-offset-list(4, '-sm');
 
   .col {
     flex-basis: calcCol(1, 4);
@@ -89,8 +89,8 @@ $columns: 12;
 
 /* XS - phones  = 370 to 767 */
 @media (max-width: 767px) {
-  @include col-list(4, "-xs");
-  @include col-offset-list(4, "-xs");
+  @include col-list(4, '-xs');
+  @include col-offset-list(4, '-xs');
 
   .col {
     flex-basis: calcCol(1, 4);

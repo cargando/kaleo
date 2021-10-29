@@ -1,4 +1,6 @@
 import React, { useLayoutEffect, useEffect, useState, useRef } from 'react';
+import { MobXProviderContext } from 'mobx-react';
+
 import { SCREEN } from 'utils/const';
 import get from 'lodash/get';
 
@@ -67,4 +69,8 @@ export function useThrottle(callback, delay, val, path = '') {
   }, [watchVal]);
 
   return timer;
+}
+
+export function useStores() {
+  return React.useContext(MobXProviderContext);
 }

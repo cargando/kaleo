@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope&family=Nunito:wght@600&display=swap');
 @import 'grid';
 @import 'vars';
+@import 'layout';
 
 *,
 *::before,
@@ -10,7 +12,14 @@
   font-weight: normal;
 }
 
-body {
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body,
+#root {
   margin: 0;
   padding: 0;
 }

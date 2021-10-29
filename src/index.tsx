@@ -1,11 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'mobx-react';
-import './assets/styles/index.scss';
-import App from './App';
+import { createBrowserHistory } from 'history';
+import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
+import { Router } from 'react-router';
 import reportWebVitals from './reportWebVitals';
+import ErrorBoundary from 'components/ErrorBoundary';
+import { createStore } from './store';
+import theRoutes from './router/routes';
+import App from './App';
 
-import { MaterialsStore } from './store';
+import './assets/styles/index.scss';
 
 declare global {
   interface Window {
@@ -13,12 +18,19 @@ declare global {
   }
 }
 
-const store = { MaterialsStore };
+const routing = new RouterStore();
+const appHistory = syncHistoryWithStore(createBrowserHistory(), routing);
+
+const store = createStore(routing);
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider {...store}>
-      <App />
+      <Router history={appHistory}>
+        <ErrorBoundary>
+          <App>{theRoutes}</App>
+        </ErrorBoundary>
+      </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
