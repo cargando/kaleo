@@ -7,6 +7,7 @@ import { useStores } from '../../hooks/index';
 import { TabIcons } from './tabIcons';
 import { ControlIcons } from './controlIcons';
 import './styles.scss';
+import { Button } from '../button';
 
 export const TopLine = observer(() => {
   const { App }: Pick<TStore, 'App'> = useStores();
@@ -33,13 +34,14 @@ export const TopLine = observer(() => {
           <span className="logo__name">nterio</span>
           <span className="logo__dot" />
         </Link>
-        <div className="col-4 no-pad" style={{ flexGrow: 0 }}>
+        <div className="col-4 no-pad" style={{ flexGrow: 0, display: 'flex' }}>
           <div className="top-line__nav-btn" onClick={handleNavClick} role="button">
             <div
               ref={btnRef}
               className={`top-line__nav-btn-inner ${App.isNavOpened ? 'top-line__nav-btn-inner_active' : ''}`}
             />
           </div>
+          {/* <Button className="btn-topline">Генерировать</Button> */}
         </div>
         <div className="col-4 no-pad top-line__icons">
           <TabIcons active={App.topLineTab} onChange={handleChangeTab} />

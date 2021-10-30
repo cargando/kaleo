@@ -4,19 +4,27 @@
   min-height: 100%;
   display: flex;
   position: relative;
-  &-left-col {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+  &__left-col {
     background-color: $app-left-col-bg;
     display: flex;
     flex-direction: column;
     flex-grow: 0;
     transition: width $left-col-anim-timing;
     width: 0;
-    padding-top: 121px;
+    padding: 121px 0 0 0;
+    overflow-x: hidden;
     &_opened {
       width: 514px;
+      padding: 121px 0 40px 0;
     }
   }
-  &-right-col {
+  &__right-col {
     display: flex;
     flex-direction: column;
     flex-grow: 1;

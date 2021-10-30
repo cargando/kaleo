@@ -1,0 +1,42 @@
+@import 'assets/styles/vars';
+
+.btn {
+  height: 33px;
+
+  border: 1px solid $accent-color;
+  box-sizing: border-box;
+  border-radius: 6px;
+  padding: 7px 45px;
+
+  font-family: $text-font;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  letter-spacing: 0.02em;
+  margin-top: 21px;
+  margin-bottom: 21px;
+  &-topline {
+    margin-top: 21px;
+    margin-bottom: 0;
+    margin-left: 47px;
+  }
+  &-outline {
+    background-color: #ffffff !important;
+    color: $accent-color !important;
+  }
+  &-primary {
+    border: 1px solid $accent-color;
+    background: $accent-color;
+    color: white;
+  }
+  &-size-s {
+    width: auto;
+  }
+  &-size-m {
+  }
+  &-size-l {
+    width: 433px;
+  }
+}

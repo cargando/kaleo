@@ -1,0 +1,81 @@
+@import 'assets/styles/vars';
+
+$accordion-border: #f0f0f0;
+$accordion-anim-timing: 250ms;
+
+.accordions {
+  width: 433px;
+}
+
+.accordion {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 49px;
+  &__cover {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  &__border {
+    height: 1px;
+    background: $accordion-border;
+    margin-top: 16px;
+  }
+  &__body {
+    display: flex;
+    max-height: 0;
+    width: 100%;
+    overflow: hidden;
+    transition: max-height $accordion-anim-timing;
+    &-content {
+      padding-top: 21px;
+    }
+    &_opened {
+      max-height: 3000px;
+      transition: max-height $accordion-anim-timing;
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+  &__title {
+    height: 20px;
+    color: $dark-color;
+    font-family: $header-font;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    flex-grow: 1;
+  }
+  &__opener {
+    display: flex;
+    width: 25px;
+    height: 25px;
+    flex-grow: 0;
+    cursor: pointer;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  &__opener-inner {
+    width: 14px;
+    height: 2px;
+    background: $accent-color;
+    border-radius: 1.5px;
+    &::after {
+      content: '';
+      background-color: $accent-color;
+      display: block;
+      width: 2px;
+      height: 0px;
+      border-radius: 1.5px;
+      transition: all $accordion-anim-timing;
+      transform: translateX(6px);
+    }
+  }
+}
+.accordion__opener-inner.active::after {
+  height: 14px;
+  transform: translate(6px, -6px);
+}
