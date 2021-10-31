@@ -1,0 +1,95 @@
+@import 'assets/styles/vars';
+
+$dd-border-color: #c2c1c6;
+$dd-material-ico-bg: #c4c4c4;
+$dd-anim-timing: 250ms;
+$dd-title2-color: $top-line-icon-btn-color;
+
+.drop-down {
+  &__cover {
+    display: flex;
+    width: 433px;
+    height: 58px;
+    background: #ffffff;
+
+    border: 1px solid $dd-border-color;
+    box-sizing: border-box;
+    border-radius: 6px;
+  }
+  &__material {
+    &-col {
+      display: flex;
+      width: 58px;
+      flex-grow: 0;
+      align-items: center;
+      justify-content: center;
+    }
+    &-ico {
+      width: 32px;
+      height: 32px;
+      background-color: $dd-material-ico-bg;
+      border-radius: 10px;
+    }
+  }
+  &__title {
+    &-col {
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      display: flex;
+      &-cover {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+      }
+    }
+    &-1 {
+      height: 14px;
+      font-family: $text-font;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 10px;
+      line-height: 14px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: $dd-border-color;
+    }
+    &-2 {
+      height: 19px;
+      font-family: $text-font;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 19px;
+      letter-spacing: 0.02em;
+      color: $dd-title2-color;
+    }
+  }
+  &__control {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    cursor: pointer;
+    &-col {
+      display: flex;
+      width: 57px;
+      flex-grow: 0;
+      align-items: center;
+      justify-content: center;
+    }
+    &-ico {
+      width: 15px;
+      height: 8px;
+      transition: all $dd-anim-timing;
+      &.active {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}

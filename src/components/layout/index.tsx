@@ -5,6 +5,8 @@ import { Accordion } from 'components/Accordion';
 import { useStores } from '../../hooks/index';
 import { TopLine } from '../topLine';
 import { Button } from '../button';
+import { DropDown } from '../dropdown';
+import { matchURLvsNames } from '../../utils/fn';
 
 export interface TLayoutProps {
   children?: React.ReactNode;
@@ -13,6 +15,8 @@ export interface TLayoutProps {
 export const Layout = observer(({ children }: TLayoutProps) => {
   const { App }: Pick<TStore, 'App'> = useStores();
   const leftRef = React.useRef(null);
+
+  const img1 = matchURLvsNames(['assets/materials/shpon_12.png']);
 
   useEffect(() => {
     if (leftRef.current) {
@@ -33,7 +37,9 @@ export const Layout = observer(({ children }: TLayoutProps) => {
               Выбрать текстуру...
             </Button>
           </Accordion>
-          <Accordion isOpened title="Выбор из каталога материалов" />
+          <Accordion isOpened title="Выбор из каталога материалов">
+            <DropDown title="Категория" subTitle="Шпон" titleImg={img1} />
+          </Accordion>
         </div>
       </div>
       <div className="app__right-col">

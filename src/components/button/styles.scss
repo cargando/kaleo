@@ -6,7 +6,7 @@
   border: 1px solid $accent-color;
   box-sizing: border-box;
   border-radius: 6px;
-  padding: 7px 45px;
+  padding: 5px 45px 7px 45px;
 
   font-family: $text-font;
   font-style: normal;
@@ -15,12 +15,14 @@
   line-height: 19px;
   text-align: center;
   letter-spacing: 0.02em;
-  margin-top: 21px;
-  margin-bottom: 21px;
+  cursor: pointer;
   &-topline {
     margin-top: 21px;
     margin-bottom: 0;
     margin-left: 47px;
+  }
+  &-margin-top0 {
+    margin-top: 0 !important;
   }
   &-outline {
     background-color: #ffffff !important;

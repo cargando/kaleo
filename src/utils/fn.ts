@@ -169,3 +169,35 @@ export const mergeStateList = (oldData, newData, noId = false, print = false) =>
   }
   return merge;
 };
+
+export const ALL_IMAGES = {};
+
+const importAllImages = (requireContext) =>
+  requireContext.keys().forEach((key) => {
+    ALL_IMAGES[key] = requireContext(key);
+  });
+// @ts-ignore
+importAllImages(require.context('assets/materials', true, /.*\.(png|jpg)$/i));
+
+// Object.keys(ALL_IMAGES).forEach((key) => console.log(ALL_IMAGES[key]));
+
+export const matchURLvsNames = (names) => {
+  const reg = /(\/static\/media\/)(.*)\.(png|jpg)/i;
+  const res = [];
+
+  Object.keys(ALL_IMAGES).forEach((key) => {
+    names.forEach((localItem, localIndex) => {
+      const webpackFileName = String(ALL_IMAGES?.[key]?.default).match(reg);
+      if (webpackFileName?.[2]) {
+        const webpackFile = webpackFileName[2].substr(0, webpackFileName[2].lastIndexOf('.')); // real image name without extension
+        const propsFileName = localItem.substr(0, localItem.lastIndexOf('.'));
+
+        if (webpackFile === propsFileName) {
+          res[localIndex] = ALL_IMAGES[key];
+        }
+      }
+    });
+  });
+
+  return res;
+};

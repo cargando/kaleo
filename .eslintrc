@@ -64,6 +64,8 @@
     "import/imports-first": ["warn", "absolute-first"],
     "import/newline-after-import": "error",
     "no-use-before-define": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
     "@typescript-eslint/no-use-before-define": ["error", { "functions": false, "classes": true }],
     "@typescript-eslint/no-explicit-any": 0,
     "react/require-default-props": 1,
