@@ -74,3 +74,26 @@ export function useThrottle(callback, delay, val, path = '') {
 export function useStores() {
   return React.useContext(MobXProviderContext);
 }
+
+export function useHtmlToggle(
+  isOpened: boolean,
+  nodeRef: React.RefObject<HTMLInputElement>,
+  className: string,
+  inverse = false,
+) {
+  let action = '';
+
+  const isOpenedValue = inverse ? !isOpened : isOpened;
+
+  useEffect(() => {
+    if (isOpenedValue && nodeRef.current) {
+      nodeRef.current.classList.add(className);
+      action = 'ADD';
+    } else if (!isOpenedValue && nodeRef.current) {
+      nodeRef.current.classList.remove(className);
+      action = 'REMOVE';
+    }
+  }, [isOpened, nodeRef]);
+
+  return action;
+}

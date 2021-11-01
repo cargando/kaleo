@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ReactComponent as ArrowBtn } from 'assets/icons/arrow.svg';
+import { useHtmlToggle } from 'hooks';
 import './styles.scss';
+import { Slider } from '../slider';
 
 export interface TDropDownProps {
+  isOpened?: boolean;
   children?: React.ReactNode;
   onClick?: (e?: React.MouseEvent<HTMLElement>) => void;
   renderImage?: (...rest) => React.ReactNode;
@@ -12,7 +15,15 @@ export interface TDropDownProps {
 }
 
 export const DropDown: React.FC<TDropDownProps> = (props) => {
-  const { title, subTitle, titleImg = null, onClick, children } = props;
+  const { title, subTitle, titleImg = null, onClick, isOpened = false, children } = props;
+  const [opened, setOpened] = useState<boolean>(isOpened);
+  const iconRef = useRef(null);
+
+  useHtmlToggle(opened, iconRef, 'active');
+
+  const handleIconClick = (e?: React.MouseEvent<HTMLElement>) => {
+    setOpened(!opened);
+  };
 
   // const buttonClasses = `drop-down ${className}`;
   const titleColStyle: Record<string, any> = {};
@@ -35,12 +46,14 @@ export const DropDown: React.FC<TDropDownProps> = (props) => {
           </div>
         </div>
         <div className="drop-down__control-col">
-          <button className="drop-down__control">
-            <ArrowBtn className="drop-down__control-ico" />
+          <button onClick={handleIconClick} className="drop-down__control">
+            <ArrowBtn ref={iconRef} className="drop-down__control-ico" />
           </button>
         </div>
         {children}
       </div>
+      <br />
+      <Slider value={30} />
     </div>
   );
 };

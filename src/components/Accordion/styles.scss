@@ -1,7 +1,8 @@
 @import 'assets/styles/vars';
 
 $accordion-border: #f0f0f0;
-$accordion-anim-timing: 250ms;
+$accordion-btn-anim-timing: 250ms;
+$accordion-body-anim-timing: 350ms;
 
 .accordions {
   width: 433px;
@@ -27,13 +28,13 @@ $accordion-anim-timing: 250ms;
     max-height: 0;
     width: 100%;
     overflow: hidden;
-    transition: max-height $accordion-anim-timing;
+    transition: max-height $accordion-body-anim-timing;
     &-content {
       padding-top: 21px;
     }
     &_opened {
       max-height: 3000px;
-      transition: max-height $accordion-anim-timing;
+      transition: max-height $accordion-body-anim-timing;
       flex-direction: column;
       align-items: stretch;
     }
@@ -70,7 +71,7 @@ $accordion-anim-timing: 250ms;
       width: 2px;
       height: 0px;
       border-radius: 1.5px;
-      transition: all $accordion-anim-timing;
+      transition: all $accordion-btn-anim-timing;
       transform: translateX(6px);
     }
   }

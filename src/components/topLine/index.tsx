@@ -38,7 +38,7 @@ export const TopLine = observer(() => {
           <div className="top-line__nav-btn" onClick={handleNavClick} role="button">
             <div
               ref={btnRef}
-              className={`top-line__nav-btn-inner ${App.isNavOpened ? 'top-line__nav-btn-inner_active' : ''}`}
+              className={`top-line__nav-btn-inner ${App.isLeftColOpened ? 'top-line__nav-btn-inner_active' : ''}`}
             />
           </div>
           {/* <Button className="btn-topline">Генерировать</Button> */}

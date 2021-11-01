@@ -6,6 +6,7 @@ $dd-anim-timing: 250ms;
 $dd-title2-color: $top-line-icon-btn-color;
 
 .drop-down {
+  position: relative;
   &__cover {
     display: flex;
     width: 433px;

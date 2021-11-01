@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './styles.scss';
+import { useHtmlToggle } from '../../hooks';
 
 export interface TAccordionProps {
   title: string;
@@ -14,17 +15,8 @@ export const Accordion: React.FC<TAccordionProps> = ({ title, isOpened = false, 
   const controlRef = useRef(null);
   const bodyRef = useRef(null);
 
-  useEffect(() => {
-    if (bodyRef.current && controlRef.current) {
-      if (opened) {
-        bodyRef.current.classList.add('accordion__body_opened');
-        controlRef.current.classList.remove('active');
-      } else {
-        bodyRef.current.classList.remove('accordion__body_opened');
-        controlRef.current.classList.add('active');
-      }
-    }
-  }, [opened]);
+  useHtmlToggle(opened, bodyRef, 'accordion__body_opened');
+  useHtmlToggle(opened, controlRef, 'active', true);
 
   const handleControlClick = (e: React.MouseEvent<HTMLElement>) => {
     setOpened(!opened);

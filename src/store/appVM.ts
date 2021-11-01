@@ -20,7 +20,7 @@ export class AppVM {
     extendObservable(this, { ...AppVM.defaultState, ...initialState });
   }
 
-  @computed get isNavOpened() {
+  @computed get isLeftColOpened() {
     return this.navOpened;
   }
 

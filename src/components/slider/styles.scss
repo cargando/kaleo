@@ -1,0 +1,55 @@
+@import 'assets/styles/vars';
+
+$border-color: #c2c1c6;
+
+.slider {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: visible;
+  margin-bottom: 10px;
+  &__cover {
+    width: 100%;
+    height: 8px;
+    padding-top: 5px;
+    overflow: visible;
+  }
+  &__border {
+    position: relative;
+    height: 1px;
+    background-color: $border-color;
+  }
+  &__active-border {
+    position: absolute;
+    background-color: $accent-color;
+    height: 1px;
+    width: 10px;
+    top: 5px;
+  }
+  &__control {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    border: 1px solid $border-color;
+    box-sizing: border-box;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.06);
+    top: -11px;
+    &::after {
+      position: relative;
+      content: '';
+      background-color: $accent-color;
+      display: block;
+      width: 12px;
+      height: 12px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+    }
+  }
+}
