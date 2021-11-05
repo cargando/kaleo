@@ -1,0 +1,59 @@
+@import 'assets/styles/vars';
+
+.mat-picker {
+  &__head {
+    display: flex;
+    margin-top: 21px;
+  }
+  &__title {
+    height: 20px;
+
+    font-family: $text-font;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    color: $dark-color;
+    flex-grow: 0;
+    &-info {
+      height: 20px;
+      font-family: $text-font;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 15px;
+      line-height: 20px;
+      text-align: right;
+      letter-spacing: 0.02em;
+      flex-grow: 1;
+      color: $text-color-light;
+      & > span {
+        color: $dark-color;
+      }
+    }
+  }
+  &__body {
+    display: inline-flex;
+    margin-top: 21px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+  }
+  &__item {
+    width: 58px;
+    height: 58px;
+    border-radius: 10px;
+    &-selected {
+      position: relative;
+      top: -7px;
+      left: -7px;
+      width: 68px;
+      height: 68px;
+      left: 110px;
+      top: 608px;
+      border: 2px solid $accent-color;
+      box-sizing: border-box;
+      border-radius: 14px;
+    }
+  }
+}

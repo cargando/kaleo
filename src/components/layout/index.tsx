@@ -7,6 +7,7 @@ import { TopLine } from '../topLine';
 import { Button } from '../button';
 import { DropDown } from '../dropdown';
 import { ALL_IMAGES, matchURLvsNames } from '../../utils/fn';
+import { WoodPicker } from '../woodPicker';
 
 export interface TLayoutProps {
   children?: React.ReactNode;
@@ -32,6 +33,7 @@ export const Layout = observer(({ children }: TLayoutProps) => {
           </Accordion>
           <Accordion isOpened title="Выбор из каталога материалов">
             <DropDown title="Категория" subTitle="Шпон" titleImg={ALL_IMAGES?.['./shpon_13.png']?.default} />
+            <WoodPicker title="Выберите цвет" />
           </Accordion>
         </div>
       </div>
