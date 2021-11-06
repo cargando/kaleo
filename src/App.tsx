@@ -10,9 +10,9 @@ interface TAppProps {
 const App = inject('Materials')(
   observer(
     ({ Materials, children }: TAppProps): ReactElement => {
-      useLayoutEffect(() => {
-        Materials.fetch();
-      }, []); // eslint-disable-line
+      // useLayoutEffect(() => {
+      //   Materials.fetch();
+      // }, []); // eslint-disable-line
       return <Layout>{children}</Layout>;
     },
   ),

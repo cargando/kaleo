@@ -17,9 +17,8 @@ export const TabIcons: React.FC<TTabIconsProps> = ({ active, onChange }) => {
         const Component = item;
 
         return (
-          <div className={active === index ? 'top-line__icon-btn-cover' : ''}>
+          <div key={index} className={active === index ? 'top-line__icon-btn-cover' : ''}>
             <Component
-              key={index}
               onClick={onChange}
               data-id={index}
               className={`top-line__icon-btn ${index === controls.length - 1 ? 'top-line__icon-btn_last-c' : ''} ${

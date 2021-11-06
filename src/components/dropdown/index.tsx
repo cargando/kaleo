@@ -11,11 +11,13 @@ export interface TDropDownProps {
   renderImage?: (...rest) => React.ReactNode;
   title: string;
   subTitle?: string;
+  renderSubTitle?: (val: number) => React.ReactNode;
   titleImg?: React.ReactNode;
+  slider?: boolean;
 }
 
 export const DropDown: React.FC<TDropDownProps> = (props) => {
-  const { title, subTitle, titleImg = null, onClick, isOpened = false, children } = props;
+  const { title, slider, subTitle, renderSubTitle, titleImg = null, onClick, isOpened = false, children } = props;
   const [opened, setOpened] = useState<boolean>(isOpened);
   const [textVal, setTextVal] = useState<number>(0);
   const iconRef = useRef(null);
@@ -54,7 +56,7 @@ export const DropDown: React.FC<TDropDownProps> = (props) => {
           <div className="drop-down__title-col">
             <div className="drop-down__title-1">{title}</div>
             <div className="drop-down__title-2">
-              {subTitle} - {textVal}%
+              {typeof renderSubTitle === 'function' ? renderSubTitle(textVal) : `${subTitle} - ${textVal}%`}
             </div>
           </div>
         </div>
@@ -65,7 +67,7 @@ export const DropDown: React.FC<TDropDownProps> = (props) => {
         </div>
         {children}
       </div>
-      <Slider value={14} sidePadding={10} shiftY={-6} onChange={handleChangeSlider} />
+      {slider && <Slider value={14} sidePadding={10} shiftY={-6} onChange={handleChangeSlider} />}
     </div>
   );
 };

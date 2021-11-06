@@ -10,7 +10,7 @@ export interface TStore {
   App?: typeof AppStore;
 }
 
-export const createStore = (routingStore: any): TStore => {
+export const createStore = (routingStore: RouterStore): TStore => {
   return {
     routing: routingStore,
     Materials: MaterialsStore,

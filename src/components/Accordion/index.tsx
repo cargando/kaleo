@@ -2,15 +2,27 @@ import React, { useState, useRef, useEffect } from 'react';
 import './styles.scss';
 import { useHtmlToggle } from '../../hooks';
 
+export * from './container';
+
 export interface TAccordionProps {
   title: string;
   isOpened?: boolean;
   onOpen?: (e?: React.MouseEvent<HTMLElement>) => void;
   onClose?: (e?: React.MouseEvent<HTMLElement>) => void;
   children?: React.ReactNode;
+  style?: React.CSSProperties;
+  sidePadding?: boolean;
 }
 
-export const Accordion: React.FC<TAccordionProps> = ({ title, isOpened = false, onOpen, onClose, children }) => {
+export const Accordion: React.FC<TAccordionProps> = ({
+  title,
+  isOpened = false,
+  onOpen,
+  onClose,
+  sidePadding = false,
+  style,
+  children,
+}) => {
   const [opened, setOpened] = useState<boolean>(isOpened);
   const controlRef = useRef(null);
   const bodyRef = useRef(null);
@@ -33,13 +45,13 @@ export const Accordion: React.FC<TAccordionProps> = ({ title, isOpened = false, 
 
   return (
     <div className="accordion">
-      <div className="accordion__cover">
+      <div className={`accordion__cover ${sidePadding ? 'accordion__padding-sm' : ''}`}>
         <span className="accordion__title">{title}</span>
         <div className="accordion__opener" onClick={handleControlClick} role="button">
           <div ref={controlRef} className="accordion__opener-inner active" />
         </div>
       </div>
-      <div className="accordion__border" />
+      <div className={`accordion__border ${sidePadding ? 'accordion__padding-sm' : ''}`} />
       <div ref={bodyRef} className="accordion__body">
         <div className="accordion__body-content">{children}</div>
       </div>

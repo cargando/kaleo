@@ -5,10 +5,19 @@ export enum APIStatus {
 }
 
 export interface TResponseData {
-  searchQuery: string;
-  status: APIStatus;
   data: any;
   selected?: [] | [number];
   message?: string;
   cnt?: number;
+}
+
+export interface TMaterialVMProps extends TResponseData {
+  searchQuery: string;
+  multiSelect?: boolean;
+}
+
+export interface TMaterial {
+  id: number;
+  src: any;
+  title: string;
 }

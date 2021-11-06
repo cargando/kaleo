@@ -1,4 +1,4 @@
-@import 'assets/styles/vars';
+@import '../../styles/vars';
 
 $accordion-border: #f0f0f0;
 $accordion-btn-anim-timing: 250ms;
@@ -6,6 +6,9 @@ $accordion-body-anim-timing: 350ms;
 
 .accordions {
   width: 433px;
+  &-sm {
+    width: 443px;
+  }
 }
 
 .accordion {
@@ -13,6 +16,10 @@ $accordion-body-anim-timing: 350ms;
   display: flex;
   flex-direction: column;
   margin-bottom: 49px;
+  &__padding-sm {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
   &__cover {
     display: flex;
     justify-content: flex-start;
@@ -22,6 +29,8 @@ $accordion-body-anim-timing: 350ms;
     height: 1px;
     background: $accordion-border;
     margin-top: 16px;
+    &-sm {
+    }
   }
   &__body {
     display: flex;

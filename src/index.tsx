@@ -10,7 +10,7 @@ import { createStore } from './store';
 import theRoutes from './router/routes';
 import App from './App';
 
-import './assets/styles/index.scss';
+import './styles/index.scss';
 
 declare global {
   interface Window {

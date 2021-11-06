@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { TStore } from 'store';
-import { Accordion } from 'components/Accordion';
+import { Accordion, AccordionContainer } from 'components/Accordion';
 import { useHtmlToggle, useStores } from '../../hooks/index';
 import { TopLine } from '../topLine';
 import { Button } from '../button';
@@ -19,10 +19,12 @@ export const Layout = observer(({ children }: TLayoutProps) => {
 
   useHtmlToggle(App.isLeftColOpened, leftRef, 'app__left-col_opened');
 
+  console.log('Props:', App);
+
   return (
     <div className="app">
       <div ref={leftRef} className={`app__left-col ${App.isLeftColOpened ? 'app__left-col_opened' : ''}`}>
-        <div className="app__container accordions">
+        <AccordionContainer>
           <Accordion title="Выбранные материалы">
             some textsome textsome textsome textsome textsome textsome textsome textsome text
           </Accordion>
@@ -31,11 +33,19 @@ export const Layout = observer(({ children }: TLayoutProps) => {
               Выбрать текстуру...
             </Button>
           </Accordion>
-          <Accordion isOpened title="Выбор из каталога материалов">
-            <DropDown title="Категория" subTitle="Шпон" titleImg={ALL_IMAGES?.['./shpon_13.png']?.default} />
-            <WoodPicker title="Выберите цвет" />
+        </AccordionContainer>
+        <AccordionContainer size="sm">
+          <Accordion sidePadding isOpened title="Выбор из каталога материалов">
+            <div className="accordion__padding-sm">
+              <DropDown title="Категория" subTitle="Шпон" titleImg={ALL_IMAGES?.['./shpon_13.png']?.default} />
+            </div>
+            <WoodPicker sidePadding title="Выберите цвет" />
+
+            <div className="accordion__padding-sm">
+              <DropDown title="Уровень влияния" subTitle="Шпон" titleImg={ALL_IMAGES?.['./shpon_13.png']?.default} />
+            </div>
           </Accordion>
-        </div>
+        </AccordionContainer>
       </div>
       <div className="app__right-col">
         <TopLine />

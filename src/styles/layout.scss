@@ -9,6 +9,10 @@
     flex-direction: column;
     margin-left: 40px;
     margin-right: 40px;
+    &-sm {
+      margin-left: 35px;
+      margin-right: 35px;
+    }
   }
   &__left-col {
     background-color: $app-left-col-bg;
