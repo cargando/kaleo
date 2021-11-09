@@ -33,6 +33,13 @@
     background: $accent-color;
     color: white;
   }
+  &-white {
+    border: 1px solid white;
+    box-sizing: border-box;
+    border-radius: 6px;
+    color: white;
+    background-color: transparent;
+  }
   &-size-s {
     width: auto;
   }

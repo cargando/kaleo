@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { TStore } from 'store';
+import { STOREs, TStore } from 'store';
 import * as URLs from 'router/url';
 import { useStores } from '../../hooks/index';
 import { TabIcons } from './tabIcons';
@@ -10,7 +10,7 @@ import './styles.scss';
 import { Button } from '../button';
 
 export const TopLine = observer(() => {
-  const { App }: Pick<TStore, 'App'> = useStores();
+  const { App }: Pick<TStore, STOREs.App> = useStores();
   const topLineRef = React.useRef(null);
   const btnRef = React.useRef(null);
 

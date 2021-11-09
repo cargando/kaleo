@@ -1,0 +1,89 @@
+@import '../../styles/vars';
+
+$main-color: white;
+$upload-area-border: 2px dashed $main-color;
+
+.modal {
+  &-img {
+    &__container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 40px;
+    }
+    &__close {
+      display: flex;
+      justify-content: flex-end;
+      & > svg {
+        cursor: pointer;
+      }
+    }
+    &__header {
+      padding-top: 121px;
+      padding-bottom: 65px;
+      height: 33px;
+      font-family: $text-font;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 33px;
+      text-align: center;
+      letter-spacing: 0.02em;
+      color: $main-color;
+    }
+    &__upload-area {
+      margin: 0 12%;
+      min-height: 465px;
+      border: $upload-area-border;
+      box-sizing: border-box;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    &__progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      &-icon {
+        width: 96px;
+        height: 96px;
+      }
+      &-cover {
+        width: 96px;
+        height: 96px;
+        overflow: hidden;
+        position: relative;
+      }
+      &-mask {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0.8;
+        top: 0;
+        left: 0;
+      }
+      &-text {
+        width: 426px;
+        height: 40px;
+        font-family: $text-font;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 15px;
+        line-height: 20px;
+        text-align: center;
+        letter-spacing: 0.02em;
+        color: $main-color;
+        margin-top: 41px;
+        margin-bottom: 40px;
+      }
+    }
+    &__btn-container {
+      width: 433px;
+    }
+  }
+}

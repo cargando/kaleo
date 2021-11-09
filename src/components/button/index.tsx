@@ -7,7 +7,7 @@ export interface TButtonProps {
   size?: TButtonSize;
   children?: React.ReactNode;
   onClick?: (e?: React.MouseEvent<HTMLElement>) => void;
-  color?: 'primary' | 'danger' | 'warning' | 'success' | 'secondary';
+  color?: 'primary' | 'danger' | 'warning' | 'success' | 'secondary' | 'white';
   className?: string;
   outline?: boolean;
 }

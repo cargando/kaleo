@@ -42,6 +42,7 @@
     gap: 12px;
     width: calc(100% + 17px);
     margin-left: 5px;
+    position: relative;
   }
   &__item {
     box-sizing: content-box;
@@ -62,16 +63,17 @@
       //box-sizing: border-box;
       //border-radius: 14px;
       &::after {
-        position: absolute;
-        z-index: 1;
+        display: block;
+        position: relative;
+        z-index: 100;
         content: '';
         border: 2px solid $accent-color;
         box-sizing: border-box;
-        display: block;
         width: 68px;
         height: 68px;
         border-radius: 14px;
-        left: -15;
+        left: -5px;
+        top: -5px;
       }
     }
   }
