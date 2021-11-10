@@ -1,9 +1,9 @@
 import { observable, computed, action, extendObservable } from 'mobx';
 // import { makeRequest } from 'utils/fn';
-import { MaterialsStore } from './materialVM';
+import { MaterialsStore } from './vm/materialVM';
 import { RouterStore } from 'mobx-react-router';
-import { AppStore } from './appVM';
-import { ModalStore } from './modalsVM';
+import { AppStore } from './vm/appVM';
+import { ModalStore } from './vm/modalsVM';
 
 export enum STOREs {
   routing = 'routing',

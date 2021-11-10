@@ -1,7 +1,7 @@
 import React, { useReducer, useRef, useEffect, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
-import { MaterialsStoreVM } from 'store/materialVM';
+import { MaterialsStoreVM } from 'store/vm/materialVM';
 import { TMaterial } from 'store/types';
 import './styles.scss';
 

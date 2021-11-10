@@ -24,7 +24,7 @@ export const UploadImages = observer((props: TUploadImageProps) => {
   // @ts-ignore
   return (
     Modals.modalID === UPLOAD_IMG_MODAL && (
-      <FullScreen name={UPLOAD_IMG_MODAL} bgColor="#000000" opacity={0.9}>
+      <FullScreen name={UPLOAD_IMG_MODAL} bgColor="#000000" opacity={0.85}>
         <div className="modal-img__container">
           <div className="modal-img__close">
             <CloseBtn onClick={handleClick} />

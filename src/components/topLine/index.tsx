@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { Link } from 'react-router-dom';
 import { STOREs, TStore } from 'store';
 import * as URLs from 'router/url';
@@ -7,14 +8,11 @@ import { useStores } from '../../hooks/index';
 import { TabIcons } from './tabIcons';
 import { ControlIcons } from './controlIcons';
 import './styles.scss';
-import { Button } from '../button';
 
 export const TopLine = observer(() => {
   const { App }: Pick<TStore, STOREs.App> = useStores();
   const topLineRef = React.useRef(null);
   const btnRef = React.useRef(null);
-
-  React.useEffect(() => {});
 
   const handleNavClick = () => {
     App.toggleNav();
@@ -22,11 +20,15 @@ export const TopLine = observer(() => {
     btnRef.current.classList.toggle('top-line__nav-btn-inner_active');
   };
 
-  const handleChangeTab = (e) => {
-    const val = e.currentTarget.getAttribute('data-id');
-    App.setTopLineTab(parseInt(val, 10));
-  };
-
+  const handleChangeTab = useCallback(
+    (e) => {
+      const val = e.currentTarget.getAttribute('data-id');
+      App.setTopLineTab(parseInt(val, 10));
+      console.log('handleChangeTab > ', toJS(App.topLineTab), val);
+    },
+    [App.topLineTab],
+  );
+  console.log('TOP Line: ', toJS(App.topLineTab));
   return (
     <div>
       <div ref={topLineRef} className="top-line">

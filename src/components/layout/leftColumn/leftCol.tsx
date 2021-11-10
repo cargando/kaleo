@@ -11,8 +11,9 @@ export const LeftCol = observer(({ children }: TLeftColProps) => {
   const { App }: Pick<TStore, STOREs.App> = useStores();
   const leftRef = React.useRef(null);
 
-  useHtmlToggle(App.isLeftColOpened, leftRef, 'app__left-col_opened');
+  const res = useHtmlToggle(App.isLeftColOpened, leftRef, 'app__left-col_opened');
 
+  console.log('LeftCol', App.isLeftColOpened, 'res = ', res);
   return (
     <div ref={leftRef} className={`app__left-col ${App.isLeftColOpened ? 'app__left-col_opened' : ''}`}>
       {children}

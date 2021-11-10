@@ -19,11 +19,12 @@
     display: flex;
     flex-direction: column;
     flex-grow: 0;
-    transition: width $left-col-anim-timing;
+    transition: all $left-col-anim-timing;
     width: 0;
     padding: 121px 0 0 0;
     overflow-x: hidden;
     &_opened {
+      min-width: 514px;
       width: 514px;
       padding: 121px 0 40px 0;
     }

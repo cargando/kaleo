@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import { ReactComponent as KollazhBtn } from 'assets/icons/kollazh_btn.svg';
 import { ReactComponent as KalaydoscopeBtn } from 'assets/icons/kaleydoscope_btn.svg';
 import { ReactComponent as D3DBtn } from 'assets/icons/3d_btn.svg';
@@ -10,7 +11,8 @@ export interface TTabIconsProps {
 
 const controls = [KollazhBtn, KalaydoscopeBtn, D3DBtn];
 
-export const TabIcons: React.FC<TTabIconsProps> = ({ active, onChange }) => {
+export const TabIcons: React.FC<TTabIconsProps> = observer(({ active, onChange }) => {
+  console.log('TabIcons > ', active);
   return (
     <>
       {controls.map((item, index) => {
@@ -30,4 +32,4 @@ export const TabIcons: React.FC<TTabIconsProps> = ({ active, onChange }) => {
       })}
     </>
   );
-};
+});

@@ -1,6 +1,6 @@
 import { action, computed, extendObservable, observable, toJS } from 'mobx';
-import { APIStatus, TMaterialVMProps } from './types';
-import { MaterialStub } from './stub';
+import { APIStatus, TMaterialVMProps } from '../types';
+import { MaterialStub } from '../stub';
 
 export class MaterialsStoreVM {
   private static defaultState: TMaterialVMProps = {

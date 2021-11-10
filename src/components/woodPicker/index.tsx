@@ -20,6 +20,5 @@ export const WoodPicker: React.FC<TWoodPickerProps> = observer((props: any) => {
       }),
     [],
   );
-  console.log('WoodPicker, ', props.sidePadding);
   return <MaterialPicker sidePadding={props.sidePadding} title="Выберите цвет" vm={Materials} />;
 });

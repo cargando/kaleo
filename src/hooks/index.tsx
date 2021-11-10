@@ -84,7 +84,7 @@ export function useHtmlToggle(
   let action = '';
 
   const isOpenedValue = inverse ? !isOpened : isOpened;
-
+  console.log('useHtmlToggle', isOpened, nodeRef);
   useEffect(() => {
     if (isOpenedValue && nodeRef.current) {
       nodeRef.current.classList.add(className);

@@ -1,6 +1,5 @@
-import React from 'react';
-import { APIStatus, TResponseData } from './types';
-import { action, computed, extendObservable, observable, runInAction } from 'mobx';
+import { TResponseData } from '../types';
+import { action, computed, extendObservable, observable } from 'mobx';
 
 export const LAST_OPENED_MODAL = 'LAST_OPENED_MODAL';
 export const MODAL_NOT_FOUND = 'MODAL_NOT_FOUND';
@@ -21,7 +20,7 @@ export interface TModalVM {
   data: Record<string, any>;
 }
 
-export class ModaVM implements TModalVM {
+export class ModalVM implements TModalVM {
   @observable public contentRef = null;
 
   @observable public isFoolScreen = false;
@@ -41,12 +40,10 @@ export class ModaVM implements TModalVM {
   }
 
   @computed get modalID() {
-    console.log(`modalID ${this.modalIDs}`);
     return this.modalIDs[this.modalIDs.length - 1];
   }
 
   @action showModal = (modalID: string, isFoolScreen = true) => {
-    console.log('showModal > ', modalID);
     this.modalIDs.push(modalID);
     this.isFoolScreen = isFoolScreen;
   };
@@ -83,4 +80,4 @@ export class ModaVM implements TModalVM {
   };
 }
 
-export const ModalStore = new ModaVM();
+export const ModalStore = new ModalVM();

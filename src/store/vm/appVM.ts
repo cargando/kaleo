@@ -1,5 +1,4 @@
-import React from 'react';
-import { APIStatus, TResponseData } from './types';
+import { TResponseData } from '../types';
 import { action, computed, extendObservable, observable, runInAction } from 'mobx';
 
 export interface TAppVM {
