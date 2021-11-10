@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { TStore } from 'store';
+import { TStore, StoreTypes } from 'store';
 import { Accordion, AccordionContainer } from 'components/Accordion';
 import { useHtmlToggle, useStores } from '../../hooks/index';
 import { TopLine } from '../topLine';
@@ -14,7 +14,7 @@ export interface TLayoutProps {
 }
 
 export const Layout = observer(({ children }: TLayoutProps) => {
-  const { App }: Pick<TStore, 'App'> = useStores();
+  const { App }: Pick<TStore, StoreTypes.App> = useStores();
   const leftRef = React.useRef(null);
 
   useHtmlToggle(App.isLeftColOpened, leftRef, 'app__left-col_opened');

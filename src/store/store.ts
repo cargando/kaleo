@@ -4,16 +4,24 @@ import { MaterialsStore } from './materialVM';
 import { RouterStore } from 'mobx-react-router';
 import { AppStore } from './appVM';
 
+export enum StoreTypes {
+  App = 'App',
+  Materials = 'Materials',
+  Modals = 'Modals',
+}
+
 export interface TStore {
   routing: RouterStore;
-  Materials?: typeof MaterialsStore;
-  App?: typeof AppStore;
+  [StoreTypes.Materials]?: typeof MaterialsStore;
+  [StoreTypes.App]?: typeof AppStore;
+  [StoreTypes.Modals]?: any;
 }
 
 export const createStore = (routingStore: RouterStore): TStore => {
   return {
     routing: routingStore,
-    Materials: MaterialsStore,
-    App: AppStore,
+    [StoreTypes.Materials]: MaterialsStore,
+    [StoreTypes.App]: AppStore,
+    [StoreTypes.Modals]: null,
   };
 };

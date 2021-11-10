@@ -3,7 +3,7 @@ import { autorun } from 'mobx';
 import { MaterialPicker } from 'components/materialPicker';
 import './styles.scss';
 import { observer } from 'mobx-react';
-import { TStore } from '../../store';
+import { TStore, StoreTypes } from '../../store';
 import { useStores } from '../../hooks';
 
 export interface TWoodPickerProps {
@@ -12,7 +12,7 @@ export interface TWoodPickerProps {
 }
 
 export const WoodPicker: React.FC<TWoodPickerProps> = observer((props: any) => {
-  const { Materials }: Pick<TStore, 'Materials'> = useStores();
+  const { Materials }: Pick<TStore, StoreTypes.Materials> = useStores();
   useEffect(
     () =>
       autorun(() => {
