@@ -1,5 +1,5 @@
 import { TResponseData } from '../types';
-import { action, computed, extendObservable, observable } from 'mobx';
+import { action, computed, observable, makeAutoObservable } from 'mobx';
 
 export const LAST_OPENED_MODAL = 'LAST_OPENED_MODAL';
 export const MODAL_NOT_FOUND = 'MODAL_NOT_FOUND';
@@ -31,8 +31,8 @@ export class ModalVM implements TModalVM {
 
   @observable public data = null;
 
-  constructor(initialState?: TResponseData) {
-    extendObservable(this, { ...initialState });
+  constructor() {
+    makeAutoObservable(this);
   }
 
   @computed get foolScreen() {

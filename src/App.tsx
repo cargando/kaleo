@@ -1,6 +1,7 @@
-import React, { ReactElement, useLayoutEffect } from 'react';
+import React, { Suspense, ReactElement, useLayoutEffect } from 'react';
 import { observer, inject } from 'mobx-react';
 import { Layout } from 'components/layout';
+import Spinner from 'components/spinner';
 
 interface TAppProps {
   Materials?: any;
@@ -13,7 +14,11 @@ const App = inject('Materials')(
       // useLayoutEffect(() => {
       //   Materials.fetch();
       // }, []); // eslint-disable-line
-      return <Layout>{children}</Layout>;
+      return (
+        <Layout>
+          <Suspense fallback={<Spinner bgColor="#efefef" width="50" fullCenter />}>{children}</Suspense>
+        </Layout>
+      );
     },
   ),
 );

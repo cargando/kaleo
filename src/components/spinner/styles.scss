@@ -1,0 +1,122 @@
+@keyframes multicolors {
+  0% {
+    stroke: #4285f4;
+  }
+  25% {
+    stroke: #de3e35;
+  }
+  50% {
+    stroke: #f7c223;
+  }
+  75% {
+    stroke: #1b9a59;
+  }
+  100% {
+    stroke: #4285f4;
+  }
+}
+
+@keyframes twocolors {
+  0% {
+    stroke: #04add2;
+  }
+  33% {
+    stroke: #4d91d9;
+  }
+  66% {
+    stroke: #a66ce3;
+  }
+  100% {
+    stroke: #4d91d9;
+  }
+}
+
+@keyframes primarycolors {
+  0% {
+    stroke: #333749;
+  }
+  100% {
+    stroke: #333749;
+  }
+}
+
+@keyframes whitecolors {
+  0% {
+    stroke: #ffffff;
+  }
+  100% {
+    stroke: #ffffff;
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    transform: rotate(450deg);
+  }
+}
+
+@keyframes rotator {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
+}
+.spnr {
+  &__adjust-huener {
+    animation: rotator 1.4s linear infinite;
+  }
+  &__path-multi {
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: dash 1.4s ease-in-out infinite, multicolors 5.6s ease-in-out infinite;
+  }
+  &__path-two {
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: dash 1.4s ease-in-out infinite, twocolors 3.6s ease-in-out infinite;
+  }
+  &__path-primary {
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: dash 1.4s ease-in-out infinite, primarycolors 5.6s ease-in-out infinite;
+  }
+  &__path-white {
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: dash 1.4s ease-in-out infinite, whitecolors 5.6s ease-in-out infinite;
+  }
+  &__center-v {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  &__center-h {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  &__center {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}

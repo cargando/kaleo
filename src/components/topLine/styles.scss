@@ -1,3 +1,139 @@
+@import 'styles/vars';
+
+$anim-timing: 200ms ease;
+
+.top-line {
+  margin-top: 17px;
+  margin-left: 173px;
+  display: flex;
+  transition: margin-left $anim-timing;
+  &_opened {
+    margin-left: 50px;
+    color: red;
+  }
+  &__nav-btn {
+    margin-top: 33px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    user-select: none;
+    cursor: pointer;
+  }
+  &__nav-btn-inner {
+    background-color: $dark-color;
+    height: 3px;
+    width: 24px;
+    border-radius: 1.5px;
+    transition: margin-left $anim-timing;
+    &::after {
+      content: '';
+      background-color: $dark-color;
+      display: block;
+      height: 3px;
+      width: 17px;
+      border-radius: 1.5px;
+      transform: translateY(10px);
+    }
+  }
+  &__icons {
+    display: flex;
+    justify-content: center;
+    margin-top: 33px;
+    text-decoration: none;
+    & svg {
+      color: $top-line-icon-btn-color;
+      opacity: 0.5;
+    }
+    &_right {
+      justify-content: end;
+    }
+  }
+  &__icon-btn {
+    margin-right: 20px;
+    margin-left: 20px;
+    cursor: pointer;
+    &-cover {
+      &::after {
+        content: '';
+        background-color: $accent-color;
+        display: block;
+        width: 38px;
+        height: 2px;
+        border-radius: 1.5px;
+        transform: translate(12px, 16px);
+      }
+    }
+    &_active {
+      opacity: 1 !important;
+    }
+    &_last-c {
+      margin-right: 0;
+    }
+    &_last-r {
+      margin-right: 50px;
+    }
+  }
+}
+
+.top-line__nav-btn-inner.top-line__nav-btn-inner_active::after {
+  margin-left: 7px;
+}
+
+.nav {
+  margin: 0;
+  &-tabs {
+    position: relative;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      display: inline-block;
+      width: auto;
+      margin: 0 20px;
+      > a {
+        &:hover,
+        &:focus {
+          outline: none;
+          background-color: transparent;
+          color: $dark-color;
+          cursor: pointer;
+        }
+        > svg {
+          color: $top-line-icon-btn-color;
+          opacity: 0.5;
+          transition: opacity 0.2s;
+        }
+        &:hover svg {
+          opacity: 1;
+          transition: opacity 0.2s;
+        }
+      }
+      &.active {
+        > a,
+        > a:hover,
+        > a:focus,
+        > a:active {
+          border: none;
+          background: none;
+          > svg {
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+  &-underline {
+    position: absolute;
+    left: -8px;
+    bottom: -16px;
+    width: 40px !important;
+    height: 2px;
+    background: $accent-color;
+    will-change: left, width;
+    transition: left 0.2s, width 0.2s;
+  }
+}
+
 .alert-enter {
   opacity: 0;
   transform: scale(0.9);

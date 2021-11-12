@@ -1,5 +1,5 @@
 import { TResponseData } from '../types';
-import { action, computed, extendObservable, observable, runInAction } from 'mobx';
+import { action, computed, makeAutoObservable, observable, runInAction } from 'mobx';
 
 export interface TAppVM {
   navOpened: boolean;
@@ -8,14 +8,14 @@ export interface TAppVM {
 }
 
 export class AppVM implements TAppVM {
-  @observable public navOpened = true;
+  @observable public navOpened = false;
 
   @observable public isMainPage = true;
 
   @observable public topLineTab = 0;
 
   constructor(initialState?: TResponseData) {
-    extendObservable(this, { ...initialState });
+    makeAutoObservable(this);
   }
 
   @computed get isLeftColOpened() {

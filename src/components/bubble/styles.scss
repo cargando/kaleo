@@ -1,0 +1,30 @@
+@import '../../styles/vars';
+
+.bubble {
+  height: 24px;
+  background: $accent-color;
+  border-radius: 12px;
+  height: 20px;
+  font-family: $text-font;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 20px;
+  text-align: right;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  padding: 2px 11px;
+
+  &_alert {
+    background: red;
+  }
+  &_warn {
+    background: darkorange;
+  }
+  &_grey {
+    background: #d7d7d7;
+  }
+  &_muted {
+    background: #c2c1c6;
+  }
+}

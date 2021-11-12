@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './styles.scss';
 import { useHtmlToggle } from '../../hooks';
+import { Bubble } from '../bubble/inde';
 
-export * from './container';
+export * from '../layout/leftColumn/container';
 
 export interface TAccordionProps {
   title: string;
@@ -12,6 +13,9 @@ export interface TAccordionProps {
   children?: React.ReactNode;
   style?: React.CSSProperties;
   sidePadding?: boolean;
+  hideOpener?: boolean;
+  bubble?: boolean;
+  bubbleCnt?: number;
 }
 
 export const Accordion: React.FC<TAccordionProps> = ({
@@ -20,6 +24,9 @@ export const Accordion: React.FC<TAccordionProps> = ({
   onOpen,
   onClose,
   sidePadding = false,
+  hideOpener = false,
+  bubble = false,
+  bubbleCnt = 0,
   style,
   children,
 }) => {
@@ -48,7 +55,8 @@ export const Accordion: React.FC<TAccordionProps> = ({
       <div className={`accordion__cover ${sidePadding ? 'accordion__padding-sm' : ''}`}>
         <span className="accordion__title">{title}</span>
         <div className="accordion__opener" onClick={handleControlClick} role="button">
-          <div ref={controlRef} className="accordion__opener-inner active" />
+          {!hideOpener && <div ref={controlRef} className="accordion__opener-inner active" />}
+          {bubble && <Bubble title={bubbleCnt} />}
         </div>
       </div>
       <div className={`accordion__border ${sidePadding ? 'accordion__padding-sm' : ''}`} />

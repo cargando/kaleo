@@ -21,7 +21,7 @@ export interface TStore {
 
 export const createStore = (routingStore: RouterStore): TStore => {
   return {
-    [STOREs.routing]: routingStore,
+    routing: routingStore,
     [STOREs.Materials]: MaterialsStore,
     [STOREs.App]: AppStore,
     [STOREs.Modals]: ModalStore,

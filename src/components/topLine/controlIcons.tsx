@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactComponent as CloudBtn } from 'assets/icons/cloud_btn.svg';
 import { ReactComponent as SaveBtn } from 'assets/icons/save_btn.svg';
 import { ReactComponent as PrinterBtn } from 'assets/icons/printer_btn.svg';
+// import { ReactComponent as UserBtn } from 'assets/icons/user.svg';
 
 // export interface TControlIconsProps {}
 

@@ -12,7 +12,6 @@ export interface TTabIconsProps {
 const controls = [KollazhBtn, KalaydoscopeBtn, D3DBtn];
 
 export const TabIcons: React.FC<TTabIconsProps> = observer(({ active, onChange }) => {
-  console.log('TabIcons > ', active);
   return (
     <>
       {controls.map((item, index) => {

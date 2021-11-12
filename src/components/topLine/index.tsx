@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,26 @@ import { useStores } from '../../hooks/index';
 import { TabIcons } from './tabIcons';
 import { ControlIcons } from './controlIcons';
 import './styles.scss';
+import { TNavTabItem, NavTabs } from './NavTabs';
+
+import { ReactComponent as KollazhBtn } from 'assets/icons/kollazh_btn.svg';
+import { ReactComponent as KalaydoscopeBtn } from 'assets/icons/kaleydoscope_btn.svg';
+import { ReactComponent as D3DBtn } from 'assets/icons/3d_btn.svg';
+
+const iconList: TNavTabItem[] = [
+  {
+    title: 'Материалы',
+    component: KollazhBtn,
+  },
+  {
+    title: 'Калейдоскоп',
+    component: KalaydoscopeBtn,
+  },
+  {
+    title: 'Трехмерное представление',
+    component: D3DBtn,
+  },
+];
 
 export const TopLine = observer(() => {
   const { App }: Pick<TStore, STOREs.App> = useStores();
@@ -19,16 +39,20 @@ export const TopLine = observer(() => {
     topLineRef.current.classList.toggle('top-line_opened');
     btnRef.current.classList.toggle('top-line__nav-btn-inner_active');
   };
+  useEffect(() => {
+    if (topLineRef.current) {
+      if (App.isLeftColOpened) {
+        topLineRef.current.classList.toggle('top-line_opened');
+      } else {
+        topLineRef.current.classList.remove('top-line_opened');
+      }
+    }
+  }, []);
 
-  const handleChangeTab = useCallback(
-    (e) => {
-      const val = e.currentTarget.getAttribute('data-id');
-      App.setTopLineTab(parseInt(val, 10));
-      console.log('handleChangeTab > ', toJS(App.topLineTab), val);
-    },
-    [App.topLineTab],
-  );
-  console.log('TOP Line: ', toJS(App.topLineTab));
+  const handleChangeTab = useCallback((tabIndex: number) => {
+    App.setTopLineTab(tabIndex);
+  }, []);
+
   return (
     <div>
       <div ref={topLineRef} className="top-line">
@@ -46,7 +70,8 @@ export const TopLine = observer(() => {
           {/* <Button className="btn-topline">Генерировать</Button> */}
         </div>
         <div className="col-4 no-pad top-line__icons">
-          <TabIcons active={App.topLineTab} onChange={handleChangeTab} />
+          {/* <TabIcons active={App.topLineTab} onChange={handleChangeTab} /> */}
+          <NavTabs onChange={handleChangeTab} active={App.topLineTab} items={iconList} />
         </div>
         <div className="col-4 no-pad top-line__icons top-line__icons_right">
           <ControlIcons />

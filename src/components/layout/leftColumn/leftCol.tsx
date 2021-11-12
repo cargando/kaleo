@@ -13,9 +13,8 @@ export const LeftCol = observer(({ children }: TLeftColProps) => {
 
   const res = useHtmlToggle(App.isLeftColOpened, leftRef, 'app__left-col_opened');
 
-  console.log('LeftCol', App.isLeftColOpened, 'res = ', res);
   return (
-    <div ref={leftRef} className={`app__left-col ${App.isLeftColOpened ? 'app__left-col_opened' : ''}`}>
+    <div ref={leftRef} className="app__left-col">
       {children}
     </div>
   );
