@@ -50,11 +50,18 @@ export const Accordion: React.FC<TAccordionProps> = ({
     }
   };
 
+  const controlProps: Record<string, string> = {};
+  if (!hideOpener) {
+    controlProps.role = 'button';
+  }
   return (
     <div className="accordion">
       <div className={`accordion__cover ${sidePadding ? 'accordion__padding-sm' : ''}`}>
         <span className="accordion__title">{title}</span>
-        <div className="accordion__opener" onClick={handleControlClick} role="button">
+        <div
+          className={`accordion__opener ${bubble ? 'accordion__opener-bubble' : ''}`}
+          onClick={handleControlClick}
+          {...controlProps}>
           {!hideOpener && <div ref={controlRef} className="accordion__opener-inner active" />}
           {bubble && <Bubble title={bubbleCnt} />}
         </div>

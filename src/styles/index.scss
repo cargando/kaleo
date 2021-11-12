@@ -23,6 +23,22 @@ body,
   margin: 0;
   padding: 0;
 }
+.flex {
+  display: flex;
+  &-col {
+    display: flex;
+    flex-direction: column;
+  }
+  &-centr {
+    justify-content: center;
+    align-items: center;
+  }
+  &__left,
+  &__right {
+    flex: 1 0 50%;
+    white-space: nowrap;
+  }
+}
 
 .no-pad-left {
   padding-left: 0 !important;

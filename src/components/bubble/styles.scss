@@ -1,6 +1,10 @@
 @import '../../styles/vars';
 
 .bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 24px;
   background: $accent-color;
   border-radius: 12px;

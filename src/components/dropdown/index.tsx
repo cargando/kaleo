@@ -14,10 +14,29 @@ export interface TDropDownProps {
   renderSubTitle?: (val: number) => React.ReactNode;
   titleImg?: React.ReactNode;
   slider?: boolean;
+  hideControl?: boolean;
+  minVal?: number;
+  maxVal?: number;
+  sliderVal?: number;
+  sliderAbsolute?: boolean;
 }
 
 export const DropDown: React.FC<TDropDownProps> = (props) => {
-  const { title, slider, subTitle, renderSubTitle, titleImg = null, onClick, isOpened = false, children } = props;
+  const {
+    title,
+    slider,
+    subTitle,
+    renderSubTitle,
+    titleImg = null,
+    onClick,
+    isOpened = false,
+    hideControl = false,
+    sliderAbsolute = false,
+    sliderVal = 0,
+    minVal,
+    maxVal,
+    children,
+  } = props;
   const [opened, setOpened] = useState<boolean>(isOpened);
   const [textVal, setTextVal] = useState<number>(0);
   const iconRef = useRef(null);
@@ -60,14 +79,27 @@ export const DropDown: React.FC<TDropDownProps> = (props) => {
             </div>
           </div>
         </div>
-        <div className="drop-down__control-col">
-          <button onClick={handleIconClick} className="drop-down__control">
-            <ArrowBtn ref={iconRef} className="drop-down__control-ico" />
-          </button>
-        </div>
+        {!hideControl && (
+          <div className="drop-down__control-col">
+            <button onClick={handleIconClick} className="drop-down__control">
+              <ArrowBtn ref={iconRef} className="drop-down__control-ico" />
+            </button>
+          </div>
+        )}
+
         {children}
       </div>
-      {slider && <Slider value={14} sidePadding={10} shiftY={-6} onChange={handleChangeSlider} />}
+      {slider && (
+        <Slider
+          value={sliderVal}
+          minVal={minVal}
+          maxVal={maxVal}
+          sidePadding={10}
+          shiftY={-6}
+          onChange={handleChangeSlider}
+          absoluteResult={sliderAbsolute}
+        />
+      )}
     </div>
   );
 };

@@ -32,7 +32,7 @@ export const MaterialPicker: React.FC<TMaterialPickerProps> = observer(({ title,
       </div>
       <div className="mat-picker__body">
         {vm?.data?.map((item: TMaterial, index: number) => {
-          const isItemSelected = vm.selected.indexOf(item.id) !== -1;
+          const isItemSelected = vm.selectedVeneer.indexOf(item.id) !== -1;
           return (
             <div
               key={`${index}${item.id}`}

@@ -8,7 +8,7 @@ export interface TAppVM {
 }
 
 export class AppVM implements TAppVM {
-  @observable public navOpened = false;
+  @observable public navOpened = true;
 
   @observable public isMainPage = true;
 

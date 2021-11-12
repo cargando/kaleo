@@ -15,8 +15,8 @@ export const SideBlock: React.FC<TSideBlockProps> = ({ title, children, bubble =
   }
   return (
     <SideContainer>
-      <Accordion title={title} bubble={isBubble} bubbleCnt={bubble} hideOpener>
-        {children}
+      <Accordion title={title} bubble={isBubble} bubbleCnt={bubble} hideOpener isOpened>
+        <div className="flex">{children}</div>
       </Accordion>
     </SideContainer>
   );

@@ -14,6 +14,11 @@ export interface TResponseData {
 export interface TMaterialVMProps extends TResponseData {
   searchQuery: string;
   multiSelect?: boolean;
+  elementsCount?: number;
+  textureCount?: number;
+  elementsColors?: number[];
+  elementsMaterials?: number[];
+  selectedVeneer?: number[];
 }
 
 export interface TMaterial {

@@ -202,3 +202,10 @@ export const mergeStateList = (oldData, newData, noId = false, print = false) =>
   }
   return merge;
 };
+
+export function relativeToAbsolute(valRelative: number, minAbsolute = 0, maxAbsolute = 100): number {
+  const len = maxAbsolute - minAbsolute;
+  const oneP = len / 100;
+
+  return valRelative * oneP;
+}

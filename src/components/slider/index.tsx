@@ -1,6 +1,7 @@
 import React, { useReducer, useRef, useEffect, useCallback } from 'react';
 import { reducer, initialState, Actions } from './reducer';
 import './styles.scss';
+import { relativeToAbsolute } from 'utils/fn';
 
 interface ISliderProps {
   width?: string;
@@ -11,6 +12,7 @@ interface ISliderProps {
   minVal?: number;
   maxVal?: number;
   shiftY?: number;
+  absoluteResult?: boolean;
 }
 
 export const Slider: React.FC<ISliderProps> = ({
@@ -20,6 +22,7 @@ export const Slider: React.FC<ISliderProps> = ({
   value,
   minVal = 0,
   maxVal = 100,
+  absoluteResult = false,
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const controlRef = useRef(null);
@@ -85,11 +88,12 @@ export const Slider: React.FC<ISliderProps> = ({
   useEffect(() => {
     // change CSS DOM position in accordance to state.value
     if (controlRef.current && borderRef.current && activeBorderRef.current) {
+      const userRangeValue = convertToUserRange(minVal, maxVal, state.value);
       const position = calcPositionFromValue(borderRef.current, state.value);
       controlRef.current.style.left = `${position - 10}px`;
       activeBorderRef.current.style.width = `${position - 10}px`;
       if (typeof onChange === 'function') {
-        onChange(convertToUserRange(minVal, maxVal, state.value));
+        onChange(absoluteResult ? relativeToAbsolute(userRangeValue, 0, 100) : userRangeValue);
       }
     }
   }, [state.value, controlRef.current, borderRef.current, activeBorderRef.current]);
@@ -103,7 +107,7 @@ export const Slider: React.FC<ISliderProps> = ({
     sliderStyle.marginTop = `${shiftY}px`;
   }
 
-  // console.log('YO', sliderStyle);
+  console.log('YO>> state.val', state.value, 'value', value);
   return (
     <div className="slider" style={sliderStyle}>
       <div ref={coverRef} className="slider__cover">

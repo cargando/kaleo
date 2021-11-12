@@ -11,10 +11,16 @@ $left-col-anim-timing: 200ms ease;
     flex-direction: column;
     margin-left: 40px;
     margin-right: 40px;
+    &-half {
+      flex-direction: row;
+    }
     &-sm {
       margin-left: 35px;
       margin-right: 35px;
     }
+  }
+  &__left-item {
+    flex-grow: 1;
   }
   &__left-col {
     background-color: $app-left-col-bg;

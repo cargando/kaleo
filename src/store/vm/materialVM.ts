@@ -6,23 +6,34 @@ export class MaterialsStoreVM {
   private static defaultState: TMaterialVMProps = {
     searchQuery: '',
     data: null,
-    selected: [1],
+    selectedVeneer: [],
     multiSelect: false,
     cnt: 0,
+    elementsCount: 0,
+    textureCount: 0,
+    elementsColors: [],
+    elementsMaterials: [],
   };
 
-  // @observable - поля стейта
   @observable public searchQuery: string | undefined;
 
   @observable public data: any;
 
-  @observable public selected: number[];
+  @observable public selectedVeneer: number[];
 
   @observable public message: boolean | undefined;
 
   @observable public cnt: number | undefined;
 
   @observable public multiSelect: boolean;
+
+  @observable public elementsCount: number;
+
+  @observable public textureCount: number;
+
+  @observable public elementsColors: number[];
+
+  @observable public elementsMaterials: number[];
 
   constructor(initialState?: TMaterialVMProps) {
     extendObservable(this, { ...MaterialsStoreVM.defaultState, ...initialState });
@@ -35,7 +46,7 @@ export class MaterialsStoreVM {
     let res = null;
     /* eslint-disable-next-line */
     for (const val of this.data) {
-      if (this.selected.indexOf(val.id) !== -1) {
+      if (this.selectedVeneer.indexOf(val.id) !== -1) {
         res = val.title;
         break;
       }
@@ -57,14 +68,14 @@ export class MaterialsStoreVM {
   };
 
   @action public setSelected = (id: number) => {
-    const index = this.selected.indexOf(id);
+    const index = this.selectedVeneer.indexOf(id);
     if (index !== -1) {
-      this.selected.splice(index, 1);
+      this.selectedVeneer.splice(index, 1);
     } else {
       if (!this.multiSelect) {
-        this.selected.length = 0;
+        this.selectedVeneer.length = 0;
       }
-      this.selected.push(id);
+      this.selectedVeneer.push(id);
     }
   };
 
