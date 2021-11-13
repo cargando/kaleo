@@ -1,3 +1,17 @@
+export enum MaterialsTP {
+  VENEER, // шпон
+  WOOD, // тип дерева (береза, дуб, и пр)
+  COLOR, // цвет
+  STONE,
+  TEXSTILE,
+  PLASTER, // штукатурка
+  CONCRETE, // бетон
+  PLASTIC,
+  METAL,
+  PAPER,
+  ALL_MATERIALS,
+}
+
 export enum APIStatus {
   DONE,
   LOADING,
@@ -5,24 +19,45 @@ export enum APIStatus {
 }
 
 export interface TResponseData {
-  data: any;
+  data?: any;
   selected?: [] | [number];
   message?: string;
   cnt?: number;
 }
 
+export type TDataList = Partial<Record<MaterialsTP, any[]>>;
+export type TSelectedList = Partial<Record<MaterialsTP, number[]>>;
+export type TMultiSelectedList = Partial<Record<MaterialsTP, boolean>>;
+
 export interface TMaterialVMProps extends TResponseData {
+  // veneerData: any;
+  // colorData: any;
   searchQuery: string;
-  multiSelect?: boolean;
-  elementsCount?: number;
-  textureCount?: number;
-  elementsColors?: number[];
-  elementsMaterials?: number[];
-  selectedVeneer?: number[];
+  // multiSelectVeneer?: boolean;
+  // multiSelectColor?: boolean;
+  // elementsCount?: number;
+  // textureCount?: number;
+  // elementsColors?: number[];
+  // elementsMaterials?: number[];
+  // selectedColor?: number[];
+  // selectedVeneer?: number[];
+  dataList?: TDataList;
+  selectedList?: TSelectedList;
+  isMultiSelect?: TMultiSelectedList;
+}
+// const partitions: Record<string, { [key: string]: TTableStatus }> = {};
+
+export interface TWood {
+  id: number;
+  src?: any;
+  title?: string;
 }
 
-export interface TMaterial {
+export interface TColor {
   id: number;
-  src: any;
-  title: string;
+  color?: string;
+  title?: string;
+  border?: string;
 }
+
+export interface TMaterial extends TWood, TColor {}

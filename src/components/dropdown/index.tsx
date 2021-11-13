@@ -8,6 +8,7 @@ export interface TDropDownProps {
   isOpened?: boolean;
   children?: React.ReactNode;
   onClick?: (e?: React.MouseEvent<HTMLElement>) => void;
+  onChangeSlider?: (val: number) => void;
   renderImage?: (...rest) => React.ReactNode;
   title: string;
   subTitle?: string;
@@ -29,6 +30,7 @@ export const DropDown: React.FC<TDropDownProps> = (props) => {
     renderSubTitle,
     titleImg = null,
     onClick,
+    onChangeSlider,
     isOpened = false,
     hideControl = false,
     sliderAbsolute = false,
@@ -53,6 +55,9 @@ export const DropDown: React.FC<TDropDownProps> = (props) => {
   const handleChangeSlider = useCallback(
     (val: number) => {
       setTextVal(val);
+      if (typeof onChangeSlider === 'function') {
+        onChangeSlider(val);
+      }
     },
     [setTextVal],
   );

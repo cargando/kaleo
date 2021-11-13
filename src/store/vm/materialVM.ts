@@ -1,52 +1,45 @@
-import { action, computed, extendObservable, observable, toJS } from 'mobx';
-import { APIStatus, TMaterialVMProps } from '../types';
-import { MaterialStub } from '../stub';
+import { action, computed, makeAutoObservable, observable, toJS } from 'mobx';
+import { TDataList, TSelectedList, TMultiSelectedList, MaterialsTP, TMaterialVMProps } from '../types';
+import { ColorsStub, MaterialStub, VeneerStub } from '../stub';
 
-export class MaterialsStoreVM {
-  private static defaultState: TMaterialVMProps = {
-    searchQuery: '',
-    data: null,
-    selectedVeneer: [],
-    multiSelect: false,
-    cnt: 0,
-    elementsCount: 0,
-    textureCount: 0,
-    elementsColors: [],
-    elementsMaterials: [],
-  };
+export class MaterialsStoreVM implements TMaterialVMProps {
+  public searchQuery = '';
 
-  @observable public searchQuery: string | undefined;
+  public dataList: TDataList = observable({});
 
-  @observable public data: any;
+  public selectedList: TSelectedList = observable({});
 
-  @observable public selectedVeneer: number[];
+  public isMultiSelectList: TMultiSelectedList = observable({});
 
-  @observable public message: boolean | undefined;
+  constructor() {
+    makeAutoObservable(this);
 
-  @observable public cnt: number | undefined;
-
-  @observable public multiSelect: boolean;
-
-  @observable public elementsCount: number;
-
-  @observable public textureCount: number;
-
-  @observable public elementsColors: number[];
-
-  @observable public elementsMaterials: number[];
-
-  constructor(initialState?: TMaterialVMProps) {
-    extendObservable(this, { ...MaterialsStoreVM.defaultState, ...initialState });
+    this.isMultiSelectList[MaterialsTP.VENEER] = false;
+    this.isMultiSelectList[MaterialsTP.COLOR] = true;
+    this.isMultiSelectList[MaterialsTP.ALL_MATERIALS] = true;
   }
 
-  @computed public get selectedName() {
-    if (!this?.data) {
+  @computed public Data = (tp: MaterialsTP) => {
+    return this.dataList[tp];
+  };
+
+  @computed public Selected = (tp: MaterialsTP) => {
+    this.checkList(tp);
+    return this.selectedList[tp];
+  };
+
+  @computed public Multi = (tp: MaterialsTP) => {
+    return this.isMultiSelectList[tp] || false;
+  };
+
+  @computed public selectedName(tp: MaterialsTP) {
+    if (!this?.dataList?.[tp]) {
       return null;
     }
     let res = null;
     /* eslint-disable-next-line */
-    for (const val of this.data) {
-      if (this.selectedVeneer.indexOf(val.id) !== -1) {
+    for (const val of this.dataList[tp]) {
+      if (this.dataList[tp].indexOf(val.id) !== -1) {
         res = val.title;
         break;
       }
@@ -54,62 +47,50 @@ export class MaterialsStoreVM {
     return res;
   }
 
-  // @action - аналог ридакс-экшенов, в том числе асинхронные
+  @computed public selectedCnt = (tp: MaterialsTP): number => {
+    return this?.selectedList?.[tp]?.length;
+  };
+
   @action public setSearch = (query: string) => {
     this.searchQuery = query;
-
-    this.fetchData();
   };
 
-  @action public setCnt = (n: number) => {
-    this.cnt = n;
-
-    this.fetchData();
-  };
-
-  @action public setSelected = (id: number) => {
-    const index = this.selectedVeneer.indexOf(id);
+  @action public setSelected = (id: number, tp: MaterialsTP) => {
+    this.checkList(tp);
+    // console.log('CLS > ', tp, toJS(this.selectedList[tp]));
+    const index = this.selectedList[tp].indexOf(id);
     if (index !== -1) {
-      this.selectedVeneer.splice(index, 1);
+      this.selectedList[tp].splice(index, 1);
     } else {
-      if (!this.multiSelect) {
-        this.selectedVeneer.length = 0;
+      if (!this.isMultiSelectList[tp]) {
+        this.selectedList[tp].length = 0;
       }
-      this.selectedVeneer.push(id);
+      this.selectedList[tp].push(id);
     }
   };
 
   public fetch = () => {
     this.fetchMaterials();
-    // this.fetchData();
+    this.fetchColors();
+    this.fetchVeneer();
   };
 
-  @action private updateData = (data: Array<any>) => {
-    this.data = data;
+  @action private fetchVeneer = () => {
+    this.dataList[MaterialsTP.VENEER] = observable.array(VeneerStub);
   };
 
-  private fetchData = () => {
-    /* makeRequest({
-      url: 'http://api.tvmaze.com/search/shows',
-      requestData: { q: this.searchQuery },
-    }) */
-
-    fetch(`https://api.tvmaze.com/search/shows?q=batman${this.searchQuery}`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data: any) => {
-        this.updateData(data);
-      })
-      .catch((err) => {
-        // err
-        console.log('Error:', err);
-      });
+  @action private fetchMaterials = () => {
+    this.dataList[MaterialsTP.ALL_MATERIALS] = observable.array(MaterialStub);
   };
 
-  private fetchMaterials = () => {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    this.updateData(MaterialStub);
+  @action private fetchColors = () => {
+    this.dataList[MaterialsTP.COLOR] = observable.array(ColorsStub);
+  };
+
+  private checkList = (tp: MaterialsTP) => {
+    if (typeof this.selectedList[tp] === 'undefined') {
+      this.selectedList[tp] = observable.array([]);
+    }
   };
 }
 

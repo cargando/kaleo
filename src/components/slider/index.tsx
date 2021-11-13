@@ -107,7 +107,6 @@ export const Slider: React.FC<ISliderProps> = ({
     sliderStyle.marginTop = `${shiftY}px`;
   }
 
-  console.log('YO>> state.val', state.value, 'value', value);
   return (
     <div className="slider" style={sliderStyle}>
       <div ref={coverRef} className="slider__cover">

@@ -3,12 +3,15 @@ import { observer } from 'mobx-react';
 import { SideBlock } from '../sideBlock';
 import { DropDown } from '../dropdown';
 import { relativeToAbsolute } from 'utils/fn';
+import { STOREs, TStore } from '../../store';
+import { useStores } from '../../hooks';
 
 export interface TSideBlockProps {
   children?: React.ReactNode;
 }
 
 export const MaterialSliders: React.FC<TSideBlockProps> = observer(({ children }) => {
+  const { Materials }: Pick<TStore, STOREs.Materials> = useStores();
   const renderSubTitles = (s: string | number) => <>{(+s).toFixed()}</>;
   return (
     <SideBlock bubble={5} title="Задайте установки для генерации">

@@ -7,7 +7,7 @@ import { Accordion } from 'components/Accordion';
 import { SideContainer } from 'components/layout/leftColumn/container';
 import { Button } from 'components/button';
 import { DropDown } from 'components/dropdown';
-import { WoodPicker } from 'components/woodPicker';
+import { WoodPicker } from 'components/platePikers/woodPicker';
 import { LeftCol } from './leftCol';
 import { UPLOAD_IMG_MODAL } from '../../modals/uploadImage';
 

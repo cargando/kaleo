@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { TopLine } from '../topLine';
 import { GenerateCol, MaterialCol } from './leftColumn';
@@ -14,6 +14,7 @@ export const Layout = observer(({ children }: TLayoutProps) => {
       <UploadImages />
       <div className="app">
         <GenerateCol />
+        <MaterialCol />
         <div className="app__right-col">
           <TopLine />
           <div className="container app__right-col-down">{children}</div>
