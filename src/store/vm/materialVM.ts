@@ -57,7 +57,6 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   @action public setSelected = (id: number, tp: MaterialsTP) => {
     this.checkList(tp);
-    // console.log('CLS > ', tp, toJS(this.selectedList[tp]));
     const index = this.selectedList[tp].indexOf(id);
     if (index !== -1) {
       this.selectedList[tp].splice(index, 1);

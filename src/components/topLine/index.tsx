@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
 import { Link } from 'react-router-dom';
 import { STOREs, TStore } from 'store';
 import * as URLs from 'router/url';
 import { useStores } from '../../hooks/index';
-import { TabIcons } from './tabIcons';
+import { TopLineTabs } from 'store/vm';
 import { ControlIcons } from './controlIcons';
 import './styles.scss';
 import { TNavTabItem, NavTabs } from './NavTabs';
@@ -16,14 +15,17 @@ import { ReactComponent as D3DBtn } from 'assets/icons/3d_btn.svg';
 
 const iconList: TNavTabItem[] = [
   {
+    id: TopLineTabs.MATERIAL,
     title: 'Материалы',
     component: KollazhBtn,
   },
   {
+    id: TopLineTabs.KALEIDOSCOPE,
     title: 'Калейдоскоп',
     component: KalaydoscopeBtn,
   },
   {
+    id: TopLineTabs.INTERIOR,
     title: 'Трехмерное представление',
     component: D3DBtn,
   },

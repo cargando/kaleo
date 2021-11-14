@@ -1,5 +1,5 @@
 import { TResponseData } from '../types';
-import { action, makeAutoObservable, runInAction } from 'mobx';
+import { action, computed, makeAutoObservable, runInAction } from 'mobx';
 
 export interface TAppVM {
   navOpened: boolean;
@@ -7,19 +7,29 @@ export interface TAppVM {
   isMainPage: boolean;
 }
 
+export enum TopLineTabs {
+  MATERIAL,
+  KALEIDOSCOPE,
+  INTERIOR,
+}
+
 export class AppVM implements TAppVM {
   public navOpened = true;
 
   public isMainPage = true;
 
-  public topLineTab = 0;
+  public topLineTab: TopLineTabs = TopLineTabs.MATERIAL;
 
   constructor(initialState?: TResponseData) {
     makeAutoObservable(this);
   }
 
-  public get isLeftColOpened() {
+  @computed public get isLeftColOpened() {
     return this.navOpened;
+  }
+
+  @computed public get activeTab() {
+    return this.topLineTab;
   }
 
   @action toggleNav = () => {

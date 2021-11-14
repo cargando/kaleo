@@ -14,7 +14,6 @@ export const Layout = observer(({ children }: TLayoutProps) => {
       <UploadImages />
       <div className="app">
         <GenerateCol />
-        <MaterialCol />
         <div className="app__right-col">
           <TopLine />
           <div className="container app__right-col-down">{children}</div>

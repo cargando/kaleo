@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import throttle from 'lodash/throttle';
-import { ReactComponent as KollazhBtn } from 'assets/icons/kollazh_btn.svg';
-import { ReactComponent as KalaydoscopeBtn } from 'assets/icons/kaleydoscope_btn.svg';
-import { ReactComponent as D3DBtn } from 'assets/icons/3d_btn.svg';
+import { TopLineTabs } from 'store/vm';
 
 export interface TNavTabItem {
+  id: TopLineTabs;
   title: string;
   component: React.FunctionComponent<any>;
 }
@@ -110,7 +109,8 @@ export const NavTabs: React.FC<NavTabsProps> = observer(({ items, active, onChan
                 onClick={handleClickHref}
                 href={`#${item.title}`}
                 role="tab"
-                data-id={index}
+                data-id={item.id}
+                data-index={index}
                 data-toggle="tab"
                 aria-controls={item.title}
                 aria-expanded="true">

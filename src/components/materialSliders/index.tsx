@@ -14,7 +14,7 @@ export const MaterialSliders: React.FC<TSideBlockProps> = observer(({ children }
   const { Materials }: Pick<TStore, STOREs.Materials> = useStores();
   const renderSubTitles = (s: string | number) => <>{(+s).toFixed()}</>;
   return (
-    <SideBlock bubble={5} title="Задайте установки для генерации">
+    <SideBlock title="Задайте установки для генерации">
       <div className="flex flex__left" style={{ paddingRight: '15px' }}>
         <DropDown
           title="Количество элементов"

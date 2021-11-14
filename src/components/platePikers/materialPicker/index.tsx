@@ -16,7 +16,6 @@ export const MaterialPicker: React.FC<TMaterialPickerProps> = observer(({ title,
     const id = target.getAttribute('data-id');
     vm.setSelected(+id, MaterialsTP.ALL_MATERIALS);
   };
-
   return (
     <BasePlatePicker
       title={title}
@@ -26,6 +25,7 @@ export const MaterialPicker: React.FC<TMaterialPickerProps> = observer(({ title,
       onItemClick={handleClickItem}
       isMultiSelect={vm.Multi(MaterialsTP.ALL_MATERIALS)}
       sidePadding={sidePadding}
+      twoCols
       shiftTop
     />
   );
