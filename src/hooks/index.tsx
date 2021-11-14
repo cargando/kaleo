@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useEffect, useState, useRef } from 'react';
+import React, { useLayoutEffect, useEffect, useState, useRef, useCallback } from 'react';
 import { MobXProviderContext } from 'mobx-react';
 
 import { SCREEN } from 'utils/const';
@@ -91,3 +91,41 @@ export function useHtmlToggle(
     }
   }, [isOpened, nodeRef]);
 }
+
+export const useResizeObserver = (ref: React.RefObject<HTMLElement>, callback?: (entry: DOMRectReadOnly) => void) => {
+  const [width, setWidth] = useState<number>(500);
+  const [height, setHeight] = useState<number>(0);
+
+  const handleResize = useCallback(
+    (entries: ResizeObserverEntry[]) => {
+      if (!Array.isArray(entries)) {
+        return;
+      }
+
+      const entry = entries[0];
+      setWidth(entry.contentRect.width);
+      setHeight(entry.contentRect.height);
+
+      if (callback) {
+        callback(entry.contentRect);
+      }
+    },
+    [callback],
+  );
+
+  useLayoutEffect(() => {
+    if (!ref || !ref.current) {
+      return;
+    }
+    let RO = new ResizeObserver((entries: ResizeObserverEntry[]) => handleResize(entries));
+    RO.observe(ref.current);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      RO.disconnect();
+      RO = null;
+    };
+  }, [ref]);
+
+  return [width, height];
+};

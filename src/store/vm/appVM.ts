@@ -1,10 +1,12 @@
+import React from 'react';
 import { TResponseData } from '../types';
-import { action, computed, makeAutoObservable, runInAction } from 'mobx';
+import { action, computed, makeAutoObservable, observable, runInAction } from 'mobx';
 
 export interface TAppVM {
   navOpened: boolean;
   topLineTab: number;
   isMainPage: boolean;
+  mainCellWidth?: number; // HTMLElement;
 }
 
 export enum TopLineTabs {
@@ -20,16 +22,26 @@ export class AppVM implements TAppVM {
 
   public topLineTab: TopLineTabs = TopLineTabs.MATERIAL;
 
+  public mainCellWidth = null;
+
   constructor(initialState?: TResponseData) {
     makeAutoObservable(this);
   }
 
-  @computed public get isLeftColOpened() {
+  public get isLeftColOpened() {
     return this.navOpened;
   }
 
-  @computed public get activeTab() {
+  public get activeTab() {
     return this.topLineTab;
+  }
+
+  @computed public get mainCell() {
+    return this.mainCellWidth;
+  }
+
+  public set mainCell(width: number) {
+    this.mainCellWidth = width;
   }
 
   @action toggleNav = () => {

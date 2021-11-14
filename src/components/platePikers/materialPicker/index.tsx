@@ -14,16 +14,16 @@ export const MaterialPicker: React.FC<TMaterialPickerProps> = observer(({ title,
   const handleClickItem = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.currentTarget as HTMLTextAreaElement;
     const id = target.getAttribute('data-id');
-    vm.setSelected(+id, MaterialsTP.ALL_MATERIALS);
+    vm.setSelected(+id, MaterialsTP.MTRL_TYPE);
   };
   return (
     <BasePlatePicker
       title={title}
-      titleSelected={vm.selectedName(MaterialsTP.ALL_MATERIALS)}
-      data={vm.Data(MaterialsTP.ALL_MATERIALS)}
-      selectedItems={vm.Selected(MaterialsTP.ALL_MATERIALS)}
+      titleSelected={vm.selectedName(MaterialsTP.MTRL_TYPE)}
+      data={vm.Data(MaterialsTP.MTRL_TYPE)}
+      selectedItems={vm.Selected(MaterialsTP.MTRL_TYPE)}
       onItemClick={handleClickItem}
-      isMultiSelect={vm.Multi(MaterialsTP.ALL_MATERIALS)}
+      isMultiSelect={vm.Multi(MaterialsTP.MTRL_TYPE)}
       sidePadding={sidePadding}
       twoCols
       shiftTop

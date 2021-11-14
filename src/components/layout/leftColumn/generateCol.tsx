@@ -35,7 +35,7 @@ export const GenerateCol = observer(({ children }: TGenerateColProps) => {
       <SideBlock bubble={Materials.selectedCnt(MaterialsTP.COLOR)} title="Выберите цвета" sidePadding>
         <ColorPicker sidePadding vm={Materials} />
       </SideBlock>
-      <SideBlock bubble={Materials.selectedCnt(MaterialsTP.ALL_MATERIALS)} title="Выберите материалы" sidePadding>
+      <SideBlock bubble={Materials.selectedCnt(MaterialsTP.MTRL_TYPE)} title="Выберите материалы" sidePadding>
         <MaterialPicker sidePadding vm={Materials} />
       </SideBlock>
       <div className="app__container" style={{ marginTop: 'auto' }}>

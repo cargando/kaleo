@@ -34,7 +34,6 @@ const subscribeHelper = (
         }
       });
     }
-    // console.log('current', containerRef.current, containerRef.current.children); // .addEventListener(eventName, moveUnderline);
   });
 
   return false;
@@ -44,13 +43,11 @@ const repositionUnderline = (container: HTMLElement, underliner: HTMLElement, ac
   if (container && underliner && container?.children?.length) {
     [].slice.call(container.children).forEach((node) => {
       const a = node?.firstChild;
-      console.log('active', active, a);
       if (
         a?.tagName?.toUpperCase() === 'A' &&
         a?.getAttribute('role') === 'tab' &&
         +a?.getAttribute('data-id') === active
       ) {
-        console.log('active', active, node.offsetLeft);
         underliner.style.left = `${node.offsetLeft - 28}px`;
       }
     });
@@ -68,7 +65,7 @@ export const NavTabs: React.FC<NavTabsProps> = observer(({ items, active, onChan
     // e.preventDefault();
     // @ts-ignore
     // e.stopImmediatePropagation();
-    console.log('E = ', e);
+    // console.log('E = ', e);
   }, []);
 
   const handleClickHref = useCallback((e) => {

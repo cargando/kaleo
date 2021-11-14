@@ -25,7 +25,72 @@ import Img14 from '../assets/materials/shpon_14.png';
 import Img15 from '../assets/materials/shpon_15.png';
 import Img16 from '../assets/materials/shpon_16.png';
 import Img17 from '../assets/materials/shpon_17.png';
+
+import Gen1 from '../assets/materials/gen/r1.png';
+import Gen2 from '../assets/materials/gen/r2.png';
+import Gen3 from '../assets/materials/gen/r3.png';
+import Gen4 from '../assets/materials/gen/r4.png';
+import Gen5 from '../assets/materials/gen/r5.png';
+import Gen6 from '../assets/materials/gen/r6.png';
+import Gen7 from '../assets/materials/gen/r7.png';
+import Gen8 from '../assets/materials/gen/r8.png';
+import Gen9 from '../assets/materials/gen/r9.png';
+import Gen10 from '../assets/materials/gen/r10.png';
+
 import { TMaterial, TColor } from './types';
+
+export const GeneratedStub: TMaterial[] = [
+  {
+    id: 1,
+    src: Gen1,
+    title: 'Шпон',
+  },
+  {
+    id: 2,
+    src: Gen2,
+    title: 'Шпон',
+  },
+  {
+    id: 3,
+    src: Gen3,
+    title: 'Шпон',
+  },
+  {
+    id: 4,
+    src: Gen4,
+    title: 'Шпон',
+  },
+  {
+    id: 5,
+    src: Gen5,
+    title: 'Шпон',
+  },
+  {
+    id: 6,
+    src: Gen6,
+    title: 'Шпон',
+  },
+  {
+    id: 7,
+    src: Gen7,
+    title: 'Шпон',
+  },
+  {
+    id: 8,
+    src: Gen8,
+    title: 'Шпон',
+  },
+  {
+    id: 9,
+    src: Gen9,
+    title: 'Шпон',
+  },
+  {
+    id: 10,
+    src: Gen10,
+    title: 'Шпон',
+  },
+];
 
 export const MaterialStub: TMaterial[] = [
   {

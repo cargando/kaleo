@@ -1,11 +1,18 @@
 @import '../../../styles/vars';
 
 .footer-picker {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
   position: fixed;
-  bottom: 98px;
-  width: 100%;
+  bottom: 0;
   height: 100px;
   border: 1px solid salmon;
+  overflow-x: auto;
+  &__body {
+    width: 100%;
+  }
   &__extend {
   }
 }

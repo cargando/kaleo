@@ -1,6 +1,6 @@
 import { action, computed, makeAutoObservable, observable, toJS } from 'mobx';
 import { TDataList, TSelectedList, TMultiSelectedList, MaterialsTP, TMaterialVMProps } from '../types';
-import { ColorsStub, MaterialStub, VeneerStub } from '../stub';
+import { ColorsStub, GeneratedStub, MaterialStub, VeneerStub } from '../stub';
 
 export class MaterialsStoreVM implements TMaterialVMProps {
   public searchQuery = '';
@@ -16,7 +16,8 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
     this.isMultiSelectList[MaterialsTP.VENEER] = false;
     this.isMultiSelectList[MaterialsTP.COLOR] = true;
-    this.isMultiSelectList[MaterialsTP.ALL_MATERIALS] = true;
+    this.isMultiSelectList[MaterialsTP.MTRL_TYPE] = true;
+    this.isMultiSelectList[MaterialsTP.MTRL_GENERATED] = true;
   }
 
   @computed public Data = (tp: MaterialsTP) => {
@@ -79,7 +80,9 @@ export class MaterialsStoreVM implements TMaterialVMProps {
   };
 
   @action private fetchMaterials = () => {
-    this.dataList[MaterialsTP.ALL_MATERIALS] = observable.array(MaterialStub);
+    this.dataList[MaterialsTP.MTRL_TYPE] = observable.array(MaterialStub);
+
+    this.dataList[MaterialsTP.MTRL_GENERATED] = observable.array(GeneratedStub);
   };
 
   @action private fetchColors = () => {

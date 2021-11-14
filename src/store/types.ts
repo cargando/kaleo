@@ -9,7 +9,8 @@ export enum MaterialsTP {
   PLASTIC,
   METAL,
   PAPER,
-  ALL_MATERIALS,
+  MTRL_TYPE, // все виды материалов
+  MTRL_GENERATED, // сгенерированный набор материалов
 }
 
 export enum APIStatus {

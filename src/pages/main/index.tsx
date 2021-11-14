@@ -2,8 +2,9 @@ import React from 'react';
 import { STOREs, TStore } from 'store';
 import { useStores } from 'hooks';
 import { TopLineTabs } from 'store/vm';
-import { MaterialTab, KaleidoscopeTab } from './tabs';
+import { MaterialTab, KaleidoscopeTab, InteriorTab } from './tabs';
 import { TNavTabItem } from 'components/topLine/NavTabs';
+import { observer } from 'mobx-react';
 
 interface TTabsContent extends Omit<TNavTabItem, 'component'> {
   tab: React.ElementType;
@@ -22,18 +23,17 @@ const tabsContent: TTabsContent[] = [
   },
   {
     id: TopLineTabs.INTERIOR,
-    tab: null,
+    tab: InteriorTab,
     title: 'Интерьер',
   },
 ];
 
-function MainPage(props) {
+const MainPage = observer((props) => {
   const { App }: Pick<TStore, STOREs.App> = useStores();
   const currentTab = tabsContent.filter((item) => item.id === App.activeTab);
-
   const Component = currentTab[0]?.tab;
 
   return <Component />;
-}
+});
 
 export default MainPage;
