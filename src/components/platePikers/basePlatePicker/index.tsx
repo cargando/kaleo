@@ -12,6 +12,7 @@ export interface TBasePlatePickerProps {
   data: TMaterial[];
   selectedItems: number[];
   onItemClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  onRemoveControlClick?: (e: React.MouseEvent<any>) => void;
   sidePadding?: boolean;
   twoCols?: boolean;
   singleLine?: boolean;
@@ -25,6 +26,7 @@ export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
     data,
     selectedItems,
     onItemClick,
+    onRemoveControlClick,
     isMultiSelect = false,
     sidePadding = false,
     twoCols = false,
@@ -46,7 +48,7 @@ export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
         onClick: handleClickItem,
         className: `mat-picker__item ${isItemSelected ? `mat-picker__item-selected${smallItemsCls}` : ''} ${
           twoCols ? 'mat-picker__item-small' : ''
-        }`,
+        } ${singleLine ? 'mat-picker__item-remove-ctrl' : ''}`,
         style: {},
       };
       if (item?.src) {
@@ -71,7 +73,9 @@ export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
           </div>
         </div>
       ) : (
-        <div {...props} />
+        <div {...props}>
+          {singleLine ? <RemoveItemControl className="mat-picker__remove-ctrl" onClick={onRemoveControlClick} /> : null}
+        </div>
       );
     };
 
@@ -93,7 +97,12 @@ export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
             </div>
           </div>
         )}
-        <div className={`mat-picker__body ${shiftTop ? 'mat-picker__body-shift-top' : ''}`}>{plates}</div>
+        <div
+          className={`mat-picker__body ${shiftTop ? 'mat-picker__body-shift-top' : ''} ${
+            singleLine ? 'mat-picker__body-nomargin' : ''
+          }`}>
+          {plates}
+        </div>
       </div>
     );
   },

@@ -1,4 +1,4 @@
-@import '../../../styles/vars';
+@import 'styles/vars';
 
 .footer-picker {
   display: flex;
@@ -6,12 +6,13 @@
   justify-content: center;
   box-sizing: border-box;
   position: fixed;
-  bottom: 0;
-  height: 100px;
-  border: 1px solid salmon;
+  bottom: 23px;
   overflow-x: auto;
   &__body {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   &__extend {
   }

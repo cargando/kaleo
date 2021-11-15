@@ -209,3 +209,41 @@ export function relativeToAbsolute(valRelative: number, minAbsolute = 0, maxAbso
 
   return valRelative * oneP;
 }
+
+export function getCursorPosition(node: HTMLElement, e: MouseEvent) {
+  const rect = node.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  return [x, y, rect.left, rect.top];
+}
+
+export function calcPositionFromValue(node: HTMLElement, value: number) {
+  const rectBorder = node.getBoundingClientRect();
+  const totalLen = rectBorder.width;
+  const onePercent = totalLen / 100;
+  const res = onePercent * value;
+  // eslint-disable-next-line no-nested-ternary
+  return res < 0 ? 0 : res > totalLen ? totalLen : res;
+}
+
+export function calcValueFromPosition(nodeWidth: number | string, position: number) {
+  const totalLen = typeof nodeWidth === 'string' ? parseInt(nodeWidth, 10) : nodeWidth;
+  const onePercent = totalLen / 100;
+
+  return (position / onePercent).toFixed(2);
+}
+
+export function checkMinMax(val: number, min: number, max: number): number {
+  if (val < min) {
+    return 0;
+  } else if (val > max) {
+    return max;
+  }
+  return val;
+}
+
+export function convertToUserRange(min: number, max: number, value: number) {
+  const total = max - min;
+  const oneP = +(total / 100).toFixed(2);
+  return +(value * oneP + min).toFixed(2);
+}

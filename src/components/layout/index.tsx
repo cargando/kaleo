@@ -28,7 +28,7 @@ export const Layout = observer(({ children }: TLayoutProps) => {
         <GenerateCol />
         <div className="app__right-col">
           <TopLine />
-          <div ref={mainCellRef} className="container app__main-cell" data-id="main-cell-element">
+          <div ref={mainCellRef} className="container app__main-cell">
             {children}
           </div>
         </div>

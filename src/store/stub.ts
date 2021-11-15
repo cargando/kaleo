@@ -37,58 +37,101 @@ import Gen8 from '../assets/materials/gen/r8.png';
 import Gen9 from '../assets/materials/gen/r9.png';
 import Gen10 from '../assets/materials/gen/r10.png';
 
-import { TMaterial, TColor } from './types';
+import Len1 from '../assets/materials/gen/l1.png';
+import Len2 from '../assets/materials/gen/l2.png';
+import Len3 from '../assets/materials/gen/l3.png';
+import Len4 from '../assets/materials/gen/l4.png';
+import Len5 from '../assets/materials/gen/l5.png';
+import Len6 from '../assets/materials/gen/l6.png';
+import Len7 from '../assets/materials/gen/l7.png';
+import Len8 from '../assets/materials/gen/l8.png';
+import Len9 from '../assets/materials/gen/l9.png';
+import Len10 from '../assets/materials/gen/l10.png';
 
-export const GeneratedStub: TMaterial[] = [
+import { TMaterial, TColor, TSelectedMaterial } from './types';
+
+export const GeneratedStub: TSelectedMaterial[] = [
   {
     id: 1,
     src: Gen1,
+    srcLarge: Len1,
     title: 'Шпон',
+    width: 176,
+    height: 345,
+    top: 200,
+    left: 300,
   },
   {
     id: 2,
     src: Gen2,
+    srcLarge: Len2,
     title: 'Шпон',
+    width: 238,
+    height: 234,
   },
   {
     id: 3,
     src: Gen3,
+    srcLarge: Len3,
     title: 'Шпон',
+    width: 400,
+    height: 306,
   },
   {
     id: 4,
     src: Gen4,
+    srcLarge: Len4,
     title: 'Шпон',
+    width: 405,
+    height: 163,
   },
   {
     id: 5,
     src: Gen5,
+    srcLarge: Len5,
     title: 'Шпон',
+    width: 148,
+    height: 146,
   },
   {
     id: 6,
     src: Gen6,
+    srcLarge: Len6,
     title: 'Шпон',
+    width: 629,
+    height: 146,
   },
   {
     id: 7,
     src: Gen7,
+    srcLarge: Len7,
     title: 'Шпон',
+    width: 110,
+    height: 339,
   },
   {
     id: 8,
     src: Gen8,
+    srcLarge: Len8,
     title: 'Шпон',
+    width: 11,
+    height: 413,
   },
   {
     id: 9,
     src: Gen9,
+    srcLarge: Len9,
     title: 'Шпон',
+    width: 19,
+    height: 672,
   },
   {
     id: 10,
     src: Gen10,
+    srcLarge: Len10,
     title: 'Шпон',
+    width: 102,
+    height: 209,
   },
 ];
 

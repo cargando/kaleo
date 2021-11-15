@@ -33,7 +33,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     return this.isMultiSelectList[tp] || false;
   };
 
-  @computed public selectedName(tp: MaterialsTP) {
+  @computed public selectedName = (tp: MaterialsTP) => {
     if (!this?.dataList?.[tp]) {
       return null;
     }
@@ -46,10 +46,24 @@ export class MaterialsStoreVM implements TMaterialVMProps {
       }
     }
     return res;
-  }
+  };
 
   @computed public selectedCnt = (tp: MaterialsTP): number => {
     return this?.selectedList?.[tp]?.length;
+  };
+
+  @action public setMtrlPlateCoords = (left: number, top: number, id: number) => {
+    const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
+
+    for (let i = 0; i < len; i++) {
+      if (this.dataList[MaterialsTP.MTRL_GENERATED][i].id === id) {
+        const newVal = this.dataList[MaterialsTP.MTRL_GENERATED][i];
+        newVal.top = top;
+        newVal.left = left;
+        this.dataList[MaterialsTP.MTRL_GENERATED][i] = { ...newVal };
+        break;
+      }
+    }
   };
 
   @action public setSearch = (query: string) => {

@@ -4,9 +4,7 @@ $anim-timing: 200ms ease;
 
 .top-line {
   margin-top: 17px;
-  margin-left: 173px;
   display: flex;
-  transition: margin-left $anim-timing;
   &_opened {
     margin-left: 50px;
     color: red;

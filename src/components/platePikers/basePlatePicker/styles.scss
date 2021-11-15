@@ -46,6 +46,10 @@
     &-shift-top {
       margin-top: 0;
     }
+    &-nomargin {
+      margin: 0;
+      width: 100%;
+    }
   }
   &__item {
     box-sizing: content-box;
@@ -110,5 +114,17 @@
       display: inline-block;
       width: 50%;
     }
+    &-remove-ctrl {
+      text-align: center;
+    }
   }
+  &__remove-ctrl {
+    opacity: 0;
+    margin-top: 16px;
+    cursor: pointer;
+  }
+}
+
+.mat-picker__item:hover > svg {
+  opacity: 1;
 }

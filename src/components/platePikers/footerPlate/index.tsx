@@ -40,7 +40,7 @@ export const FooterControlPicker: React.FC<TFooterControlPickerProps> = observer
             selectedItems={vm.Selected(MaterialsTP.MTRL_GENERATED)}
             onItemClick={handleClickItem}
             isMultiSelect={vm.Multi(MaterialsTP.MTRL_GENERATED)}
-            sidePadding={sidePadding}
+            singleLine
             shiftTop
           />
         </div>

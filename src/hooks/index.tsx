@@ -129,3 +129,21 @@ export const useResizeObserver = (ref: React.RefObject<HTMLElement>, callback?: 
 
   return [width, height];
 };
+
+export const useDNDSubscribe = (
+  cleanupArr: any[],
+  handleMouseDown: (e: any) => void,
+  handleMouseUp: (e: any) => void,
+  handleMouseMove: (e: any) => void,
+) => {
+  useEffect(() => {
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [...cleanupArr]);
+};

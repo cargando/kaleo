@@ -56,14 +56,19 @@ export const TopLine = observer(() => {
   }, []);
 
   return (
-    <div>
-      <div ref={topLineRef} className="top-line">
+    <>
+      <div className="top-line">
         <Link to={URLs.HOME} className="logo">
           <span className="logo__name">nterio</span>
           <span className="logo__dot" />
         </Link>
         <div className="col-4 no-pad" style={{ flexGrow: 0, display: 'flex' }}>
-          <div className="top-line__nav-btn" onClick={handleNavClick} role="button">
+          <div
+            ref={topLineRef}
+            className="top-line__nav-btn"
+            onClick={handleNavClick}
+            role="button"
+            style={App.isLeftColOpened ? null : { marginLeft: '170px' }}>
             <div
               ref={btnRef}
               className={`top-line__nav-btn-inner ${App.isLeftColOpened ? 'top-line__nav-btn-inner_active' : ''}`}
@@ -79,7 +84,7 @@ export const TopLine = observer(() => {
           <ControlIcons />
         </div>
       </div>
-    </div>
+    </>
   );
 });
 
