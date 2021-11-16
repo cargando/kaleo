@@ -8,8 +8,9 @@ import {
   checkMinMax,
   convertToUserRange,
 } from 'utils/fn';
+import { TContainerCoords } from 'utils/types';
+import { useDNDSubscribe } from 'hooks';
 import './styles.scss';
-import { useDNDSubscribe } from '../../hooks';
 
 interface ISliderProps {
   width?: string;
@@ -43,8 +44,8 @@ export const Slider: React.FC<ISliderProps> = ({
       if (e.currentTarget !== e.target) {
         return;
       }
-      const [x] = getCursorPosition(e.currentTarget, e as any);
-      const newVal = calcValueFromPosition(e.currentTarget.offsetWidth, x);
+      const coords = getCursorPosition(e.currentTarget, e as any);
+      const newVal = calcValueFromPosition(e.currentTarget.offsetWidth, coords.mouseInnerLeft);
       dispatch({ type: Actions.value, payload: { value: parseInt(newVal, 10) } });
     },
     [dispatch],
@@ -53,8 +54,8 @@ export const Slider: React.FC<ISliderProps> = ({
   const handleMouseDown = useCallback(
     (e?: MouseEvent /* React.MouseEvent<HTMLElement, MouseEvent> */) => {
       if (e.target && e.target === controlRef.current) {
-        const [x] = getCursorPosition(coverRef.current, e);
-        dispatch({ type: Actions.mouseDown, payload: { mouseDown: x, clientX: e.clientX } });
+        const coords = getCursorPosition(coverRef.current, e);
+        dispatch({ type: Actions.mouseDown, payload: { mouseDown: coords.mouseInnerLeft, clientX: e.clientX } });
       }
     },
     [state.mouseDown],

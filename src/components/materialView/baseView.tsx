@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { TSelectedMaterial } from 'store/types';
 import {
   getCursorPosition,
@@ -8,32 +8,18 @@ import {
   checkMinMax,
   convertToUserRange,
 } from 'utils/fn';
+import { TContainerCoords } from 'utils/types';
 
 import './styles.scss';
-import { useDNDSubscribe } from 'hooks';
-import { toJS } from 'mobx';
-
-enum Actions {
-  SCALE,
-  ROTATE,
-  MOVE,
-}
+import { useDND } from 'hooks';
+import { Actions } from 'hooks/types';
 
 interface TBaseMaterialViewerProps {
   item: TSelectedMaterial;
-  onChangeCoords: (x: number, y: number, id: number) => void;
+  onChangeCoords: (x?: number, y?: number, id?: number) => void;
   onChangeScale: (w: number, h: number, id: number) => void;
   onChangeRotation: (deg: number, id: number) => void;
 }
-interface TMouseCoords {
-  mouseDownX: number;
-  mouseDownY: number;
-  mouseInnerX: number;
-  mouseInnerY: number;
-  rectDownX: number;
-  rectDownY: number;
-}
-const initialMouseCoords = null;
 
 export const BaseMaterialViewer = ({
   item = {} as TSelectedMaterial,
@@ -42,8 +28,6 @@ export const BaseMaterialViewer = ({
   onChangeRotation,
 }: TBaseMaterialViewerProps) => {
   const { id, src, srcLarge, bgScale, height, width, zIndex = 1, top, left, rotate } = item;
-  const [mouseDownAction, setMouseDownAction] = useState<Actions>(null);
-  const [mouseCoords, setMouseCoords] = useState<TMouseCoords>(initialMouseCoords); // координаты MouseDown
   const frameRef = useRef(null);
   const innerRef = useRef(null);
 
@@ -54,59 +38,21 @@ export const BaseMaterialViewer = ({
     zIndex,
     backgroundImage: `url(${item.srcLarge}`,
   };
-  console.log('ITEM', toJS(item));
-  const handleMouseDown = useCallback(
-    (e: MouseEvent) => {
-      if (e.target && frameRef.current && innerRef.current) {
-        const [mouseInnerX, mouseInnerY, rectDownX, rectDownY] = getCursorPosition(frameRef.current, e);
-        const coords = {
-          mouseDownX: e.clientX,
-          mouseDownY: e.clientY,
-          mouseInnerX,
-          mouseInnerY,
-          rectDownX,
-          rectDownY,
-        };
-        console.log('Down', coords, top, left);
-        setMouseCoords(coords);
+  // console.log('ITEM', toJS(item));
 
-        if (e.target === innerRef.current) {
-          setMouseDownAction(Actions.MOVE);
-        } else if ((e.target as HTMLTextAreaElement).classList.contains('mtrl__drag-corner')) {
-          setMouseDownAction(Actions.SCALE);
-        } else if ((e.target as HTMLTextAreaElement).classList.contains('mtrl__drag-cntrl')) {
-          setMouseDownAction(Actions.ROTATE);
-        }
-      }
+  useDND({
+    onMouseUp: (...rest) => {
+      onChangeCoords(...rest);
     },
-    [mouseDownAction, mouseCoords],
-  );
+    draggable: frameRef,
+    clickable: innerRef,
+    // parent,
+    id,
+  });
 
-  const handleMouseUp = useCallback(() => {
-    setMouseDownAction(null);
-    setMouseCoords(initialMouseCoords);
-    const crd = frameRef.current.getBoundingClientRect();
-    onChangeCoords(crd.left, crd.top, id);
-  }, [mouseDownAction, mouseCoords]);
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (mouseDownAction !== null) {
-        const { clientX, clientY } = e;
-        const { mouseDownX, mouseDownY, mouseInnerX, mouseInnerY, rectDownX, rectDownY } = mouseCoords;
-        const offsetX = clientX - mouseDownX;
-        const offsetY = clientY - mouseDownY;
-        const newLeft = left + offsetX;
-        const newTop = top + offsetY;
-        frameRef.current.style.left = `${newLeft}px`;
-        frameRef.current.style.top = `${newTop}px`;
-        // onChangeCoords(newLeft, newTop, id);
-      }
-    },
-    [mouseDownAction, mouseCoords],
-  );
-
-  useDNDSubscribe([mouseDownAction, mouseCoords], handleMouseDown, handleMouseUp, handleMouseMove);
+  useLayoutEffect(() => {
+    console.log('LAYOUT x,y', frameRef?.current?.offsetLeft, frameRef?.current?.offsetTop);
+  }, [mouseDownAction]);
 
   const renderCorners = (tp: Actions) => {
     const corners: Record<string, number>[] = [

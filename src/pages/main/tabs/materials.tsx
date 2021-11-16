@@ -14,7 +14,7 @@ export interface TMaterialTabProps {
 export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => {
   const { App, Materials }: Partial<TStore> = useStores();
 
-  const handleChangeCoords = (x: number, y: number, id: number) => {
+  const handleChangeCoords = (x?: number, y?: number, id?: number) => {
     // throttle(callbakc, 300)
     Materials.setMtrlPlateCoords(x, y, id);
     return null;

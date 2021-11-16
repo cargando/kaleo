@@ -1,8 +1,10 @@
 import React, { useLayoutEffect, useEffect, useState, useRef, useCallback } from 'react';
 import { MobXProviderContext } from 'mobx-react';
-
-import { SCREEN } from 'utils/const';
 import get from 'lodash/get';
+import { SCREEN } from 'utils/const';
+import { TContainerCoords } from 'utils/types';
+import { Actions, TuseDNDProps } from './types';
+import { getCursorPosition } from '../utils/fn';
 
 export interface IWindowSize {
   width: number;
@@ -136,7 +138,7 @@ export const useDNDSubscribe = (
   handleMouseUp: (e: any) => void,
   handleMouseMove: (e: any) => void,
 ) => {
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('mousemove', handleMouseMove);
@@ -146,4 +148,71 @@ export const useDNDSubscribe = (
       document.removeEventListener('mousemove', handleMouseMove);
     };
   }, [...cleanupArr]);
+};
+
+export const useDND = ({
+  onMouseDown,
+  onMouseUp,
+  onMouseMove,
+  draggable: frameRef,
+  clickable = null,
+  parent,
+  cleanupArr,
+  id = null,
+}: TuseDNDProps) => {
+  const [mouseDownAction, setMouseDownAction] = useState<Actions>(null);
+  const [mouseCoords, setMouseCoords] = useState<TContainerCoords>(null);
+
+  const handleMouseDown = useCallback(
+    (e: MouseEvent) => {
+      const innerRef = clickable || frameRef;
+
+      if (e.target && e.button === 0 && frameRef.current && innerRef.current === e.target) {
+        const coords = getCursorPosition(frameRef.current, e);
+        console.log('DOWN', coords);
+        setMouseCoords(coords);
+
+        if (e.target === innerRef.current) {
+          setMouseDownAction(Actions.MOVE);
+        } else if ((e.target as HTMLTextAreaElement).classList.contains('mtrl__drag-corner')) {
+          setMouseDownAction(Actions.SCALE);
+        } else if ((e.target as HTMLTextAreaElement).classList.contains('mtrl__drag-cntrl')) {
+          setMouseDownAction(Actions.ROTATE);
+        }
+      }
+    },
+    [mouseDownAction, mouseCoords],
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setMouseDownAction(null);
+    setMouseCoords(null);
+    const { offsetLeft, offsetTop } = frameRef.current;
+    // console.log('UP > ', offsetLeft, offsetTop);
+    if (typeof onMouseUp === 'function') {
+      // onChangeCoords(offsetLeft, offsetTop - 53, id);
+      onMouseUp(offsetLeft, offsetTop - 53, id);
+    }
+  }, [mouseDownAction, mouseCoords]);
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (mouseDownAction !== null) {
+        const { clientX, clientY } = e;
+        const { mouseLeft, mouseTop } = mouseCoords;
+
+        const offsetX = clientX - mouseLeft;
+        const offsetY = clientY - mouseTop;
+        const newLeft = left + offsetX;
+        const newTop = top + offsetY;
+
+        console.log('MOVE', offsetX, offsetY);
+        frameRef.current.style.left = `${newLeft}px`;
+        frameRef.current.style.top = `${newTop}px`;
+      }
+    },
+    [mouseDownAction, mouseCoords],
+  );
+
+  useDNDSubscribe(cleanupArr, onMouseDown, onMouseUp, onMouseMove);
 };

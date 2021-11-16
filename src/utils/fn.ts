@@ -1,37 +1,21 @@
 import dayjs from 'dayjs';
 import config, { echo, fireError } from './config';
 import { mkAxios } from './api';
+import { TContainerCoords, TMakeRequestParams, TMakeRequestResponse, TdefaultMoneyParams } from './types';
 
 export const APP_CONF = { ...config };
 
 export { echo, fireError };
 
-export interface TMakeRequestParams {
-  method?: string;
-  url: string;
-  requestData?: any;
-  callback?: (p) => any | null;
-  okStatus?: number;
-  getImage?: boolean;
-}
-
-export interface TMakeRequestResponse {
-  status: number;
-  connectError: boolean;
-  error: boolean;
-  data: any;
-  requestDt: dayjs.Dayjs;
-}
-
-interface TdefaultMoneyParams {
-  intDelimiter?: string;
-  floatDelimiter?: string;
-  noFloat?: boolean;
-  currency?: string;
-  noCurrency?: boolean;
-}
-
 export const ALL_IMAGES = {};
+// default Money Params
+const MONEY_PARAMS: TdefaultMoneyParams = {
+  intDelimiter: ' ',
+  floatDelimiter: '.',
+  noFloat: true,
+  currency: 'руб.',
+  noCurrency: false,
+};
 
 const importAllImages = (requireContext) =>
   requireContext.keys().forEach((key) => {
@@ -125,17 +109,9 @@ export function hexToRgbA(hex, opacity) {
   return '';
 }
 
-const defaultMoneyParams: TdefaultMoneyParams = {
-  intDelimiter: ' ',
-  floatDelimiter: '.',
-  noFloat: true,
-  currency: 'руб.',
-  noCurrency: false,
-};
-
 export function printMoney(amount, params: TdefaultMoneyParams = {}) {
   const localParams: TdefaultMoneyParams = {
-    ...defaultMoneyParams,
+    ...MONEY_PARAMS,
     ...params,
   };
 
@@ -167,42 +143,6 @@ export function printMoney(amount, params: TdefaultMoneyParams = {}) {
   return `${numberSign}${n}${d.length < 1 ? '' : `${floatMoney}`}${currency}`;
 }
 
-// ////////// merge state List
-export const mergeStateList = (oldData, newData, noId = false, print = false) => {
-  const merge = { ...oldData, ...newData };
-  if (!newData?.data) {
-    return merge;
-  }
-  const data = [...(oldData?.data || []), ...(newData?.data || [])];
-
-  if (noId) {
-    merge.data = data;
-    merge.data.forEach((item, index) => {
-      if (!item.id && item.url) {
-        const code = item.url.toString().match(/^\/?(\d+)-/);
-        merge.data[index].id = parseInt(code[1], 10);
-      }
-    });
-    return merge;
-  }
-  const result: Array<any> = [];
-  const map = new Map();
-  // eslint-disable-next-line no-restricted-syntax
-  for (const item of data) {
-    if (!map.has(item.id)) {
-      map.set(item.id, true); // set any value to Map
-      result.push(item);
-    }
-  }
-  merge.data = result;
-
-  if (print) {
-    console.info('>> mergeStateArticles', JSON.parse(JSON.stringify(oldData)), JSON.parse(JSON.stringify(newData)));
-    console.info('>> merged', JSON.parse(JSON.stringify(merge)));
-  }
-  return merge;
-};
-
 export function relativeToAbsolute(valRelative: number, minAbsolute = 0, maxAbsolute = 100): number {
   const len = maxAbsolute - minAbsolute;
   const oneP = len / 100;
@@ -210,11 +150,21 @@ export function relativeToAbsolute(valRelative: number, minAbsolute = 0, maxAbso
   return valRelative * oneP;
 }
 
-export function getCursorPosition(node: HTMLElement, e: MouseEvent) {
+export function getCursorPosition(node: HTMLElement, e: MouseEvent): TContainerCoords {
   const rect = node.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
-  return [x, y, rect.left, rect.top];
+  // [x, y, rect.left, rect.top]; offsetLeft offsetTop
+  return {
+    mouseInnerTop: y, // мышь внутри контейнера node
+    mouseInnerLeft: x,
+    elementScreenTop: rect.left, // координаты node относительно страницы
+    elementScreenLeft: rect.left,
+    elementParentTop: node.offsetTop, // координаты node относительно родителя
+    elementParentLeft: node.offsetLeft,
+    mouseTop: e.clientY,
+    mouseLeft: e.clientX,
+  };
 }
 
 export function calcPositionFromValue(node: HTMLElement, value: number) {

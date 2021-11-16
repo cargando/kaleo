@@ -1,5 +1,12 @@
 import { action, computed, makeAutoObservable, observable, toJS } from 'mobx';
-import { TDataList, TSelectedList, TMultiSelectedList, MaterialsTP, TMaterialVMProps } from '../types';
+import {
+  TDataList,
+  TSelectedList,
+  TMultiSelectedList,
+  MaterialsTP,
+  TMaterialVMProps,
+  TSelectedMaterial,
+} from '../types';
 import { ColorsStub, GeneratedStub, MaterialStub, VeneerStub } from '../stub';
 
 export class MaterialsStoreVM implements TMaterialVMProps {
@@ -107,6 +114,14 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     if (typeof this.selectedList[tp] === 'undefined') {
       this.selectedList[tp] = observable.array([]);
     }
+  };
+
+  private normalizeData = (tp: MaterialsTP) => {
+    const res: Record<string, TSelectedMaterial> = {};
+    this.dataList[tp].forEach((item) => {
+      res[`${item.id}`] = item;
+    });
+    return res;
   };
 }
 
