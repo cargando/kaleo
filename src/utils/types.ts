@@ -3,10 +3,14 @@ import dayjs from 'dayjs';
 export interface TContainerCoords {
   mouseInnerTop: number;
   mouseInnerLeft: number;
-  elementScreenTop: number;
-  elementScreenLeft: number;
+  elementTop: number;
+  elementLeft: number;
+  elementRight: number;
+  elementBottom: number;
   elementParentTop: number;
   elementParentLeft: number;
+  elementWidth: number;
+  elementHeight: number;
   mouseTop: number;
   mouseLeft: number;
 }
@@ -34,4 +38,17 @@ export interface TdefaultMoneyParams {
   noFloat?: boolean;
   currency?: string;
   noCurrency?: boolean;
+}
+
+export interface TElementCoords {
+  top?: number;
+  left?: number;
+  bottom?: number;
+  right?: number;
+  width?: number;
+  height?: number;
+}
+export interface TDndFenceFrameCheck {
+  element: TElementCoords;
+  parent: TElementCoords;
 }

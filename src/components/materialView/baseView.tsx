@@ -1,35 +1,29 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSimpleDND } from 'hooks';
+import { DNDActions } from 'hooks/types';
 import { TSelectedMaterial } from 'store/types';
-import {
-  getCursorPosition,
-  relativeToAbsolute,
-  calcPositionFromValue,
-  calcValueFromPosition,
-  checkMinMax,
-  convertToUserRange,
-} from 'utils/fn';
-import { TContainerCoords } from 'utils/types';
-
 import './styles.scss';
-import { useDND } from 'hooks';
-import { Actions } from 'hooks/types';
+import { ResizeCorner } from './resizeCorner';
+import { ScaleCorner } from './scaleCorner';
 
 interface TBaseMaterialViewerProps {
   item: TSelectedMaterial;
+  isActive: boolean;
   onChangeCoords: (x?: number, y?: number, id?: number) => void;
   onChangeScale: (w: number, h: number, id: number) => void;
   onChangeRotation: (deg: number, id: number) => void;
+  onClick: (id: number) => void;
 }
 
 export const BaseMaterialViewer = ({
   item = {} as TSelectedMaterial,
+  isActive,
   onChangeCoords,
   onChangeScale,
   onChangeRotation,
+  onClick,
 }: TBaseMaterialViewerProps) => {
-  const { id, src, srcLarge, bgScale, height, width, zIndex = 1, top, left, rotate } = item;
-  const frameRef = useRef(null);
-  const innerRef = useRef(null);
+  const { id, srcLarge, bgScale, height, width, zIndex = 1, top = 15, left = 25, rotate } = item;
 
   const stylesFrame: Record<string, any> = { top: `${top}px`, left: `${left}px` };
   const stylesCover: Record<string, any> = {
@@ -37,48 +31,56 @@ export const BaseMaterialViewer = ({
     width,
     zIndex,
     backgroundImage: `url(${item.srcLarge}`,
+    backgroundSize: bgScale ? `${bgScale}%` : 'auto',
   };
-  // console.log('ITEM', toJS(item));
 
-  useDND({
-    onMouseUp: (...rest) => {
-      onChangeCoords(...rest);
-    },
-    draggable: frameRef,
-    clickable: innerRef,
-    // parent,
+  const handleChangeActive = useCallback(() => {
+    onClick(id);
+  }, [isActive, id]);
+
+  const handleResize = (dX: number, dY: number, type: string) => {
+    console.log('Resize >> ', dX, dY, type);
+  };
+
+  const { elementRef, handleMouseDown, handleMouseMove, handleMouseUp, handleMouseClick } = useSimpleDND({
+    onMouseUp: onChangeCoords,
+    onClick: handleChangeActive,
     id,
   });
 
-  useLayoutEffect(() => {
-    console.log('LAYOUT x,y', frameRef?.current?.offsetLeft, frameRef?.current?.offsetTop);
-  }, [mouseDownAction]);
-
-  const renderCorners = (tp: Actions) => {
+  const renderCorners = (tp: DNDActions) => {
     const corners: Record<string, number>[] = [
       { top: 0, left: 0 },
       { top: 0, right: 0 },
       { bottom: 0, left: 0 },
       { bottom: 0, right: 0 },
     ];
-    return corners.map((localItem, index) => (
-      <div
-        key={index}
-        className={`${tp === Actions.SCALE ? 'mtrl__drag-corner' : 'mtrl__rotator-cntrl'}`}
-        style={localItem}
-      />
-    ));
+    return corners.map((localItem, index) => {
+      const positionTxt = Object.keys(localItem)
+        .map((keyName: string) => keyName.toUpperCase())
+        .join('_');
+      const Component = tp === DNDActions.SCALE ? ResizeCorner : ScaleCorner;
+      return <Component key={index} action={tp} styles={localItem} position={positionTxt} onChange={handleResize} />;
+    });
   };
 
   return (
-    <div ref={frameRef} className="mtrl__frame" style={stylesFrame} data-id={id}>
-      <div className="mtrl__cover" style={stylesCover}>
+    <div ref={elementRef} className="mtrl__frame" style={{ ...stylesFrame }} data-id={id}>
+      <div className={`mtrl__cover ${isActive ? 'mtrl__cover_active' : ''}`} style={stylesCover}>
         <div className="mtrl__rotator" style={null}>
-          {renderCorners(Actions.ROTATE)}
-          <div ref={innerRef} className="mtrl__rotator-inner" />
+          {isActive && renderCorners(DNDActions.ROTATE)}
+          {/* eslint-disable-next-line jsx-a11y/mouse-events-have-key-events */}
+          <div
+            onMouseDown={isActive ? handleMouseDown : null}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseOut={handleMouseUp}
+            onClick={handleMouseClick}
+            className="mtrl__rotator-inner"
+          />
         </div>
       </div>
-      {renderCorners(Actions.SCALE)}
+      {isActive && renderCorners(DNDActions.SCALE)}
     </div>
   );
 };

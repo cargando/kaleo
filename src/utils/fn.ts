@@ -1,7 +1,14 @@
 import dayjs from 'dayjs';
 import config, { echo, fireError } from './config';
 import { mkAxios } from './api';
-import { TContainerCoords, TMakeRequestParams, TMakeRequestResponse, TdefaultMoneyParams } from './types';
+import {
+  TContainerCoords,
+  TMakeRequestParams,
+  TMakeRequestResponse,
+  TdefaultMoneyParams,
+  TElementCoords,
+  TDndFenceFrameCheck,
+} from './types';
 
 export const APP_CONF = { ...config };
 
@@ -152,18 +159,19 @@ export function relativeToAbsolute(valRelative: number, minAbsolute = 0, maxAbso
 
 export function getCursorPosition(node: HTMLElement, e: MouseEvent): TContainerCoords {
   const rect = node.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  // [x, y, rect.left, rect.top]; offsetLeft offsetTop
   return {
-    mouseInnerTop: y, // мышь внутри контейнера node
-    mouseInnerLeft: x,
-    elementScreenTop: rect.left, // координаты node относительно страницы
-    elementScreenLeft: rect.left,
-    elementParentTop: node.offsetTop, // координаты node относительно родителя
-    elementParentLeft: node.offsetLeft,
     mouseTop: e.clientY,
     mouseLeft: e.clientX,
+    mouseInnerTop: e.clientY - rect.top, // мышь внутри контейнера node
+    mouseInnerLeft: e.clientX - rect.left,
+    elementTop: rect.top, // координаты node относительно страницы
+    elementLeft: rect.left,
+    elementRight: rect.right,
+    elementBottom: rect.bottom,
+    elementWidth: node.offsetWidth, // высота/ширина
+    elementHeight: node.offsetHeight,
+    elementParentTop: node.offsetTop, // координаты node относительно родителя
+    elementParentLeft: node.offsetLeft,
   };
 }
 
@@ -197,3 +205,18 @@ export function convertToUserRange(min: number, max: number, value: number) {
   const oneP = +(total / 100).toFixed(2);
   return +(value * oneP + min).toFixed(2);
 }
+
+export function checkDragOffParent(draggableCoords: TElementCoords, parentCoords: TElementCoords): boolean {
+  return (
+    draggableCoords.left <= parentCoords.left ||
+    draggableCoords.top <= parentCoords.top ||
+    draggableCoords.left + draggableCoords.width >= parentCoords.top + parentCoords.width ||
+    draggableCoords.top + draggableCoords.height >= parentCoords.top + parentCoords.height
+  );
+}
+
+export const dndFenceFrameCheck = ({ element, parent }: TDndFenceFrameCheck) => {
+  const { top, left, height, width } = element;
+  const { top: pT, left: pL, height: pH, width: pW } = parent;
+  return top >= 1 && left >= 1 && top + height <= pT + pH && left + width <= pL + pW;
+};

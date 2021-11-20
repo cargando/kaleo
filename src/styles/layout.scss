@@ -46,9 +46,11 @@ $left-col-anim-timing: 200ms ease;
     box-shadow: 0px 4px 40px rgba(0, 0, 0, 0.06);
     border-left: 1px solid #f0f0f0;
   }
+  &__splitter {
+    height: 47px;
+  }
   &__main-cell {
     width: 100%;
-    margin-top: 47px;
     flex: 1;
   }
 }

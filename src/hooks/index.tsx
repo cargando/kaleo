@@ -2,14 +2,9 @@ import React, { useLayoutEffect, useEffect, useState, useRef, useCallback } from
 import { MobXProviderContext } from 'mobx-react';
 import get from 'lodash/get';
 import { SCREEN } from 'utils/const';
-import { TContainerCoords } from 'utils/types';
-import { Actions, TuseDNDProps } from './types';
-import { getCursorPosition } from '../utils/fn';
-
-export interface IWindowSize {
-  width: number;
-  height: number;
-}
+import { dndFenceFrameCheck, getCursorPosition } from 'utils/fn';
+import { TContainerCoords, TElementCoords } from 'utils/types';
+import { DNDActions, TuseDNDProps, IWindowSize, TUseSimpleDND, TUseSimpleDNDProps } from './types';
 
 export function useResize() {
   const [windowSize, setWindowSize] = useState<IWindowSize>({
@@ -150,69 +145,133 @@ export const useDNDSubscribe = (
   }, [...cleanupArr]);
 };
 
-export const useDND = ({
-  onMouseDown,
-  onMouseUp,
-  onMouseMove,
-  draggable: frameRef,
-  clickable = null,
-  parent,
-  cleanupArr,
-  id = null,
-}: TuseDNDProps) => {
-  const [mouseDownAction, setMouseDownAction] = useState<Actions>(null);
-  const [mouseCoords, setMouseCoords] = useState<TContainerCoords>(null);
+// ------------------------------------------------------------------
 
-  const handleMouseDown = useCallback(
-    (e: MouseEvent) => {
-      const innerRef = clickable || frameRef;
+export const useSimpleDND = (props: TUseSimpleDNDProps = {}) => {
+  const elementRef = useRef(null);
+  const parentFrameRef = useRef<TElementCoords>(null);
+  const [dragInfo, setDragInfo] = useState<TUseSimpleDND>({
+    action: null,
+    preventClick: false,
+    mouse: { x: 0, y: 0 },
+    lastPosition: { x: 0, y: 0 },
+  });
 
-      if (e.target && e.button === 0 && frameRef.current && innerRef.current === e.target) {
-        const coords = getCursorPosition(frameRef.current, e);
-        console.log('DOWN', coords);
-        setMouseCoords(coords);
-
-        if (e.target === innerRef.current) {
-          setMouseDownAction(Actions.MOVE);
-        } else if ((e.target as HTMLTextAreaElement).classList.contains('mtrl__drag-corner')) {
-          setMouseDownAction(Actions.SCALE);
-        } else if ((e.target as HTMLTextAreaElement).classList.contains('mtrl__drag-cntrl')) {
-          setMouseDownAction(Actions.ROTATE);
+  useLayoutEffect(() => {
+    if (elementRef.current) {
+      const { offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = elementRef.current; // .getBoundingClientRect();
+      setDragInfo({
+        ...dragInfo,
+        lastPosition: { x, y, w, h },
+      });
+      if (typeof props?.fenceFrame === 'string' && props.fenceFrame?.length) {
+        const { parentNode } = elementRef.current;
+        if (parentNode.classList.exists(props.fenceFrame)) {
+          const rect = parentNode.getBoundingClientRect();
+          parentFrameRef.current = { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
         }
       }
-    },
-    [mouseDownAction, mouseCoords],
-  );
-
-  const handleMouseUp = useCallback(() => {
-    setMouseDownAction(null);
-    setMouseCoords(null);
-    const { offsetLeft, offsetTop } = frameRef.current;
-    // console.log('UP > ', offsetLeft, offsetTop);
-    if (typeof onMouseUp === 'function') {
-      // onChangeCoords(offsetLeft, offsetTop - 53, id);
-      onMouseUp(offsetLeft, offsetTop - 53, id);
     }
-  }, [mouseDownAction, mouseCoords]);
+  }, []);
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (mouseDownAction !== null) {
-        const { clientX, clientY } = e;
-        const { mouseLeft, mouseTop } = mouseCoords;
+  const { action } = dragInfo;
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.nativeEvent) {
+      e.nativeEvent.stopImmediatePropagation();
+    }
 
-        const offsetX = clientX - mouseLeft;
-        const offsetY = clientY - mouseTop;
-        const newLeft = left + offsetX;
-        const newTop = top + offsetY;
+    const { clientX: x, clientY: y } = e;
+    if (!action)
+      setDragInfo({
+        ...dragInfo,
+        action: DNDActions.MOVE,
+        mouse: { x, y },
+      });
+    if (typeof props.onMouseDown === 'function') {
+      props.onMouseDown(x, y, DNDActions.MOVE);
+    }
+    return false;
+  };
 
-        console.log('MOVE', offsetX, offsetY);
-        frameRef.current.style.left = `${newLeft}px`;
-        frameRef.current.style.top = `${newTop}px`;
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.nativeEvent) {
+      e.nativeEvent.stopImmediatePropagation();
+    }
+    const { clientX: x, clientY: y } = e;
+    if (action === DNDActions.MOVE) {
+      if (props.onClick && !dragInfo.preventClick) {
+        setDragInfo({ ...dragInfo, preventClick: true });
       }
-    },
-    [mouseDownAction, mouseCoords],
-  );
 
-  useDNDSubscribe(cleanupArr, onMouseDown, onMouseUp, onMouseMove);
+      const { mouse, lastPosition } = dragInfo;
+      const newX = lastPosition.x + (x - mouse.x);
+      const newY = lastPosition.y + (y - mouse.y);
+      elementRef.current.style.left = `${newX}px`;
+      elementRef.current.style.top = `${newY}px`;
+      if (props.fenceFrame) {
+        dndFenceFrameCheck({
+          element: { left: newX, top: newY, width: lastPosition.w, height: lastPosition.h },
+          parent: { ...parentFrameRef.current },
+        });
+      }
+      if (typeof props.onMouseMove === 'function') {
+        props.onMouseMove(x, y);
+      }
+    }
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.nativeEvent) {
+      e.nativeEvent.stopImmediatePropagation();
+    }
+    if (action !== null) {
+      const { offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = elementRef.current; // .getBoundingClientRect();
+      setDragInfo({
+        ...dragInfo,
+        action: null,
+        lastPosition: { x, y, w, h },
+      });
+      if (typeof props.onMouseUp === 'function') {
+        props.onMouseUp(x, y, props.id);
+      }
+    }
+    return false;
+  };
+
+  const handleMouseClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (props.onClick && !dragInfo.preventClick) {
+      props.onClick();
+    }
+    setDragInfo({ ...dragInfo, preventClick: false });
+  };
+
+  // useDNDSubscribe([elementRef, ...(props.cleanupArr || []), handleMouseDown, handleMouseUp, handleMouseMove);
+
+  return {
+    elementRef,
+    handleMouseDown,
+    handleMouseUp,
+    handleMouseMove,
+    handleMouseClick,
+  };
 };
+
+export interface TUseResizeContainer extends TUseSimpleDNDProps {
+  onResize?: (...rest: any[]) => void;
+}
+// export const useResizeContainer = ({ onResize }: TUseResizeContainer) => {
+//   const { elementRef, handleMouseDown, handleMouseMove, handleMouseUp } = useSimpleDND({});
+//
+//   return {
+//     elementRef,
+//     handleMouseDown,
+//     handleMouseMove,
+//     handleMouseUp,
+//   };
+// };

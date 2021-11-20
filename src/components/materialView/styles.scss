@@ -16,8 +16,14 @@
     position: relative;
   }
   &__cover {
-    border: 2px solid $accent-color;
-    cursor: move;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    &_active {
+      border: 2px solid $accent-color;
+      cursor: move;
+      box-shadow: none;
+    }
   }
   &__drag-corner {
     position: absolute;
@@ -25,7 +31,7 @@
     height: 10px;
     background: #ffffff;
     border: 2px solid $accent-color;
-    cursor: pointer;
+    cursor: nesw-resize;
   }
   &__rotator {
     margin: 8px;
@@ -50,4 +56,11 @@
 
 .mtrl * {
   user-select: none;
+}
+
+.resize-cursor__right {
+  cursor: nesw-resize;
+}
+.resize-cursor__left {
+  cursor: nwse-resize;
 }

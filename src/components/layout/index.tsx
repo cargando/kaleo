@@ -28,6 +28,7 @@ export const Layout = observer(({ children }: TLayoutProps) => {
         <GenerateCol />
         <div className="app__right-col">
           <TopLine />
+          <div className="app__splitter" />
           <div ref={mainCellRef} className="container app__main-cell">
             {children}
           </div>

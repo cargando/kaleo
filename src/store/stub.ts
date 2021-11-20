@@ -58,8 +58,10 @@ export const GeneratedStub: TSelectedMaterial[] = [
     title: 'Шпон',
     width: 176,
     height: 345,
-    top: 200,
-    left: 300,
+    top: 15,
+    left: 25,
+    active: false,
+    bgScale: 103,
   },
   {
     id: 2,

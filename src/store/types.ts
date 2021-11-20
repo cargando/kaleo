@@ -45,6 +45,7 @@ export interface TMaterialVMProps extends TResponseData {
   dataList?: TDataList;
   selectedList?: TSelectedList;
   isMultiSelect?: TMultiSelectedList;
+  plateWithControls?: number;
 }
 // const partitions: Record<string, { [key: string]: TTableStatus }> = {};
 
@@ -72,4 +73,5 @@ export interface TSelectedMaterial extends TMaterial {
   zIndex?: number;
   top?: number;
   left?: number;
+  active?: boolean;
 }

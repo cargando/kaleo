@@ -18,6 +18,8 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   public isMultiSelectList: TMultiSelectedList = observable({});
 
+  public plateWithControls = null;
+
   constructor() {
     makeAutoObservable(this);
 
@@ -71,6 +73,10 @@ export class MaterialsStoreVM implements TMaterialVMProps {
         break;
       }
     }
+  };
+
+  @action public setActivePlate = (id: number) => {
+    this.plateWithControls = id;
   };
 
   @action public setSearch = (query: string) => {
