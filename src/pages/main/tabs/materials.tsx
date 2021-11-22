@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
 import { observer } from 'mobx-react';
-import throttle from 'lodash/throttle';
 import { STOREs, TStore } from 'store';
 import { useStores } from 'hooks';
-import { FooterControlPicker } from '../../../components/platePikers/footerPlate';
-import { BaseMaterialViewer } from '../../../components/materialView';
-import { MaterialsTP } from '../../../store/types';
+import { FooterControlPicker } from 'components/platePikers/footerPlate';
+import { BaseMaterialViewer } from 'components/materialView';
+import { MaterialsTP } from 'store/types';
 import { toJS } from 'mobx';
 
 export interface TMaterialTabProps {
@@ -17,11 +16,12 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const canvasRef = useRef(null);
 
   const handleChangeCoords = (x?: number, y?: number, id?: number) => {
-    Materials.setMtrlPlateCoords(x, y, id);
+    Materials.setMtrlPlateCoords({ left: x, top: y }, id);
     // console.log('DONE: ', toJS(Materials?.Data?.(MaterialsTP.MTRL_GENERATED)?.[0]));
     return null;
   };
-  const handleChangeScale = (w: number, h: number) => {
+  const handleResize = (w: number, h: number, id?: number) => {
+    Materials.setMtrlPlateCoords({ width: w, height: h }, id);
     return null;
   };
   const handleChangeRotation = (deg: number) => {
@@ -31,12 +31,14 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const handleChangeActive = (id: number) => {
     const res = Materials.plateWithControls && Materials.plateWithControls === id ? null : id;
     Materials.setActivePlate(res);
+    console.log('Materials. ', Materials.plateWithControls);
     return null;
   };
 
   const handleClearActive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === canvasRef.current) {
       Materials.setActivePlate(null);
+      console.log('Materials. ', Materials.plateWithControls);
     }
     return null;
   };
@@ -48,7 +50,7 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
           item={Materials?.Data?.(MaterialsTP.MTRL_GENERATED)?.[0]}
           isActive={Materials.plateWithControls}
           onChangeCoords={handleChangeCoords}
-          onChangeScale={handleChangeScale}
+          onResize={handleResize}
           onChangeRotation={handleChangeRotation}
           onClick={handleChangeActive}
         />

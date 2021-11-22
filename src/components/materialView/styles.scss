@@ -14,14 +14,21 @@
     display: inline-block;
     padding: 5px;
     position: relative;
+    width: 100%;
+    height: 100%;
+    &_RSZ {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+    }
   }
   &__cover {
-    cursor: pointer;
     border: 2px solid transparent;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    height: 100%;
     &_active {
       border: 2px solid $accent-color;
-      cursor: move;
       box-shadow: none;
     }
   }
@@ -33,10 +40,14 @@
     border: 2px solid $accent-color;
     cursor: nesw-resize;
   }
+  &__buffer {
+    padding: 8px;
+    height: 100%;
+    cursor: auto;
+  }
   &__rotator {
-    margin: 8px;
     display: block;
-    height: calc(100% - 16px);
+    height: 100%;
     position: relative;
     &-cntrl {
       position: absolute;
@@ -50,6 +61,10 @@
     &-inner {
       display: block;
       height: 100%;
+      cursor: pointer;
+      &_active {
+        cursor: move !important;
+      }
     }
   }
 }

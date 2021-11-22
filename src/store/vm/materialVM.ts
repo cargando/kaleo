@@ -8,6 +8,7 @@ import {
   TSelectedMaterial,
 } from '../types';
 import { ColorsStub, GeneratedStub, MaterialStub, VeneerStub } from '../stub';
+import { TElementCoords } from '../../utils/types';
 
 export class MaterialsStoreVM implements TMaterialVMProps {
   public searchQuery = '';
@@ -61,14 +62,17 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     return this?.selectedList?.[tp]?.length;
   };
 
-  @action public setMtrlPlateCoords = (left: number, top: number, id: number) => {
+  @action public setMtrlPlateCoords = (coords: TElementCoords, id: number) => {
+    const { left = null, top = null, width = null, height = null } = coords;
     const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
 
     for (let i = 0; i < len; i++) {
       if (this.dataList[MaterialsTP.MTRL_GENERATED][i].id === id) {
         const newVal = this.dataList[MaterialsTP.MTRL_GENERATED][i];
-        newVal.top = top;
-        newVal.left = left;
+        newVal.top = top || newVal.top;
+        newVal.left = left || newVal.left;
+        newVal.width = width || newVal.width;
+        newVal.height = height || newVal.height;
         this.dataList[MaterialsTP.MTRL_GENERATED][i] = { ...newVal };
         break;
       }
