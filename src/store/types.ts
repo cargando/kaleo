@@ -67,7 +67,7 @@ export interface TMaterial extends TWood, TColor {}
 export interface TSelectedMaterial extends TMaterial {
   srcLarge?: any;
   bgScale?: number;
-  rotate?: number;
+  angle?: number;
   width?: number;
   height?: number;
   zIndex?: number;

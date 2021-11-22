@@ -47,6 +47,7 @@ export interface TElementCoords {
   right?: number;
   width?: number;
   height?: number;
+  angle?: number;
 }
 export interface TDndFenceFrameCheck {
   element: TElementCoords;

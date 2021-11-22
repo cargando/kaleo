@@ -4,20 +4,21 @@ import { TSelectedMaterial } from 'store/types';
 import './styles.scss';
 import { ResizeCorner } from './resizeCorner';
 import { ScaleCorner } from './scaleCorner';
-import { Resizable } from 'components/resizable';
+import ResizableRect from 'react-resizable-rotatable-draggable';
 
 interface TBaseMaterialViewerProps {
   item: TSelectedMaterial;
   isActive: boolean;
-  onChangeCoords: (x?: number, y?: number, id?: number) => void;
-  onResize: (w: number, h: number, id: number) => void;
+  onMove: (x?: number, y?: number, id?: number) => void;
+  onResize: (t: number, l: number, w: number, h: number, id?: number) => void;
+  onRotate: (v: number, id: number) => void;
   onChangeRotation: (deg: number, id: number) => void;
   onClick: (id: number) => void;
 }
 
 interface TBaseMaterialViewerState {
   // action: DNDActions;
-  mouse: Record<string, number>; // mouse down coords
+  mouse?: Record<string, number>; // mouse down coords
   lastPosition: Record<string, number>;
 }
 
@@ -47,26 +48,9 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
 
     this.state = {
       // action: null,
-      mouse: null,
+      // mouse: null,
       lastPosition: null,
     };
-  }
-
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleMouseDown);
-    document.addEventListener('mouseup', this.handleMouseUp, true);
-    document.addEventListener('mousemove', this.handleMouseMove);
-
-    if (this.elementRef.current) {
-      const { offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = this.elementRef.current;
-      this.setState({ lastPosition: { x, y, w, h } });
-    }
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleMouseDown);
-    document.removeEventListener('mouseup', this.handleMouseUp);
-    document.removeEventListener('mousemove', this.handleMouseMove);
   }
 
   isInCorner = (target: EventTarget, tp: DNDActions): boolean => {
@@ -99,75 +83,9 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
     this.action = null;
   };
 
-  handleMouseDown = (e: MouseEvent) => {
-    const { clientX: x, clientY: y, target, button } = e;
-
-    if (!this.action && button === 0) {
-      this.setState({ mouse: { x, y } });
-      if (target === this.elementInnerRef.current) {
-        this.action = DNDActions.MOVE;
-      } else if (this.isInCorner(target, DNDActions.SCALE)) {
-        this.action = DNDActions.SCALE;
-      } else if (this.isInCorner(target, DNDActions.ROTATE)) {
-        this.action = DNDActions.ROTATE;
-      }
-      if (this.action === DNDActions.ROTATE || this.action === DNDActions.SCALE) {
-        this.pressedCorner.node = target as HTMLElement;
-        this.pressedCorner.id = (target as HTMLTextAreaElement).getAttribute('data-position');
-        // eslint-disable-next-line @typescript-eslint/no-redeclare
-        const { offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = target as HTMLElement;
-        this.pressedCorner.lastPosition = { x, y, w, h };
-      }
-      console.log('this.action', this.action, target, this.cornerRefs);
-    }
-    return false;
-  };
-
-  handleMouseMove = (e: MouseEvent) => {
-    const { clientX: x, clientY: y } = e;
-    if (this.props.isActive) {
-      this.mouseMoved = true;
-      const { mouse, lastPosition } = this.state;
-      const frame = this.elementRef.current;
-      if (this.action === DNDActions.MOVE) {
-        const newX = lastPosition.x + (x - mouse.x);
-        const newY = lastPosition.y + (y - mouse.y);
-        frame.style.left = `${newX}px`;
-        frame.style.top = `${newY}px`;
-      } else if (this.action === DNDActions.SCALE) {
-        const { target } = e;
-        const newXs = this.pressedCorner.lastPosition.x + (x - mouse.x);
-        const newYs = this.pressedCorner.lastPosition.y + (y - mouse.y);
-        (target as HTMLElement).style.left = `${newXs}px`;
-        (target as HTMLElement).style.top = `${newYs}px`;
-
-        const newCoords = this.resizeFrame(newXs, newYs);
-        console.log('Delta', newXs, newYs, newCoords, this.action);
-
-        // frame.style.left = newCoords.left;
-        // frame.style.top = newCoords.top;
-        // frame.style.width = newCoords.width;
-        // frame.style.height = newCoords.height;
-
-        // s
-      }
-    }
-  };
-
-  handleMouseUp = (e: MouseEvent) => {
-    if (this.action !== null) {
-      const { offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = this.elementRef.current;
-      this.setState({ lastPosition: { x, y, w, h } });
-    }
-    this.action = null;
-    return false;
-    this.pressedCorner.node = null;
-    this.pressedCorner.id = null;
-  };
-
-  handleResize = (dX: number, dY: number, id: number) => {
-    this.props.onResize(dX, dY, id);
-    console.log('Resize >> ', dX, dY, id);
+  // handleResize = (dX: number, dY: number, id: number) => {
+  handleResize = (t: number, l: number, w: number, h: number, id?: number) => {
+    this.props.onResize(t, l, w, h, id);
   };
 
   renderCorners = (tp: DNDActions) => {
@@ -212,7 +130,7 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
 
   render() {
     const { isActive, item = {} as TSelectedMaterial } = this.props;
-    const { id, srcLarge, bgScale, height, width, zIndex = 1, top, left, rotate } = item;
+    const { id, srcLarge, bgScale, height, width, zIndex = 1, top, left, angle } = item;
 
     const stylesFrame: Record<string, any> = { top: `${top}px`, left: `${left}px` };
     const stylesCover: Record<string, any> = {
@@ -222,30 +140,43 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
     };
 
     return (
-      <Resizable
-        bounds="parent"
-        handleComponent={{ topRight: this.renderCorner() }}
-        className="mtrl__cover mtrl__cover_active"
-        defaultSize={{ width, height }}
-        onResize={(e, direction, ref, d) => {
-          this.handleResize(width + d.width, height + d.height, id);
-        }}>
-        <div ref={this.elementRef} className="mtrl__frame" data-id={id}>
-          <div className={`mtrl__cover ${isActive ? 'mtrl__cover_active' : ''}`} style={stylesCover}>
-            <div className="mtrl__buffer">
-              <div className="mtrl__rotator" style={null}>
-                {isActive && this.renderCorners(DNDActions.ROTATE)}
-                <div
-                  ref={this.elementInnerRef}
-                  onClick={this.handleChangeActive}
-                  className={`mtrl__rotator-inner ${isActive ? 'mtrl__rotator-inner_active' : ''}`}
-                />
-              </div>
-            </div>
-          </div>
-          {isActive && this.renderCorners(DNDActions.SCALE)}
-        </div>
-      </Resizable>
+      // <Resizable
+      //   bounds="parent"
+      //   handleComponent={{ topRight: this.renderCorner() }}
+      //   className="mtrl__cover mtrl__cover_active"
+      //   defaultSize={{ width, height }}
+      //   onResize={(e, direction, ref, d) => {
+      //     this.handleResize(width + d.width, height + d.height, id);
+      //   }}>
+      <ResizableRect
+        left={left}
+        top={top}
+        width={width}
+        height={height}
+        rotateAngle={angle}
+        aspectRatio={false}
+        minWidth={20}
+        minHeight={20}
+        zoomable="n, w, s, e, nw, ne, se, sw"
+        rotatable
+        // onRotateStart={this.handleRotateStart}
+        onRotate={(ang: number) => {
+          this.props.onRotate(ang, id);
+        }}
+        // onRotateEnd={this.handleRotateEnd}
+        // onResizeStart={this.handleResizeStart}
+        onResize={(style, isShiftKey, type) => {
+          this.handleResize(style.top, style.left, style.width, style.height, id);
+        }}
+        // onResizeEnd={this.handleUp}
+        // onDragStart={this.handleDragStart}
+        onDrag={(dX, dY) => {
+          this.props.onMove(left + dX, top + dY, id);
+        }}
+        // onDragEnd={this.handleDragEnd}
+      >
+        111
+      </ResizableRect>
     );
   }
 }

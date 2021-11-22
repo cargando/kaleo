@@ -20,9 +20,12 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
     // console.log('DONE: ', toJS(Materials?.Data?.(MaterialsTP.MTRL_GENERATED)?.[0]));
     return null;
   };
-  const handleResize = (w: number, h: number, id?: number) => {
-    Materials.setMtrlPlateCoords({ width: w, height: h }, id);
+  const handleResize = (t: number, l: number, w: number, h: number, id?: number) => {
+    Materials.setMtrlPlateCoords({ width: w, height: h, top: t, left: l }, id);
     return null;
+  };
+  const handleRotate = (angle: number, id) => {
+    Materials.setMtrlPlateCoords({ angle }, id);
   };
   const handleChangeRotation = (deg: number) => {
     return null;
@@ -31,26 +34,24 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const handleChangeActive = (id: number) => {
     const res = Materials.plateWithControls && Materials.plateWithControls === id ? null : id;
     Materials.setActivePlate(res);
-    console.log('Materials. ', Materials.plateWithControls);
     return null;
   };
 
   const handleClearActive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === canvasRef.current) {
       Materials.setActivePlate(null);
-      console.log('Materials. ', Materials.plateWithControls);
     }
     return null;
   };
-
   return (
     <>
       <div ref={canvasRef} className="mtrl" onClick={handleClearActive}>
         <BaseMaterialViewer
           item={Materials?.Data?.(MaterialsTP.MTRL_GENERATED)?.[0]}
           isActive={Materials.plateWithControls}
-          onChangeCoords={handleChangeCoords}
+          onMove={handleChangeCoords}
           onResize={handleResize}
+          onRotate={handleRotate}
           onChangeRotation={handleChangeRotation}
           onClick={handleChangeActive}
         />

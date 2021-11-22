@@ -63,9 +63,8 @@ export class MaterialsStoreVM implements TMaterialVMProps {
   };
 
   @action public setMtrlPlateCoords = (coords: TElementCoords, id: number) => {
-    const { left = null, top = null, width = null, height = null } = coords;
+    const { left = null, top = null, width = null, height = null, angle = null } = coords;
     const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
-
     for (let i = 0; i < len; i++) {
       if (this.dataList[MaterialsTP.MTRL_GENERATED][i].id === id) {
         const newVal = this.dataList[MaterialsTP.MTRL_GENERATED][i];
@@ -73,6 +72,9 @@ export class MaterialsStoreVM implements TMaterialVMProps {
         newVal.left = left || newVal.left;
         newVal.width = width || newVal.width;
         newVal.height = height || newVal.height;
+        newVal.angle = angle || newVal.angle;
+        console.log('SET', toJS(newVal), id);
+
         this.dataList[MaterialsTP.MTRL_GENERATED][i] = { ...newVal };
         break;
       }

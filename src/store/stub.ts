@@ -62,6 +62,7 @@ export const GeneratedStub: TSelectedMaterial[] = [
     left: 25,
     active: false,
     bgScale: 103,
+    angle: 0,
   },
   {
     id: 2,
