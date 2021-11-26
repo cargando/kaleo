@@ -8,7 +8,7 @@ import {
   TSelectedMaterial,
 } from '../types';
 import { ColorsStub, GeneratedStub, MaterialStub, VeneerStub } from '../stub';
-import { TElementCoords } from '../../utils/types';
+import { TElementCoords, TElementSquare } from '../../utils/types';
 
 export class MaterialsStoreVM implements TMaterialVMProps {
   public searchQuery = '';
@@ -19,7 +19,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   public isMultiSelectList: TMultiSelectedList = observable({});
 
-  public plateWithControls = null;
+  public plateWithControls: number = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -62,20 +62,38 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     return this?.selectedList?.[tp]?.length;
   };
 
+  @computed public sortGenerated = (): TElementSquare[] => {
+    const list = this.dataList[MaterialsTP.MTRL_GENERATED];
+    const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
+    if (!len) return [];
+    const tmp: TElementSquare[] = [];
+    for (let i = 0; i < len; i++) {
+      tmp.push({
+        square: list[i].width * list[i].height,
+        id: list[i].id,
+        index: i,
+      });
+    }
+
+    return tmp.sort((a, b) => a.square - b.square);
+  };
+
+  private sortPick = (tp: 'SQUARE' | 'COLOR') => {};
+
   @action public setMtrlPlateCoords = (coords: TElementCoords, id: number) => {
-    const { left = null, top = null, width = null, height = null, angle = null } = coords;
+    const { left = null, top = null, width = null, height = null, angle = null, zIndex = null } = coords;
     const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
     for (let i = 0; i < len; i++) {
       if (this.dataList[MaterialsTP.MTRL_GENERATED][i].id === id) {
         const newVal = this.dataList[MaterialsTP.MTRL_GENERATED][i];
-        newVal.top = top || newVal.top;
-        newVal.left = left || newVal.left;
-        newVal.width = width || newVal.width;
-        newVal.height = height || newVal.height;
-        newVal.angle = angle || newVal.angle;
-        console.log('SET', toJS(newVal), id);
+        newVal.top = top ?? newVal.top;
+        newVal.left = left ?? newVal.left;
+        newVal.width = width ?? newVal.width;
+        newVal.height = height ?? newVal.height;
+        newVal.angle = angle ?? newVal.angle;
+        newVal.zIndex = zIndex ?? newVal.zIndex;
+        this.dataList[MaterialsTP.MTRL_GENERATED][i] = observable({ ...newVal });
 
-        this.dataList[MaterialsTP.MTRL_GENERATED][i] = { ...newVal };
         break;
       }
     }

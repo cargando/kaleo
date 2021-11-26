@@ -1,60 +1,137 @@
-import React, { Fragment, useState } from 'react';
-import ResizableRect from 'react-resizable-rotatable-draggable';
+import React, { Component } from 'react';
+import Rect from './Rect';
+import { centerToTL, tLToCenter, getNewStyle, degToRadian } from './utils';
 
-const ResizableContent = (props) => {
-  const [width, setWidth] = useState(props.width);
-  const [height, setHeight] = useState(props.height);
-  const [top, setTop] = useState(props.top);
-  const [left, setLeft] = useState(props.left);
-  const [rotateAngle, setRotateAngle] = useState(props.rotateAngle);
+const MIN_WH = 20;
+const DEFAULT_COLOR = '#333333';
+const DEFAULT_ZINDEX = 1;
 
-  const contentStyle = {
-    top,
-    left,
-    width,
-    height,
-    position: 'absolute',
-    transform: `rotate(${rotateAngle}deg)`,
+export interface TResizableRectProps {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  rotatable?: boolean;
+  rotateAngle?: number;
+  parentRotateAngle?: number;
+  zoomable?: string;
+  minWidth?: number;
+  minHeight?: number;
+  aspectRatio?: any; // boolean | false
+  onRotateStart?: (...args) => void;
+  onRotate?: (...args) => void;
+  onResetRotation?: (...args) => void;
+  onSetLayer?: (...args) => void;
+  onRotateEnd?: (...args) => void;
+  onResizeStart?: (...args) => void;
+  onResize?: (...args) => void;
+  onResizeEnd?: (...args) => void;
+  onDragStart?: (...args) => void;
+  onDrag?: (...args) => void;
+  onDragEnd?: (...args) => void;
+  onClick?: (...args) => void;
+  onDoubleClick?: (...args) => void;
+  className?: string;
+  color?: string;
+  children?: React.ReactNode;
+  zIndex?: number;
+}
+
+export default class ResizableRect extends Component<TResizableRectProps> {
+  static defaultProps = {
+    parentRotateAngle: 0,
+    rotateAngle: 0,
+    rotatable: true,
+    zoomable: '',
+    minWidth: 10,
+    minHeight: 10,
   };
 
-  const handleResize = ({ top: t, left: l, width: w, height: h }, isShiftKey, type) => {
-    setWidth(Math.round(w));
-    setHeight(Math.round(h));
-    setTop(Math.round(t));
-    setLeft(Math.round(l));
+  handleRotate = (angle, startAngle) => {
+    if (!this.props.onRotate) return;
+    let rotateAngle = Math.round(startAngle + angle);
+    if (rotateAngle >= 360) {
+      rotateAngle -= 360;
+    } else if (rotateAngle < 0) {
+      rotateAngle += 360;
+    }
+    if (rotateAngle > 356 || rotateAngle < 4) {
+      rotateAngle = 0;
+    } else if (rotateAngle > 86 && rotateAngle < 94) {
+      rotateAngle = 90;
+    } else if (rotateAngle > 176 && rotateAngle < 184) {
+      rotateAngle = 180;
+    } else if (rotateAngle > 266 && rotateAngle < 274) {
+      rotateAngle = 270;
+    }
+    this.props.onRotate(rotateAngle);
   };
 
-  const handleRotate = (ang) => {
-    setRotateAngle(ang);
+  handleResize = (length, alpha, rect, type, isShiftKey) => {
+    if (!this.props.onResize) return;
+    const { rotateAngle, aspectRatio, minWidth = MIN_WH, minHeight = MIN_WH, parentRotateAngle } = this.props;
+    const beta = alpha - degToRadian(rotateAngle + parentRotateAngle);
+    const deltaW = length * Math.cos(beta);
+    const deltaH = length * Math.sin(beta);
+    const ratio = isShiftKey && !aspectRatio ? rect.width / rect.height : aspectRatio;
+    const {
+      position: { centerX, centerY },
+      size: { width, height },
+    } = getNewStyle(type, { ...rect, rotateAngle }, deltaW, deltaH, ratio, minWidth, minHeight);
+
+    this.props.onResize(centerToTL({ centerX, centerY, width, height, rotateAngle }), isShiftKey, type);
   };
 
-  const handleDrag = (deltaX, deltaY) => {
-    setLeft(left + deltaX);
-    setTop(top + deltaY);
+  handleDrag = (deltaX, deltaY) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    this.props.onDrag && this.props.onDrag(deltaX, deltaY);
   };
 
-  return (
-    <Fragment>
-      <div style={contentStyle as any}>{props.children}</div>
+  render() {
+    const {
+      top,
+      left,
+      width,
+      height,
+      rotateAngle,
+      parentRotateAngle,
+      zoomable,
+      rotatable,
+      onRotate,
+      onResizeStart,
+      onResizeEnd,
+      onRotateStart,
+      onRotateEnd,
+      onDragStart,
+      onDragEnd,
+      color = DEFAULT_COLOR,
+      zIndex = DEFAULT_ZINDEX,
+      onResetRotation = null,
+      onSetLayer = null,
+    } = this.props;
 
-      <ResizableRect
-        top={top}
-        // rotatable
-        left={left}
-        // aspectRatio
-        minWidth={10}
-        width={width}
-        minHeight={10}
-        height={height}
-        onDrag={handleDrag}
-        onRotate={handleRotate}
-        onResize={handleResize}
-        zoomable="n, e, w, s, nw, ne, se, sw"
-        rotateAngle={rotateAngle}
-        style={{ border: '30px solid black !important' }}
+    const styles = tLToCenter({ top, left, width, height, rotateAngle });
+
+    return (
+      <Rect
+        styles={styles}
+        zoomable={zoomable}
+        rotatable={Boolean(rotatable && onRotate)}
+        parentRotateAngle={parentRotateAngle}
+        onResizeStart={onResizeStart}
+        onResize={this.handleResize}
+        onResizeEnd={onResizeEnd}
+        onRotateStart={onRotateStart}
+        onRotate={this.handleRotate}
+        onResetRotation={onResetRotation}
+        onSetLayer={onSetLayer}
+        onRotateEnd={onRotateEnd}
+        onDragStart={onDragStart}
+        onDrag={this.handleDrag}
+        onDragEnd={onDragEnd}
+        color={color}
+        zIndex={zIndex}
       />
-    </Fragment>
-  );
-};
-
-export default ResizableContent;
+    );
+  }
+}

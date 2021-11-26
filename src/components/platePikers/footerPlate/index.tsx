@@ -11,10 +11,11 @@ export interface TFooterControlPickerProps {
   title?: string;
   vm: MaterialsStoreVM;
   sidePadding?: boolean;
+  activeID: number;
 }
 
 export const FooterControlPicker: React.FC<TFooterControlPickerProps> = observer(
-  ({ title, sidePadding = false, vm }) => {
+  ({ title, activeID = null, sidePadding = false, vm }) => {
     const { App }: Pick<TStore, STOREs.App> = useStores();
     const footerPickerRef = useRef(null);
 

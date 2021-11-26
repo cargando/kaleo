@@ -48,8 +48,37 @@ export interface TElementCoords {
   width?: number;
   height?: number;
   angle?: number;
+  zIndex?: number;
+  eSource?: ElementSource;
 }
+
+export enum ElementSource {
+  FIRE,
+  WATER,
+  AIR,
+  EARTH,
+}
+export enum ElementSourceColor {
+  YELLOW, //      желтый
+  ORANGE, //      оранжевый
+  ROSE, //        розовый, алый
+  RED, //         красный
+  WHITE_BLACK, // белый, черный, золотой
+  VIOLET, //      фиолетовый
+  BLUE, //        синий
+  LIGHT_BLUE, //  голубой
+  SEA_WAVE, //    ультрамарин
+  GREEN, //       зеленый
+  EMERALD, //    изумрудный
+}
+
 export interface TDndFenceFrameCheck {
   element: TElementCoords;
   parent: TElementCoords;
+}
+
+export interface TElementSquare {
+  square: number;
+  id: number;
+  index: number;
 }

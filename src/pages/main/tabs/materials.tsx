@@ -1,10 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { STOREs, TStore } from 'store';
 import { useStores } from 'hooks';
 import { FooterControlPicker } from 'components/platePikers/footerPlate';
 import { BaseMaterialViewer } from 'components/materialView';
-import { MaterialsTP } from 'store/types';
+import { MaterialsTP, TSelectedMaterial } from 'store/types';
 import { toJS } from 'mobx';
 
 export interface TMaterialTabProps {
@@ -15,48 +15,60 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const { App, Materials }: Partial<TStore> = useStores();
   const canvasRef = useRef(null);
 
-  const handleChangeCoords = (x?: number, y?: number, id?: number) => {
+  const handleChangeCoords = useCallback((x?: number, y?: number, id?: number) => {
     Materials.setMtrlPlateCoords({ left: x, top: y }, id);
-    // console.log('DONE: ', toJS(Materials?.Data?.(MaterialsTP.MTRL_GENERATED)?.[0]));
-    return null;
-  };
-  const handleResize = (t: number, l: number, w: number, h: number, id?: number) => {
+  }, []);
+
+  const handleResize = useCallback((t: number, l: number, w: number, h: number, id?: number) => {
     Materials.setMtrlPlateCoords({ width: w, height: h, top: t, left: l }, id);
     return null;
-  };
-  const handleRotate = (angle: number, id) => {
-    Materials.setMtrlPlateCoords({ angle }, id);
-  };
-  const handleChangeRotation = (deg: number) => {
-    return null;
-  };
+  }, []);
 
-  const handleChangeActive = (id: number) => {
+  const handleRotate = useCallback((angle: number, id) => {
+    Materials.setMtrlPlateCoords({ angle }, id);
+  }, []);
+
+  const handleChangeActive = useCallback((id: number) => {
     const res = Materials.plateWithControls && Materials.plateWithControls === id ? null : id;
     Materials.setActivePlate(res);
-    return null;
-  };
+  }, []);
 
-  const handleClearActive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleResetRotation = useCallback((id: number) => {
+    Materials.setMtrlPlateCoords({ angle: 0 }, id);
+  }, []);
+
+  const handleSetLayer = useCallback((id: number) => {
+    Materials.setMtrlPlateCoords({ angle: 0 }, id);
+  }, []);
+
+  const handleClearActive = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === canvasRef.current) {
       Materials.setActivePlate(null);
     }
-    return null;
+  }, []);
+
+  const renderItem = (item: TSelectedMaterial) => {
+    return (
+      <BaseMaterialViewer
+        item={item}
+        activeID={Materials.plateWithControls}
+        onMove={handleChangeCoords}
+        onResize={handleResize}
+        onRotate={handleRotate}
+        onResetRotation={handleResetRotation}
+        onSetLayer={handleSetLayer}
+        onClick={handleChangeActive}
+      />
+    );
   };
+
   return (
     <>
       <div ref={canvasRef} className="mtrl" onClick={handleClearActive}>
-        <BaseMaterialViewer
-          item={Materials?.Data?.(MaterialsTP.MTRL_GENERATED)?.[0]}
-          isActive={Materials.plateWithControls}
-          onMove={handleChangeCoords}
-          onResize={handleResize}
-          onRotate={handleRotate}
-          onChangeRotation={handleChangeRotation}
-          onClick={handleChangeActive}
-        />
+        {Materials?.Data?.(MaterialsTP.MTRL_GENERATED)?.length &&
+          Materials.Data(MaterialsTP.MTRL_GENERATED).slice(4, 8).map(renderItem)}
       </div>
-      <FooterControlPicker vm={Materials} />
+      <FooterControlPicker vm={Materials} activeID={Materials.plateWithControls} />
     </>
   );
 });

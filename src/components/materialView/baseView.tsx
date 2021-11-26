@@ -4,15 +4,17 @@ import { TSelectedMaterial } from 'store/types';
 import './styles.scss';
 import { ResizeCorner } from './resizeCorner';
 import { ScaleCorner } from './scaleCorner';
-import ResizableRect from 'react-resizable-rotatable-draggable';
+import ResizableRect from 'components/resizable';
+// import ResizableRect from 'react-resizable-rotatable-draggable';
 
 interface TBaseMaterialViewerProps {
   item: TSelectedMaterial;
-  isActive: boolean;
+  activeID: number;
   onMove: (x?: number, y?: number, id?: number) => void;
   onResize: (t: number, l: number, w: number, h: number, id?: number) => void;
   onRotate: (v: number, id: number) => void;
-  onChangeRotation: (deg: number, id: number) => void;
+  onResetRotation?: (id: number) => void;
+  onSetLayer?: (id: number) => void;
   onClick: (id: number) => void;
 }
 
@@ -28,7 +30,7 @@ interface TCornerRef {
   lastPosition: Record<string, number>;
 }
 
-export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps, TBaseMaterialViewerState> {
+export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps> {
   elementRef = React.createRef<HTMLDivElement>();
 
   elementInnerRef = React.createRef<HTMLDivElement>();
@@ -41,40 +43,6 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
 
   action: DNDActions = null;
 
-  pressedCorner: TCornerRef = { node: null, id: null, lastPosition: null };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      // action: null,
-      // mouse: null,
-      lastPosition: null,
-    };
-  }
-
-  isInCorner = (target: EventTarget, tp: DNDActions): boolean => {
-    const data = tp === DNDActions.SCALE ? this.cornerRefs : this.rotorRefs;
-    if (Object.values(data).indexOf(target) !== -1) {
-      return true;
-    }
-    return false;
-  };
-
-  resizeFrame = (dX: number, dY: number) => {
-    const { x, y, w, h } = this.state.lastPosition;
-    let res: any = {};
-    if (this.pressedCorner.id === 'TOP_RIGHT') {
-      res = {
-        top: `${y + dY}px`,
-        left: `${x + dX}px`,
-        width: `${w + dX}px`,
-        height: `${h + dY}px`,
-      };
-    }
-    return res;
-  };
-
   handleChangeActive = () => {
     if (!this.mouseMoved) {
       this.props.onClick(this.props.item.id);
@@ -83,7 +51,14 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
     this.action = null;
   };
 
-  // handleResize = (dX: number, dY: number, id: number) => {
+  handleResetRotation = () => {
+    this.props.onResetRotation(this.props.item.id);
+  };
+
+  handleSetLayer = () => {
+    this.props.onSetLayer(this.props.item.id);
+  };
+
   handleResize = (t: number, l: number, w: number, h: number, id?: number) => {
     this.props.onResize(t, l, w, h, id);
   };
@@ -129,54 +104,72 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
   };
 
   render() {
-    const { isActive, item = {} as TSelectedMaterial } = this.props;
-    const { id, srcLarge, bgScale, height, width, zIndex = 1, top, left, angle } = item;
+    const { activeID, item = {} as TSelectedMaterial } = this.props;
+    const { id, srcLarge, bgScale, height, width, zIndex = 1, top = 0, left = 0, angle = 0 } = item;
 
-    const stylesFrame: Record<string, any> = { top: `${top}px`, left: `${left}px` };
+    let backgroundSize = 'auto';
+    if (typeof bgScale === 'number') {
+      backgroundSize = `${bgScale}%`;
+    } else if (typeof bgScale === 'string') {
+      backgroundSize = bgScale;
+    }
     const stylesCover: Record<string, any> = {
-      zIndex,
+      top: `${top}px`,
+      left: `${left}px`,
+      width: `${width}px`,
+      height: `${height}px`,
       backgroundImage: `url(${srcLarge}`,
-      backgroundSize: bgScale ? `${bgScale}%` : 'auto',
+      transform: `rotate(${angle}deg)`,
+      backgroundSize,
+      zIndex,
     };
 
+    const isActive = activeID === id;
+
     return (
-      // <Resizable
-      //   bounds="parent"
-      //   handleComponent={{ topRight: this.renderCorner() }}
-      //   className="mtrl__cover mtrl__cover_active"
-      //   defaultSize={{ width, height }}
-      //   onResize={(e, direction, ref, d) => {
-      //     this.handleResize(width + d.width, height + d.height, id);
-      //   }}>
-      <ResizableRect
-        left={left}
-        top={top}
-        width={width}
-        height={height}
-        rotateAngle={angle}
-        aspectRatio={false}
-        minWidth={20}
-        minHeight={20}
-        zoomable="n, w, s, e, nw, ne, se, sw"
-        rotatable
-        // onRotateStart={this.handleRotateStart}
-        onRotate={(ang: number) => {
-          this.props.onRotate(ang, id);
-        }}
-        // onRotateEnd={this.handleRotateEnd}
-        // onResizeStart={this.handleResizeStart}
-        onResize={(style, isShiftKey, type) => {
-          this.handleResize(style.top, style.left, style.width, style.height, id);
-        }}
-        // onResizeEnd={this.handleUp}
-        // onDragStart={this.handleDragStart}
-        onDrag={(dX, dY) => {
-          this.props.onMove(left + dX, top + dY, id);
-        }}
-        // onDragEnd={this.handleDragEnd}
-      >
-        111
-      </ResizableRect>
+      <>
+        <div className="mtrl__cover" style={stylesCover}>
+          <div
+            ref={this.elementInnerRef}
+            onClick={this.handleChangeActive}
+            className={`mtrl__rotator-inner ${isActive ? 'mtrl__rotator-inner_active' : ''}`}
+          />
+        </div>
+        {isActive && (
+          <ResizableRect
+            left={left}
+            top={top}
+            width={width}
+            height={height}
+            rotateAngle={angle}
+            aspectRatio={false}
+            minWidth={20}
+            minHeight={20}
+            zoomable="n, w, s, e, nw, ne, se, sw"
+            rotatable
+            // onRotateStart={this.handleRotateStart}
+            onRotate={(ang: number) => {
+              this.props.onRotate(ang, id);
+            }}
+            onResetRotation={this.handleResetRotation}
+            onSetLayer={this.handleSetLayer}
+            // onRotateEnd={this.handleRotateEnd}
+            // onResizeStart={this.handleResizeStart}
+            onResize={(style, isShiftKey, type) => {
+              this.handleResize(style.top, style.left, style.width, style.height, id);
+            }}
+            // onResizeEnd={this.handleUp}
+            // onDragStart={this.handleDragStart}
+            onDrag={(dX, dY) => {
+              this.props.onMove(left + dX, top + dY, id);
+            }}
+            // onDragEnd={this.handleDragEnd}
+            className="mtrl__cover_active"
+            color="#0038ff"
+            zIndex={zIndex + 1}
+          />
+        )}
+      </>
     );
   }
 }
