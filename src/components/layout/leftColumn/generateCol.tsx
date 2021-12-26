@@ -6,7 +6,6 @@ import { useStores } from 'hooks';
 import { MaterialSliders } from 'components/materialSliders';
 import { ColorPicker, MaterialPicker } from 'components/platePikers';
 import { SideBlock } from 'components/sideBlock';
-import { LeftCol } from './leftCol';
 import { MaterialsTP } from '../../../store/types';
 import { Button } from '../../button';
 import { UPLOAD_IMG_MODAL } from '../../modals/uploadImage';
@@ -30,7 +29,7 @@ export const GenerateCol = observer(({ children }: TGenerateColProps) => {
   );
 
   return (
-    <LeftCol>
+    <>
       <MaterialSliders />
       <SideBlock bubble={Materials.selectedCnt(MaterialsTP.COLOR)} title="Выберите цвета" sidePadding>
         <ColorPicker sidePadding vm={Materials} />
@@ -43,6 +42,6 @@ export const GenerateCol = observer(({ children }: TGenerateColProps) => {
           Добавить материал в калейдоскоп
         </Button>
       </div>
-    </LeftCol>
+    </>
   );
 });

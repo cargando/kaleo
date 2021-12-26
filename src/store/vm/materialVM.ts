@@ -1,14 +1,15 @@
-import { action, computed, makeAutoObservable, observable, toJS } from 'mobx';
+import { action, computed, makeAutoObservable, observable } from 'mobx';
 import {
-  TDataList,
-  TSelectedList,
-  TMultiSelectedList,
   MaterialsTP,
+  TDataList,
   TMaterialVMProps,
+  TMultiSelectedList,
+  TSelectedList,
   TSelectedMaterial,
+  TMinMax,
 } from '../types';
 import { ColorsStub, GeneratedStub, MaterialStub, VeneerStub } from '../stub';
-import { TElementCoords, TElementSquare } from '../../utils/types';
+import { TDirections, TElementCoords, TElementSquare } from '../../utils/types';
 
 export class MaterialsStoreVM implements TMaterialVMProps {
   public searchQuery = '';
@@ -20,6 +21,8 @@ export class MaterialsStoreVM implements TMaterialVMProps {
   public isMultiSelectList: TMultiSelectedList = observable({});
 
   public plateWithControls: number = null;
+
+  public selectedLayerRange: TMinMax = observable({ min: 0, max: 0 });
 
   constructor() {
     makeAutoObservable(this);
@@ -78,10 +81,30 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     return tmp.sort((a, b) => a.square - b.square);
   };
 
+  @computed public findById(id: number, tp: MaterialsTP) {
+    let res = null;
+    const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
+    for (let i = 0; i < len; i++) {
+      if (this.dataList[MaterialsTP.MTRL_GENERATED][i].id === id) {
+        res = this.dataList[MaterialsTP.MTRL_GENERATED][i];
+        break;
+      }
+    }
+    return res;
+  }
+
   private sortPick = (tp: 'SQUARE' | 'COLOR') => {};
 
-  @action public setMtrlPlateCoords = (coords: TElementCoords, id: number) => {
-    const { left = null, top = null, width = null, height = null, angle = null, zIndex = null } = coords;
+  @action public setMaterialProps = (coords: TElementCoords, id: number) => {
+    const {
+      left = null,
+      top = null,
+      width = null,
+      height = null,
+      angle = null,
+      zIndex = null,
+      moveLayer = null,
+    } = coords;
     const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
     for (let i = 0; i < len; i++) {
       if (this.dataList[MaterialsTP.MTRL_GENERATED][i].id === id) {
@@ -91,12 +114,27 @@ export class MaterialsStoreVM implements TMaterialVMProps {
         newVal.width = width ?? newVal.width;
         newVal.height = height ?? newVal.height;
         newVal.angle = angle ?? newVal.angle;
-        newVal.zIndex = zIndex ?? newVal.zIndex;
+        if (moveLayer) {
+          newVal.zIndex = this.getCorrectLayerIndex(
+            this.dataList[MaterialsTP.MTRL_GENERATED],
+            newVal.id,
+            newVal.zIndex ?? 0,
+            moveLayer.toUpperCase() as TDirections,
+          );
+          console.log('newVal', newVal.zIndex);
+        } else {
+          newVal.zIndex = zIndex ?? newVal.zIndex;
+        }
         this.dataList[MaterialsTP.MTRL_GENERATED][i] = observable({ ...newVal });
 
         break;
       }
     }
+  };
+
+  @action public setMinMaxLayer = (min: number, max: number) => {
+    this.selectedLayerRange.min = min;
+    this.selectedLayerRange.max = max;
   };
 
   @action public setActivePlate = (id: number) => {
@@ -133,7 +171,11 @@ export class MaterialsStoreVM implements TMaterialVMProps {
   @action private fetchMaterials = () => {
     this.dataList[MaterialsTP.MTRL_TYPE] = observable.array(MaterialStub);
 
+    // TODO -------- SELECTED MATERIALS REMOVE ------------
     this.dataList[MaterialsTP.MTRL_GENERATED] = observable.array(GeneratedStub);
+    const { min, max } = this.minMaxLayers(this.dataList[MaterialsTP.MTRL_GENERATED]);
+    this.setMinMaxLayer(min, max);
+    // TODO -------- END REMOVE ------------
   };
 
   @action private fetchColors = () => {
@@ -152,6 +194,48 @@ export class MaterialsStoreVM implements TMaterialVMProps {
       res[`${item.id}`] = item;
     });
     return res;
+  };
+
+  private minMaxLayers = (list: TSelectedMaterial[]) => {
+    const len = list.length;
+    let min = list[0].zIndex;
+    let minId = 0;
+    let max = list[0].zIndex;
+    let maxId = 0;
+
+    for (let i = 0; i < len; i++) {
+      if (list[i].zIndex < min) {
+        min = list[i].zIndex;
+        minId = list[i].id;
+      }
+      if (list[i].zIndex > max) {
+        max = list[i].zIndex;
+        maxId = list[i].id;
+      }
+    }
+
+    return {
+      min,
+      minId,
+      max,
+      maxId,
+    };
+  };
+
+  private getCorrectLayerIndex = (list: TSelectedMaterial[], id: number, curLayer: number, direction: TDirections) => {
+    const { min, minId, max, maxId } = this.minMaxLayers(list);
+
+    if (direction === TDirections.UP && id !== maxId) {
+      return curLayer + 1;
+    } else if (direction === TDirections.UP && id === maxId) {
+      return max;
+    }
+
+    if (direction === TDirections.DOWN && id !== minId) {
+      return curLayer - 1;
+    }
+
+    return min;
   };
 }
 

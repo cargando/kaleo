@@ -102,11 +102,11 @@ export const getNewStyle = (type, rect, deltaW, deltaH, ratio, minWidth, minHeig
       if (ratio) {
         deltaW = deltaH * ratio;
         width = height * ratio;
-        // 左上角固定
+        // Фиксированный верхний левый угол
         centerX += (deltaW / 2) * cos(rotateAngle) - (deltaH / 2) * sin(rotateAngle);
         centerY += (deltaW / 2) * sin(rotateAngle) + (deltaH / 2) * cos(rotateAngle);
       } else {
-        // 上边固定
+        // Верхний фиксированный
         centerX -= (deltaH / 2) * sin(rotateAngle);
         centerY += (deltaH / 2) * cos(rotateAngle);
       }
@@ -139,11 +139,11 @@ export const getNewStyle = (type, rect, deltaW, deltaH, ratio, minWidth, minHeig
       if (ratio) {
         height = width / ratio;
         deltaH = deltaW / ratio;
-        // 右上角固定
+        // Фиксированный верхний правый угол
         centerX -= (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle);
         centerY -= (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle);
       } else {
-        // 右边固定
+        // Исправлено справа
         centerX -= (deltaW / 2) * cos(rotateAngle);
         centerY -= (deltaW / 2) * sin(rotateAngle);
       }
@@ -177,7 +177,7 @@ export const getNewStyle = (type, rect, deltaW, deltaH, ratio, minWidth, minHeig
       if (ratio) {
         width = height * ratio;
         deltaW = deltaH * ratio;
-        // 左下角固定
+        // Фиксированный нижний левый угол
         centerX += (deltaW / 2) * cos(rotateAngle) + (deltaH / 2) * sin(rotateAngle);
         centerY += (deltaW / 2) * sin(rotateAngle) - (deltaH / 2) * cos(rotateAngle);
       } else {

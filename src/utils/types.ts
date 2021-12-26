@@ -1,5 +1,12 @@
 import dayjs from 'dayjs';
 
+export enum TDirections {
+  UP = 'UP',
+  DOWN = 'DOWN',
+  LEFT = 'LEFT',
+  RIGT = 'RIGT',
+}
+
 export interface TContainerCoords {
   mouseInnerTop: number;
   mouseInnerLeft: number;
@@ -49,6 +56,7 @@ export interface TElementCoords {
   height?: number;
   angle?: number;
   zIndex?: number;
+  moveLayer?: string;
   eSource?: ElementSource;
 }
 

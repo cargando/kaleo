@@ -26,6 +26,11 @@ export interface TResponseData {
   cnt?: number;
 }
 
+export interface TMinMax {
+  min: number;
+  max: number;
+}
+
 export type TDataList = Partial<Record<MaterialsTP, any[]>>;
 export type TSelectedList = Partial<Record<MaterialsTP, number[]>>;
 export type TMultiSelectedList = Partial<Record<MaterialsTP, boolean>>;
@@ -46,6 +51,7 @@ export interface TMaterialVMProps extends TResponseData {
   selectedList?: TSelectedList;
   isMultiSelect?: TMultiSelectedList;
   plateWithControls?: number;
+  selectedLayerRange?: TMinMax;
 }
 // const partitions: Record<string, { [key: string]: TTableStatus }> = {};
 

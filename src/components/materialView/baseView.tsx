@@ -10,24 +10,13 @@ import ResizableRect from 'components/resizable';
 interface TBaseMaterialViewerProps {
   item: TSelectedMaterial;
   activeID: number;
+  maxLayer?: number;
   onMove: (x?: number, y?: number, id?: number) => void;
   onResize: (t: number, l: number, w: number, h: number, id?: number) => void;
   onRotate: (v: number, id: number) => void;
   onResetRotation?: (id: number) => void;
-  onSetLayer?: (id: number) => void;
+  onSetLayer?: (v: string, id: number) => void;
   onClick: (id: number) => void;
-}
-
-interface TBaseMaterialViewerState {
-  // action: DNDActions;
-  mouse?: Record<string, number>; // mouse down coords
-  lastPosition: Record<string, number>;
-}
-
-interface TCornerRef {
-  node: HTMLElement;
-  id: string;
-  lastPosition: Record<string, number>;
 }
 
 export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps> {
@@ -55,8 +44,8 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
     this.props.onResetRotation(this.props.item.id);
   };
 
-  handleSetLayer = () => {
-    this.props.onSetLayer(this.props.item.id);
+  handleSetLayer = (v: string) => {
+    this.props.onSetLayer(v, this.props.item.id);
   };
 
   handleResize = (t: number, l: number, w: number, h: number, id?: number) => {
@@ -104,7 +93,7 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
   };
 
   render() {
-    const { activeID, item = {} as TSelectedMaterial } = this.props;
+    const { activeID, item = {} as TSelectedMaterial, maxLayer = 100 } = this.props;
     const { id, srcLarge, bgScale, height, width, zIndex = 1, top = 0, left = 0, angle = 0 } = item;
 
     let backgroundSize = 'auto';
@@ -166,7 +155,7 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
             // onDragEnd={this.handleDragEnd}
             className="mtrl__cover_active"
             color="#0038ff"
-            zIndex={zIndex + 1}
+            zIndex={maxLayer + 1}
           />
         )}
       </>

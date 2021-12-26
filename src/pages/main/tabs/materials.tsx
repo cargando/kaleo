@@ -16,16 +16,16 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const canvasRef = useRef(null);
 
   const handleChangeCoords = useCallback((x?: number, y?: number, id?: number) => {
-    Materials.setMtrlPlateCoords({ left: x, top: y }, id);
+    Materials.setMaterialProps({ left: x, top: y }, id);
   }, []);
 
   const handleResize = useCallback((t: number, l: number, w: number, h: number, id?: number) => {
-    Materials.setMtrlPlateCoords({ width: w, height: h, top: t, left: l }, id);
+    Materials.setMaterialProps({ width: w, height: h, top: t, left: l }, id);
     return null;
   }, []);
 
   const handleRotate = useCallback((angle: number, id) => {
-    Materials.setMtrlPlateCoords({ angle }, id);
+    Materials.setMaterialProps({ angle }, id);
   }, []);
 
   const handleChangeActive = useCallback((id: number) => {
@@ -34,11 +34,11 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   }, []);
 
   const handleResetRotation = useCallback((id: number) => {
-    Materials.setMtrlPlateCoords({ angle: 0 }, id);
+    Materials.setMaterialProps({ angle: 0 }, id);
   }, []);
 
-  const handleSetLayer = useCallback((id: number) => {
-    Materials.setMtrlPlateCoords({ angle: 0 }, id);
+  const handleSetLayer = useCallback((moveLayer: string, id: number) => {
+    Materials.setMaterialProps({ moveLayer }, id);
   }, []);
 
   const handleClearActive = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -50,6 +50,7 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const renderItem = (item: TSelectedMaterial) => {
     return (
       <BaseMaterialViewer
+        key={item.id}
         item={item}
         activeID={Materials.plateWithControls}
         onMove={handleChangeCoords}

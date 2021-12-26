@@ -8,7 +8,6 @@ import { SideContainer } from 'components/layout/leftColumn/container';
 import { Button } from 'components/button';
 import { DropDown } from 'components/dropdown';
 import { WoodPicker } from 'components/platePikers/woodPicker';
-import { LeftCol } from './leftCol';
 import { UPLOAD_IMG_MODAL } from '../../modals/uploadImage';
 
 export interface TMaterialColProps {
@@ -21,7 +20,7 @@ export const MaterialCol = observer(({ children }: TMaterialColProps) => {
     Modals.showModal(UPLOAD_IMG_MODAL);
   };
   return (
-    <LeftCol>
+    <>
       <SideContainer>
         <Accordion title="Выбранные материалы">
           some textsome textsome textsome textsome textsome textsome textsome textsome text
@@ -54,6 +53,6 @@ export const MaterialCol = observer(({ children }: TMaterialColProps) => {
           Добавить материал в калейдоскоп
         </Button>
       </div>
-    </LeftCol>
+    </>
   );
 });

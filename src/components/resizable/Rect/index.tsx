@@ -189,10 +189,15 @@ export default class Rect extends PureComponent<TRectProps> {
     }
   };
 
-  handleSetLayer = (e: React.MouseEvent) => {
-    const moveTo = (e.target as HTMLTextAreaElement).getAttribute('data-To');
+  handleSetLayerUP = () => {
     if (typeof this.props.onSetLayer === 'function') {
-      this.props.onSetLayer(moveTo);
+      this.props.onSetLayer('UP'); // moveTo = UP | DOWN
+    }
+  };
+
+  handleSetLayerDOWN = () => {
+    if (typeof this.props.onSetLayer === 'function') {
+      this.props.onSetLayer('DOWN'); // moveTo = UP | DOWN
     }
   };
 
@@ -258,12 +263,12 @@ export default class Rect extends PureComponent<TRectProps> {
           <div
             className="control__box liftUP"
             style={{ transform: `rotate(-${rotateAngle}deg)`, width: '22px', height: '22px' }}>
-            <LiftUP fill={color} onClick={this.handleResetRotation} style={{ height: '22px' }} data-to="UP" />
+            <LiftUP fill={color} onClick={this.handleSetLayerUP} style={{ height: '22px' }} data-to="UP" />
           </div>
           <div
             className="control__box moveDOWN"
             style={{ transform: `rotate(-${rotateAngle}deg)`, width: '22px', height: '22px' }}>
-            <MoveDOWN fill={color} onClick={this.handleResetRotation} style={{ height: '22px' }} data-to="DOWN" />
+            <MoveDOWN fill={color} onClick={this.handleSetLayerDOWN} style={{ height: '22px' }} data-to="DOWN" />
           </div>
         </div>
 
