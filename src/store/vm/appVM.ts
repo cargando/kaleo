@@ -7,6 +7,7 @@ export interface TAppVM {
   topLineTab: number;
   isMainPage: boolean;
   mainCellWidth?: number; // HTMLElement;
+  activeLeftStep: number;
 }
 
 export enum TopLineTabs {
@@ -24,6 +25,8 @@ export class AppVM implements TAppVM {
 
   public mainCellWidth = null;
 
+  public activeLeftStep = 0;
+
   constructor(initialState?: TResponseData) {
     makeAutoObservable(this);
   }
@@ -34,6 +37,14 @@ export class AppVM implements TAppVM {
 
   public get activeTab() {
     return this.topLineTab;
+  }
+
+  public get leftColStep() {
+    return this.activeLeftStep;
+  }
+
+  public set leftColStep(step) {
+    this.activeLeftStep = step;
   }
 
   @computed public get mainCell() {
@@ -52,6 +63,14 @@ export class AppVM implements TAppVM {
     runInAction(() => {
       this.topLineTab = tabID;
     });
+  };
+
+  @action nextLeftStep = () => {
+    this.activeLeftStep += 1;
+  };
+
+  @action prevLeftStep = () => {
+    this.activeLeftStep -= 1;
   };
 
   // @action.bound private updateData(data: Array<any>) {

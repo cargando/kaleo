@@ -1,51 +1,58 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
-import { MaterialsStoreVM } from 'store/vm/materialVM';
-import { MaterialsTP, TMaterial } from 'store/types';
+import { MTRL } from 'store/types';
 import './styles.scss';
 import { BasePlatePicker } from '../basePlatePicker';
-import { STOREs, TStore } from '../../../store';
-import { useResizeObserver, useStores } from '../../../hooks';
+import { TStore } from '../../../store';
+import { useStores } from '../../../hooks';
 
 export interface TFooterControlPickerProps {
   title?: string;
-  vm: MaterialsStoreVM;
   sidePadding?: boolean;
-  activeID: number;
 }
 
-export const FooterControlPicker: React.FC<TFooterControlPickerProps> = observer(
-  ({ title, activeID = null, sidePadding = false, vm }) => {
-    const { App }: Pick<TStore, STOREs.App> = useStores();
-    const footerPickerRef = useRef(null);
+export const FooterControlPicker: React.FC<TFooterControlPickerProps> = observer(({ title, sidePadding = false }) => {
+  const { App, Materials }: Partial<TStore> = useStores();
+  const footerPickerRef = useRef(null);
 
-    const handleClickItem = (e: React.MouseEvent<HTMLElement>) => {
+  const handleClickItem = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
       const target = e.currentTarget as HTMLTextAreaElement;
       const id = target.getAttribute('data-id');
-      vm.setSelected(+id, MaterialsTP.MTRL_GENERATED);
-    };
+      Materials.setActivePlate(id ? +id : null);
+      Materials.setSelectedFilters(+id, MTRL.GENERATED);
+    },
+    [Materials.Selected(MTRL.GENERATED)],
+  );
 
-    useEffect(() => {
-      if (footerPickerRef.current) {
-        footerPickerRef.current.style.width = `${App.mainCell}px`;
-      }
-    }, [App.mainCell, App.mainCell]);
+  const handleDeleteItem = useCallback(
+    (id: number) => {
+      console.log('DELETE', id);
+      Materials.removeGeneratedItem(id);
+    },
+    [Materials.Selected(MTRL.GENERATED)],
+  );
 
-    return (
-      <div ref={footerPickerRef} className="footer-picker">
-        <div className="footer-picker__body">
-          <BasePlatePicker
-            title={title}
-            titleSelected={vm.selectedName(MaterialsTP.MTRL_GENERATED)}
-            data={vm?.Data(MaterialsTP.MTRL_GENERATED)}
-            selectedItems={vm.Selected(MaterialsTP.MTRL_GENERATED)}
-            onItemClick={handleClickItem}
-            isMultiSelect={vm.Multi(MaterialsTP.MTRL_GENERATED)}
-            singleLine
-            shiftTop
-          />
-        </div>
+  useEffect(() => {
+    if (footerPickerRef.current) {
+      footerPickerRef.current.style.width = `${App.mainCell}px`;
+    }
+  }, [App.mainCell]);
+
+  return (
+    <div ref={footerPickerRef} className="footer-picker">
+      <div className="footer-picker__body">
+        <BasePlatePicker
+          title={title}
+          titleSelected={Materials.selectedName(MTRL.GENERATED)}
+          data={Materials?.Data(MTRL.GENERATED)}
+          selectedItems={Materials.Selected(MTRL.GENERATED)}
+          onItemClick={handleClickItem}
+          onRemoveControlClick={handleDeleteItem}
+          isMultiSelect={Materials.Multi(MTRL.GENERATED)}
+          isFooter
+        />
       </div>
-    );
-  },
-);
+    </div>
+  );
+});

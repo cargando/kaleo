@@ -1,7 +1,7 @@
 import React, { useReducer, useRef, useEffect, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { MaterialsStoreVM } from 'store/vm/materialVM';
-import { MaterialsTP, TMaterial } from 'store/types';
+import { MTRL, TMaterial } from 'store/types';
 import { BasePlatePicker } from '../basePlatePicker';
 
 export interface TMaterialPickerProps {
@@ -14,16 +14,16 @@ export const MaterialPicker: React.FC<TMaterialPickerProps> = observer(({ title,
   const handleClickItem = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.currentTarget as HTMLTextAreaElement;
     const id = target.getAttribute('data-id');
-    vm.setSelected(+id, MaterialsTP.MTRL_TYPE);
+    vm.setSelectedFilters(+id, MTRL.ALL_TYPES);
   };
   return (
     <BasePlatePicker
       title={title}
-      titleSelected={vm.selectedName(MaterialsTP.MTRL_TYPE)}
-      data={vm.Data(MaterialsTP.MTRL_TYPE)}
-      selectedItems={vm.Selected(MaterialsTP.MTRL_TYPE)}
+      titleSelected={vm.selectedName(MTRL.ALL_TYPES)}
+      data={vm.Data(MTRL.ALL_TYPES)}
+      selectedItems={vm.Selected(MTRL.ALL_TYPES)}
       onItemClick={handleClickItem}
-      isMultiSelect={vm.Multi(MaterialsTP.MTRL_TYPE)}
+      isMultiSelect={vm.Multi(MTRL.ALL_TYPES)}
       sidePadding={sidePadding}
       twoCols
       shiftTop

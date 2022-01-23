@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { STOREs, TStore } from '../../../store';
 import { useStores } from '../../../hooks';
 import { BasePlatePicker } from '../basePlatePicker';
-import { MaterialsTP } from '../../../store/types';
+import { MTRL } from '../../../store/types';
 
 export interface TWoodPickerProps {
   title: string;
@@ -19,7 +19,7 @@ export const WoodPicker: React.FC<TWoodPickerProps> = observer(({ title, sidePad
   const handleClickItem = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.currentTarget as HTMLTextAreaElement;
     const id = target.getAttribute('data-id');
-    Materials.setSelected(+id, MaterialsTP.VENEER);
+    Materials.setSelectedFilters(+id, MTRL.VENEER);
   };
 
   useEffect(
@@ -32,11 +32,11 @@ export const WoodPicker: React.FC<TWoodPickerProps> = observer(({ title, sidePad
   return (
     <BasePlatePicker
       title={title}
-      titleSelected={Materials.selectedName(MaterialsTP.VENEER)}
-      data={Materials?.Data(MaterialsTP.VENEER)}
-      selectedItems={Materials.Selected(MaterialsTP.VENEER)}
+      titleSelected={Materials.selectedName(MTRL.VENEER)}
+      data={Materials?.Data(MTRL.VENEER)}
+      selectedItems={Materials.Selected(MTRL.VENEER)}
       onItemClick={handleClickItem}
-      isMultiSelect={Materials.Multi(MaterialsTP.VENEER)}
+      isMultiSelect={Materials.Multi(MTRL.VENEER)}
       sidePadding={sidePadding}
     />
   );

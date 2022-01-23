@@ -4,7 +4,7 @@ import { STOREs, TStore } from 'store';
 import { useStores } from 'hooks';
 import { FooterControlPicker } from 'components/platePikers/footerPlate';
 import { BaseMaterialViewer } from 'components/materialView';
-import { MaterialsTP, TSelectedMaterial } from 'store/types';
+import { MTRL, TSelectedMaterial } from 'store/types';
 import { toJS } from 'mobx';
 
 export interface TMaterialTabProps {
@@ -31,6 +31,7 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const handleChangeActive = useCallback((id: number) => {
     const res = Materials.plateWithControls && Materials.plateWithControls === id ? null : id;
     Materials.setActivePlate(res);
+    Materials.setSelectedFilters(+res, MTRL.GENERATED);
   }, []);
 
   const handleResetRotation = useCallback((id: number) => {
@@ -44,6 +45,7 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const handleClearActive = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === canvasRef.current) {
       Materials.setActivePlate(null);
+      Materials.setSelectedFilters(null, MTRL.GENERATED);
     }
   }, []);
 
@@ -52,6 +54,7 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
       <BaseMaterialViewer
         key={item.id}
         item={item}
+        maxLayer={Materials.selectedLayerRange.max}
         activeID={Materials.plateWithControls}
         onMove={handleChangeCoords}
         onResize={handleResize}
@@ -63,13 +66,14 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
     );
   };
 
+  const content = Materials?.Data?.(MTRL.GENERATED)?.length && Materials.Data(MTRL.GENERATED).map(renderItem);
+
   return (
     <>
       <div ref={canvasRef} className="mtrl" onClick={handleClearActive}>
-        {Materials?.Data?.(MaterialsTP.MTRL_GENERATED)?.length &&
-          Materials.Data(MaterialsTP.MTRL_GENERATED).slice(4, 8).map(renderItem)}
+        {content}
       </div>
-      <FooterControlPicker vm={Materials} activeID={Materials.plateWithControls} />
+      <FooterControlPicker />
     </>
   );
 });

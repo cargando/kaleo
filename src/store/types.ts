@@ -1,4 +1,4 @@
-export enum MaterialsTP {
+export enum MTRL {
   VENEER, // шпон
   WOOD, // тип дерева (береза, дуб, и пр)
   COLOR, // цвет
@@ -9,8 +9,8 @@ export enum MaterialsTP {
   PLASTIC,
   METAL,
   PAPER,
-  MTRL_TYPE, // все виды материалов
-  MTRL_GENERATED, // сгенерированный набор материалов
+  ALL_TYPES, // все виды материалов
+  GENERATED, // сгенерированный набор материалов
 }
 
 export enum APIStatus {
@@ -31,9 +31,9 @@ export interface TMinMax {
   max: number;
 }
 
-export type TDataList = Partial<Record<MaterialsTP, any[]>>;
-export type TSelectedList = Partial<Record<MaterialsTP, number[]>>;
-export type TMultiSelectedList = Partial<Record<MaterialsTP, boolean>>;
+export type TDataList = Partial<Record<MTRL, any[]>>;
+export type TSelectedList = Partial<Record<MTRL, number[]>>;
+export type TMultiSelectedList = Partial<Record<MTRL, boolean>>;
 
 export interface TMaterialVMProps extends TResponseData {
   // veneerData: any;

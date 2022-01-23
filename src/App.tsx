@@ -9,18 +9,16 @@ interface TAppProps {
 }
 
 const App = inject('Materials')(
-  observer(
-    ({ Materials, children }: TAppProps): ReactElement => {
-      // useLayoutEffect(() => {
-      //   Materials.fetch();
-      // }, []); // eslint-disable-line
-      return (
-        <Layout>
-          <Suspense fallback={<Spinner bgColor="#efefef" width="50" fullCenter />}>{children}</Suspense>
-        </Layout>
-      );
-    },
-  ),
+  observer(({ Materials, children }: TAppProps): ReactElement => {
+    // useLayoutEffect(() => {
+    //   Materials.fetch();
+    // }, []); // eslint-disable-line
+    return (
+      <Layout>
+        <Suspense fallback={<Spinner bgColor="#efefef" width="50" fullCenter />}>{children}</Suspense>
+      </Layout>
+    );
+  }),
 );
 
 export default App;

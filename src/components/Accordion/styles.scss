@@ -40,6 +40,9 @@ $accordion-body-anim-timing: 350ms;
     transition: max-height $accordion-body-anim-timing;
     &-content {
       padding-top: 21px;
+      &_small {
+        padding-top: 17px;
+      }
     }
     &_opened {
       max-height: 3000px;
@@ -56,7 +59,7 @@ $accordion-body-anim-timing: 350ms;
     font-weight: bold;
     font-size: 15px;
     line-height: 20px;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.05em;
     flex-grow: 1;
   }
   &__opener {

@@ -93,7 +93,7 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
   };
 
   render() {
-    const { activeID, item = {} as TSelectedMaterial, maxLayer = 100 } = this.props;
+    const { activeID, item = {} as TSelectedMaterial, maxLayer = 0 } = this.props;
     const { id, srcLarge, bgScale, height, width, zIndex = 1, top = 0, left = 0, angle = 0 } = item;
 
     let backgroundSize = 'auto';

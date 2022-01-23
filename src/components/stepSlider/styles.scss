@@ -1,0 +1,9 @@
+$anim-timing: 200ms ease;
+
+.step {
+  &-slider {
+    display: flex;
+    position: relative;
+    transition: left $anim-timing;
+  }
+}

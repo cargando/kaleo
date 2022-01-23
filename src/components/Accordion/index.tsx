@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './styles.scss';
 import { useHtmlToggle } from '../../hooks';
 import { Bubble } from '../bubble/inde';
+import './styles.scss';
 
-export * from '../layout/leftColumn/container';
+// export * from '../layout/leftColumn/container';
 
 export interface TAccordionProps {
   title: string;
@@ -16,6 +16,7 @@ export interface TAccordionProps {
   hideOpener?: boolean;
   bubble?: boolean;
   bubbleCnt?: number;
+  pTop?: 'S' | 'M' | 'L';
 }
 
 export const Accordion: React.FC<TAccordionProps> = ({
@@ -27,6 +28,7 @@ export const Accordion: React.FC<TAccordionProps> = ({
   hideOpener = false,
   bubble = false,
   bubbleCnt = 0,
+  pTop = 'L',
   style,
   children,
 }) => {
@@ -68,7 +70,9 @@ export const Accordion: React.FC<TAccordionProps> = ({
       </div>
       <div className={`accordion__border ${sidePadding ? 'accordion__padding-sm' : ''}`} />
       <div ref={bodyRef} className="accordion__body">
-        <div className="accordion__body-content">{children}</div>
+        <div className={`accordion__body-content ${pTop === 'M' ? 'accordion__body-content_small' : ''}`}>
+          {children}
+        </div>
       </div>
     </div>
   );

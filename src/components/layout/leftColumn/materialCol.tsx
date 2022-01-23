@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { STOREs, TStore } from 'store';
 import { useStores } from 'hooks';
@@ -15,10 +15,15 @@ export interface TMaterialColProps {
 }
 
 export const MaterialCol = observer(({ children }: TMaterialColProps) => {
-  const { Modals }: Pick<TStore, STOREs.Modals> = useStores();
-  const handleClickOpenModal = () => {
+  const { Modals, App }: Partial<TStore> = useStores();
+
+  const handleClickOpenModal = useCallback(() => {
     Modals.showModal(UPLOAD_IMG_MODAL);
-  };
+  }, []);
+
+  const handleClickBack2Filters = useCallback(() => {
+    App.prevLeftStep();
+  }, []);
   return (
     <>
       <SideContainer>
@@ -51,6 +56,11 @@ export const MaterialCol = observer(({ children }: TMaterialColProps) => {
       <div className="app__container" style={{ marginTop: 'auto' }}>
         <Button onClick={handleClickOpenModal} size="L">
           Добавить материал в калейдоскоп
+        </Button>
+      </div>
+      <div className="app__container" style={{ marginTop: '21px' }}>
+        <Button onClick={handleClickBack2Filters} outline>
+          Вернуться к фильтрам
         </Button>
       </div>
     </>

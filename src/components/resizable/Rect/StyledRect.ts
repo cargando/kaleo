@@ -2,7 +2,7 @@ import styled from 'styled-components/macro';
 
 export default styled.div`
   position: absolute;
-  border: 2px solid ${(props) => props.color};
+  border: 2px dashed ${(props) => props.color};
   touch-action: none;
   .square {
     position: absolute;

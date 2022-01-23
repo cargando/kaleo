@@ -48,4 +48,9 @@
   &-size-l {
     width: 433px;
   }
+  &[disabled] {
+    background-color: $disabled-accent-color !important;
+    border-color: $disabled-accent-color !important;
+    cursor: not-allowed;
+  }
 }

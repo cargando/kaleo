@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
-import { MaterialsTP, TMaterial, TWood, TColor } from 'store/types';
+import { MTRL, TMaterial, TWood, TColor, TSelectedMaterial } from 'store/types';
 import { ReactComponent as RemoveItemControl } from 'assets/icons/removeItemControl.svg';
 
 import './styles.scss';
@@ -9,14 +9,14 @@ export interface TBasePlatePickerProps {
   title?: string;
   titleSelected?: string;
   isMultiSelect?: boolean;
-  data: TMaterial[];
+  data: TSelectedMaterial[];
   selectedItems: number[];
   onItemClick?: (e: React.MouseEvent<HTMLElement>) => void;
-  onRemoveControlClick?: (e: React.MouseEvent<any>) => void;
+  onRemoveControlClick?: (id: number) => void;
   sidePadding?: boolean;
   twoCols?: boolean;
-  singleLine?: boolean;
   shiftTop?: boolean;
+  isFooter?: boolean;
 }
 
 export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
@@ -31,7 +31,7 @@ export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
     sidePadding = false,
     twoCols = false,
     shiftTop = false,
-    singleLine = false,
+    isFooter = false,
   }) => {
     const handleClickItem = (e: React.MouseEvent<HTMLElement>) => {
       if (typeof onItemClick === 'function') {
@@ -40,16 +40,25 @@ export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
       }
     };
     const smallItemsCls = twoCols ? '-small' : '';
+    const footerClass = isFooter ? '-footer' : '';
 
-    const renderPlate = (item: TMaterial, isItemSelected: boolean, index: number) => {
+    const handleRemoveItemClick = useCallback((e: React.MouseEvent<any>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      const target = e.currentTarget as HTMLTextAreaElement;
+      const id = target.getAttribute('data-id');
+      onRemoveControlClick(+id);
+    }, []);
+
+    const renderPlate = (item: TSelectedMaterial, isItemSelected: boolean, index: number) => {
       const props: Record<string, any> = {
         key: item.id,
         'data-id': item.id,
         onClick: handleClickItem,
-        className: `mat-picker__item ${isItemSelected ? `mat-picker__item-selected${smallItemsCls}` : ''} ${
-          twoCols ? 'mat-picker__item-small' : ''
-        } ${singleLine ? 'mat-picker__item-remove-ctrl' : ''}`,
-        style: {},
+        className: `mat-picker__item ${
+          isItemSelected ? `mat-picker__item-selected${smallItemsCls || footerClass}` : ''
+        } ${twoCols ? 'mat-picker__item-small' : ''} ${isFooter ? 'mat-picker__item-remove-ctrl' : ''}`,
+        style: { cursor: 'pointer' },
       };
       if (item?.src) {
         props.style.backgroundImage = `url(${item.src}`;
@@ -64,27 +73,30 @@ export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
         <div key={item.id} className="mat-picker__item-cover">
           <div className="flex">
             <div {...props} />
-            <span
-              className={`mat-picker__item-small-title ${
-                isItemSelected ? 'mat-picker__item-small-title-selected' : ''
-              }`}>
+            <span onClick={handleClickItem} data-id={item.id} className={`mat-picker__item-small-title `}>
               {item.title}
             </span>
           </div>
         </div>
       ) : (
-        <div {...props}>
-          {singleLine ? <RemoveItemControl className="mat-picker__remove-ctrl" onClick={onRemoveControlClick} /> : null}
+        <div key={item.id} {...props} data-id={item.id} data-index={item.zIndex}>
+          {isFooter ? (
+            <RemoveItemControl
+              className={`mat-picker__remove-ctrl ${isItemSelected ? 'mat-picker__remove-ctrl_active' : ''}`}
+              onClick={handleRemoveItemClick}
+              data-id={item.id}
+            />
+          ) : null}
         </div>
       );
     };
 
-    const plates = data?.map((item: TMaterial, index: number) =>
+    const plates = data?.map((item: TSelectedMaterial, index: number) =>
       renderPlate(item, selectedItems?.indexOf(item.id) !== -1, index),
     );
 
     return (
-      <div className="mat-picker">
+      <div className="mat-picker rrr">
         {title && (
           <div className={`mat-picker__head ${sidePadding ? 'mat-picker__padding-sm' : ''}`}>
             <div className="mat-picker__title">{title}</div>
@@ -99,7 +111,7 @@ export const BasePlatePicker: React.FC<TBasePlatePickerProps> = observer(
         )}
         <div
           className={`mat-picker__body ${shiftTop ? 'mat-picker__body-shift-top' : ''} ${
-            singleLine ? 'mat-picker__body-nomargin' : ''
+            isFooter ? 'mat-picker__body-nomargin' : ''
           }`}>
           {plates}
         </div>

@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
 
-export enum TDirections {
+export enum TDirection {
   UP = 'UP',
   DOWN = 'DOWN',
   LEFT = 'LEFT',
   RIGT = 'RIGT',
+  DESC = 'DESC',
+  ASC = 'ASC',
 }
 
 export interface TContainerCoords {

@@ -1,6 +1,6 @@
 import { action, computed, makeAutoObservable, observable } from 'mobx';
 import {
-  MaterialsTP,
+  MTRL,
   TDataList,
   TMaterialVMProps,
   TMultiSelectedList,
@@ -9,7 +9,7 @@ import {
   TMinMax,
 } from '../types';
 import { ColorsStub, GeneratedStub, MaterialStub, VeneerStub } from '../stub';
-import { TDirections, TElementCoords, TElementSquare } from '../../utils/types';
+import { TDirection, TElementCoords, TElementSquare } from '../../utils/types';
 
 export class MaterialsStoreVM implements TMaterialVMProps {
   public searchQuery = '';
@@ -22,31 +22,31 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   public plateWithControls: number = null;
 
-  public selectedLayerRange: TMinMax = observable({ min: 0, max: 0 });
+  public selectedLayerRange: TMinMax = observable({ min: 0, max: 15 });
 
   constructor() {
     makeAutoObservable(this);
 
-    this.isMultiSelectList[MaterialsTP.VENEER] = false;
-    this.isMultiSelectList[MaterialsTP.COLOR] = true;
-    this.isMultiSelectList[MaterialsTP.MTRL_TYPE] = true;
-    this.isMultiSelectList[MaterialsTP.MTRL_GENERATED] = true;
+    this.isMultiSelectList[MTRL.VENEER] = false;
+    this.isMultiSelectList[MTRL.COLOR] = true;
+    this.isMultiSelectList[MTRL.ALL_TYPES] = true;
+    this.isMultiSelectList[MTRL.GENERATED] = false;
   }
 
-  @computed public Data = (tp: MaterialsTP) => {
+  @computed public Data = (tp: MTRL) => {
     return this.dataList[tp];
   };
 
-  @computed public Selected = (tp: MaterialsTP) => {
+  @computed public Selected = (tp: MTRL) => {
     this.checkList(tp);
     return this.selectedList[tp];
   };
 
-  @computed public Multi = (tp: MaterialsTP) => {
+  @computed public Multi = (tp: MTRL) => {
     return this.isMultiSelectList[tp] || false;
   };
 
-  @computed public selectedName = (tp: MaterialsTP) => {
+  @computed public selectedName = (tp: MTRL) => {
     if (!this?.dataList?.[tp]) {
       return null;
     }
@@ -61,13 +61,17 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     return res;
   };
 
-  @computed public selectedCnt = (tp: MaterialsTP): number => {
+  @computed public selectedCnt = (tp: MTRL): number => {
     return this?.selectedList?.[tp]?.length;
   };
 
+  @computed public get isFilterOn(): boolean {
+    return !!(this?.selectedList?.[MTRL.COLOR]?.length || this?.selectedList?.[MTRL.ALL_TYPES]?.length);
+  }
+
   @computed public sortGenerated = (): TElementSquare[] => {
-    const list = this.dataList[MaterialsTP.MTRL_GENERATED];
-    const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
+    const list = this.dataList[MTRL.GENERATED];
+    const len = this.dataList[MTRL.GENERATED].length;
     if (!len) return [];
     const tmp: TElementSquare[] = [];
     for (let i = 0; i < len; i++) {
@@ -81,12 +85,12 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     return tmp.sort((a, b) => a.square - b.square);
   };
 
-  @computed public findById(id: number, tp: MaterialsTP) {
+  @computed public findById(id: number, tp: MTRL) {
     let res = null;
-    const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
+    const len = this.dataList[MTRL.GENERATED].length;
     for (let i = 0; i < len; i++) {
-      if (this.dataList[MaterialsTP.MTRL_GENERATED][i].id === id) {
-        res = this.dataList[MaterialsTP.MTRL_GENERATED][i];
+      if (this.dataList[MTRL.GENERATED][i].id === id) {
+        res = this.dataList[MTRL.GENERATED][i];
         break;
       }
     }
@@ -94,6 +98,12 @@ export class MaterialsStoreVM implements TMaterialVMProps {
   }
 
   private sortPick = (tp: 'SQUARE' | 'COLOR') => {};
+
+  @action public removeGeneratedItem(id: number) {
+    const newList = this.dataList[MTRL.GENERATED].filter((item) => item.id !== id);
+
+    this.dataList[MTRL.GENERATED] = observable.array(newList);
+  }
 
   @action public setMaterialProps = (coords: TElementCoords, id: number) => {
     const {
@@ -105,10 +115,10 @@ export class MaterialsStoreVM implements TMaterialVMProps {
       zIndex = null,
       moveLayer = null,
     } = coords;
-    const len = this.dataList[MaterialsTP.MTRL_GENERATED].length;
+    const len = this.dataList[MTRL.GENERATED].length;
     for (let i = 0; i < len; i++) {
-      if (this.dataList[MaterialsTP.MTRL_GENERATED][i].id === id) {
-        const newVal = this.dataList[MaterialsTP.MTRL_GENERATED][i];
+      if (this.dataList[MTRL.GENERATED][i].id === id) {
+        const newVal = this.dataList[MTRL.GENERATED][i];
         newVal.top = top ?? newVal.top;
         newVal.left = left ?? newVal.left;
         newVal.width = width ?? newVal.width;
@@ -116,16 +126,16 @@ export class MaterialsStoreVM implements TMaterialVMProps {
         newVal.angle = angle ?? newVal.angle;
         if (moveLayer) {
           newVal.zIndex = this.getCorrectLayerIndex(
-            this.dataList[MaterialsTP.MTRL_GENERATED],
+            this.dataList[MTRL.GENERATED],
             newVal.id,
             newVal.zIndex ?? 0,
-            moveLayer.toUpperCase() as TDirections,
+            moveLayer.toUpperCase() as TDirection,
           );
           console.log('newVal', newVal.zIndex);
         } else {
           newVal.zIndex = zIndex ?? newVal.zIndex;
         }
-        this.dataList[MaterialsTP.MTRL_GENERATED][i] = observable({ ...newVal });
+        this.dataList[MTRL.GENERATED][i] = observable({ ...newVal });
 
         break;
       }
@@ -145,7 +155,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     this.searchQuery = query;
   };
 
-  @action public setSelected = (id: number, tp: MaterialsTP) => {
+  @action public setSelectedFilters = (id: number, tp: MTRL) => {
     this.checkList(tp);
     const index = this.selectedList[tp].indexOf(id);
     if (index !== -1) {
@@ -158,6 +168,12 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     }
   };
 
+  @action public resetSelectedFilters = () => {
+    Object.keys(this.selectedList).forEach((key) => {
+      this.selectedList[key].length = 0;
+    });
+  };
+
   public fetch = () => {
     this.fetchMaterials();
     this.fetchColors();
@@ -165,30 +181,49 @@ export class MaterialsStoreVM implements TMaterialVMProps {
   };
 
   @action private fetchVeneer = () => {
-    this.dataList[MaterialsTP.VENEER] = observable.array(VeneerStub);
+    this.dataList[MTRL.VENEER] = observable.array(VeneerStub);
   };
 
   @action private fetchMaterials = () => {
-    this.dataList[MaterialsTP.MTRL_TYPE] = observable.array(MaterialStub);
+    this.dataList[MTRL.ALL_TYPES] = observable.array(MaterialStub);
 
     // TODO -------- SELECTED MATERIALS REMOVE ------------
-    this.dataList[MaterialsTP.MTRL_GENERATED] = observable.array(GeneratedStub);
-    const { min, max } = this.minMaxLayers(this.dataList[MaterialsTP.MTRL_GENERATED]);
-    this.setMinMaxLayer(min, max);
+    const sortedList = this.sortMaterialsByDepth(GeneratedStub, TDirection.DESC);
+    this.dataList[MTRL.GENERATED] = observable.array(sortedList);
+    // const { min, max } = this.minMaxLayers(this.dataList[MTRL.GENERATED]);
+    // this.setMinMaxLayer(min, max);
     // TODO -------- END REMOVE ------------
+    console.log('Sorted: ', sortedList);
   };
 
   @action private fetchColors = () => {
-    this.dataList[MaterialsTP.COLOR] = observable.array(ColorsStub);
+    this.dataList[MTRL.COLOR] = observable.array(ColorsStub);
   };
 
-  private checkList = (tp: MaterialsTP) => {
+  private sortMaterialsByDepth = (
+    list: TSelectedMaterial[],
+    direction: TDirection = TDirection.ASC,
+  ): TSelectedMaterial[] => {
+    const len = list.length;
+    const newList = list
+      .sort((a, b) => {
+        return direction === TDirection.ASC ? +a.zIndex - +b.zIndex : +b.zIndex - +a.zIndex;
+      })
+      .map((item: TSelectedMaterial, index) => {
+        item.zIndex = direction === TDirection.ASC ? index : len - index;
+        return item;
+      });
+
+    return newList;
+  };
+
+  private checkList = (tp: MTRL) => {
     if (typeof this.selectedList[tp] === 'undefined') {
       this.selectedList[tp] = observable.array([]);
     }
   };
 
-  private normalizeData = (tp: MaterialsTP) => {
+  private normalizeData = (tp: MTRL) => {
     const res: Record<string, TSelectedMaterial> = {};
     this.dataList[tp].forEach((item) => {
       res[`${item.id}`] = item;
@@ -213,7 +248,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
         maxId = list[i].id;
       }
     }
-
+    this.setMinMaxLayer(min, max);
     return {
       min,
       minId,
@@ -222,16 +257,16 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     };
   };
 
-  private getCorrectLayerIndex = (list: TSelectedMaterial[], id: number, curLayer: number, direction: TDirections) => {
+  private getCorrectLayerIndex = (list: TSelectedMaterial[], id: number, curLayer: number, direction: TDirection) => {
     const { min, minId, max, maxId } = this.minMaxLayers(list);
 
-    if (direction === TDirections.UP && id !== maxId) {
+    if (direction === TDirection.UP && id !== maxId) {
       return curLayer + 1;
-    } else if (direction === TDirections.UP && id === maxId) {
+    } else if (direction === TDirection.UP && id === maxId) {
       return max;
     }
 
-    if (direction === TDirections.DOWN && id !== minId) {
+    if (direction === TDirection.DOWN && id !== minId) {
       return curLayer - 1;
     }
 

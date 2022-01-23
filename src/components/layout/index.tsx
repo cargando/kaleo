@@ -5,6 +5,9 @@ import { GenerateCol, MaterialCol, LeftCol } from './leftColumn';
 import { UploadImages } from '../modals/uploadImage';
 import { STOREs, TStore } from '../../store';
 import { useResizeObserver, useStores } from '../../hooks';
+import { StepSlider } from '../stepSlider';
+
+const LEFT_COL_STEPS: React.ReactNode[] = [GenerateCol, MaterialCol];
 
 export interface TLayoutProps {
   children?: React.ReactNode;
@@ -26,7 +29,7 @@ export const Layout = observer(({ children }: TLayoutProps) => {
       <UploadImages />
       <div className="app">
         <LeftCol>
-          <GenerateCol />
+          <StepSlider content={LEFT_COL_STEPS} />
         </LeftCol>
         <div className="app__right-col">
           <TopLine />

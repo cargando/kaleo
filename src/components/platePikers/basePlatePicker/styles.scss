@@ -49,6 +49,7 @@
     &-nomargin {
       margin: 0;
       width: 100%;
+      padding-top: 5px;
     }
   }
   &__item {
@@ -89,6 +90,21 @@
           top: -4px;
         }
       }
+      &-footer {
+        &::after {
+          display: block;
+          position: relative;
+          z-index: 100;
+          content: '';
+          border: 2px solid $accent-color;
+          box-sizing: border-box;
+          width: 68px;
+          height: 68px;
+          border-radius: 14px;
+          left: -5px;
+          top: -47px;
+        }
+      }
     }
     &-small {
       display: inline-block;
@@ -105,6 +121,7 @@
         color: $text-color-light;
         padding-left: 1px;
         padding-top: 8px;
+        cursor: pointer;
         &-selected {
           color: $dark-color;
         }
@@ -119,12 +136,16 @@
     }
   }
   &__remove-ctrl {
-    opacity: 0;
+    display: none;
     margin-top: 16px;
+    margin-left: 15px;
     cursor: pointer;
+    &_active {
+      display: block;
+    }
   }
 }
 
-.mat-picker__item:hover > svg {
-  opacity: 1;
-}
+//.mat-picker__item:hover > svg {
+//  display: block;
+//}
