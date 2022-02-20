@@ -11,9 +11,44 @@
   &__body {
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 15px 10px 5px 10px;
   }
   &__extend {
+  }
+  &__item {
+    box-sizing: content-box;
+    display: inline-block;
+    width: 58px;
+    height: 58px;
+    border-radius: 10px;
+    border: 0;
+    background-color: #c2c1c6;
+    margin-right: 17px;
+    &-selected {
+      &::after {
+        display: block;
+        position: relative;
+        z-index: 100;
+        content: '';
+        border: 2px solid $accent-color;
+        box-sizing: border-box;
+        width: 68px;
+        height: 68px;
+        border-radius: 14px;
+        left: -5px;
+        top: -36px;
+      }
+    }
+  }
+  &__remove-ctrl {
+    position: relative;
+    cursor: pointer;
+    right: -45px;
+    top: -13px;
+    z-index: 101;
   }
 }

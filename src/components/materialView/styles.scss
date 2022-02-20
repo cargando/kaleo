@@ -1,11 +1,32 @@
 @import 'styles/vars';
 
+@keyframes blinkRed {
+  from {
+    border: 5px dotted transparent;
+  }
+
+  to {
+    border: 5px dotted #aa0000;
+  }
+}
+
 .mtrl {
   display: block;
   width: 100%;
-  height: 100%;
-  boxsizing: border-box;
+  height: $material-block-height;
+  box-sizing: border-box;
   position: relative;
+  border: 5px dotted transparent;
+  transition: border ease-out 250ms;
+  &_bordered {
+    border: 5px dotted $accent-color;
+    &-blink {
+      animation-duration: 350ms;
+      animation-name: blinkRed;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+  }
   &__canvas {
     flex: 0 0 100%; /* Let it fill the entire space horizontally */
     height: 100%;

@@ -1,8 +1,8 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { STOREs, TStore } from 'store';
 import { useStores } from 'hooks';
-import { FooterControlPicker } from 'components/platePikers/footerPlate';
+import { FooterPicker } from 'components/platePikers/footerPlate';
 import { BaseMaterialViewer } from 'components/materialView';
 import { MTRL, TSelectedMaterial } from 'store/types';
 import { toJS } from 'mobx';
@@ -15,8 +15,20 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   const { App, Materials }: Partial<TStore> = useStores();
   const canvasRef = useRef(null);
 
-  const handleChangeCoords = useCallback((x?: number, y?: number, id?: number) => {
-    Materials.setMaterialProps({ left: x, top: y }, id);
+  const handleChangeCoords = useCallback(
+    (x?: number, y?: number, id?: number) => {
+      Materials.setMaterialProps({ left: x, top: y, isDragging: true }, id);
+      if (canvasRef.current && Materials.isOverlap({ left: x, top: y }, id)) {
+        canvasRef.current.classList.add('mtrl_bordered-blink');
+      } else {
+        canvasRef.current.classList.remove('mtrl_bordered-blink');
+      }
+    },
+    [canvasRef.current],
+  );
+
+  const handleDragEnd = useCallback(() => {
+    Materials.finishDrag();
   }, []);
 
   const handleResize = useCallback((t: number, l: number, w: number, h: number, id?: number) => {
@@ -49,6 +61,24 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
     }
   }, []);
 
+  useEffect(() => {
+    if (canvasRef.current) {
+      if (Materials.isDragging) {
+        canvasRef.current.classList.add('mtrl_bordered');
+      } else {
+        canvasRef.current.classList.remove('mtrl_bordered');
+      }
+    }
+  }, [canvasRef.current, Materials.isDragging]);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const { left, top, width, height } = canvasRef.current.getBoundingClientRect();
+      console.table({ left, top, width, height });
+      Materials.setRoot({ top, left, width, height });
+    }
+  }, [canvasRef.current]);
+
   const renderItem = (item: TSelectedMaterial) => {
     return (
       <BaseMaterialViewer
@@ -62,6 +92,7 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
         onResetRotation={handleResetRotation}
         onSetLayer={handleSetLayer}
         onClick={handleChangeActive}
+        onDragEnd={handleDragEnd}
       />
     );
   };
@@ -73,7 +104,7 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
       <div ref={canvasRef} className="mtrl" onClick={handleClearActive}>
         {content}
       </div>
-      <FooterControlPicker />
+      <FooterPicker />
     </>
   );
 });

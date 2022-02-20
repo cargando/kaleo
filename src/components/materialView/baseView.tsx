@@ -15,6 +15,7 @@ interface TBaseMaterialViewerProps {
   onResize: (t: number, l: number, w: number, h: number, id?: number) => void;
   onRotate: (v: number, id: number) => void;
   onResetRotation?: (id: number) => void;
+  onDragEnd?: () => void;
   onSetLayer?: (v: string, id: number) => void;
   onClick: (id: number) => void;
 }
@@ -152,7 +153,7 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
             onDrag={(dX, dY) => {
               this.props.onMove(left + dX, top + dY, id);
             }}
-            // onDragEnd={this.handleDragEnd}
+            onDragEnd={this.props.onDragEnd}
             className="mtrl__cover_active"
             color="#0038ff"
             zIndex={maxLayer + 1}

@@ -1,12 +1,13 @@
-import { action, computed, makeAutoObservable, observable } from 'mobx';
+import { action, computed, makeAutoObservable, observable, toJS } from 'mobx';
 import {
   MTRL,
+  TBox,
   TDataList,
   TMaterialVMProps,
+  TMinMax,
   TMultiSelectedList,
   TSelectedList,
   TSelectedMaterial,
-  TMinMax,
 } from '../types';
 import { ColorsStub, GeneratedStub, MaterialStub, VeneerStub } from '../stub';
 import { TDirection, TElementCoords, TElementSquare } from '../../utils/types';
@@ -14,15 +15,23 @@ import { TDirection, TElementCoords, TElementSquare } from '../../utils/types';
 export class MaterialsStoreVM implements TMaterialVMProps {
   public searchQuery = '';
 
-  public dataList: TDataList = observable({});
+  public dataList: TDataList = {};
 
-  public selectedList: TSelectedList = observable({});
+  public selectedList: TSelectedList = {};
 
-  public isMultiSelectList: TMultiSelectedList = observable({});
+  public isMultiSelectList: TMultiSelectedList = {};
 
   public plateWithControls: number = null;
 
-  public selectedLayerRange: TMinMax = observable({ min: 0, max: 15 });
+  public selectedLayerRange: TMinMax = { min: 0, max: 15 };
+
+  public isDragging = false;
+
+  // координаты плашки для всех перетаскиваемых материалов
+  public rootBox: TBox = { top: null, left: null, width: null, height: null };
+
+  // временное хранение ширины/высоты для перетаскиваемой плашки
+  private plateBox: { id?: number; width?: number; height?: number } = {};
 
   constructor() {
     makeAutoObservable(this);
@@ -33,8 +42,32 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     this.isMultiSelectList[MTRL.GENERATED] = false;
   }
 
+  public isOverlap = (box: Partial<TBox>, id: number): boolean => {
+    const { top, left, width, height } = this.rootBox;
+    let tl = false;
+    let br = false;
+    if (this.plateBox.id !== id) {
+      const res = this.findById(id, MTRL.GENERATED);
+      this.plateBox.id = id;
+      this.plateBox.width = res.width;
+      this.plateBox.height = res.height;
+    }
+    console.log('box', box.left, this.plateBox.width, this.rootBox.width);
+    if (top !== null && left !== null && width !== null && height !== null) {
+      br = box.left + this.plateBox.width > width || box.top + this.plateBox.height > height;
+      tl = box.top <= 0 || box.left <= 0;
+    } else if (top !== null && left !== null) {
+      tl = box.top <= 0 || box.left <= 0;
+    }
+    return tl || br;
+  };
+
   @computed public Data = (tp: MTRL) => {
     return this.dataList[tp];
+  };
+
+  @computed public DataSorted = (tp: MTRL, field: string) => {
+    return this.dataList[tp].sort((a, b) => a[field] - b[field]);
   };
 
   @computed public Selected = (tp: MTRL) => {
@@ -87,10 +120,10 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   @computed public findById(id: number, tp: MTRL) {
     let res = null;
-    const len = this.dataList[MTRL.GENERATED].length;
+    const len = this.dataList[tp].length;
     for (let i = 0; i < len; i++) {
-      if (this.dataList[MTRL.GENERATED][i].id === id) {
-        res = this.dataList[MTRL.GENERATED][i];
+      if (this.dataList[tp][i].id === id) {
+        res = this.dataList[tp][i];
         break;
       }
     }
@@ -98,6 +131,18 @@ export class MaterialsStoreVM implements TMaterialVMProps {
   }
 
   private sortPick = (tp: 'SQUARE' | 'COLOR') => {};
+
+  @action public setRoot(box: Partial<TBox>) {
+    const { top = null, left = null, width = null, height = null } = box;
+    this.rootBox.top = top;
+    this.rootBox.left = left;
+    this.rootBox.width = width;
+    this.rootBox.height = height;
+  }
+
+  @action public finishDrag() {
+    this.isDragging = false;
+  }
 
   @action public removeGeneratedItem(id: number) {
     const newList = this.dataList[MTRL.GENERATED].filter((item) => item.id !== id);
@@ -114,6 +159,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
       angle = null,
       zIndex = null,
       moveLayer = null,
+      isDragging = false,
     } = coords;
     const len = this.dataList[MTRL.GENERATED].length;
     for (let i = 0; i < len; i++) {
@@ -131,12 +177,11 @@ export class MaterialsStoreVM implements TMaterialVMProps {
             newVal.zIndex ?? 0,
             moveLayer.toUpperCase() as TDirection,
           );
-          console.log('newVal', newVal.zIndex);
         } else {
           newVal.zIndex = zIndex ?? newVal.zIndex;
         }
         this.dataList[MTRL.GENERATED][i] = observable({ ...newVal });
-
+        this.isDragging = isDragging;
         break;
       }
     }
@@ -149,6 +194,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   @action public setActivePlate = (id: number) => {
     this.plateWithControls = id;
+    this.isDragging = false;
   };
 
   @action public setSearch = (query: string) => {

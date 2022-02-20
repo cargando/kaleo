@@ -60,6 +60,7 @@ export interface TElementCoords {
   zIndex?: number;
   moveLayer?: string;
   eSource?: ElementSource;
+  isDragging?: boolean;
 }
 
 export enum ElementSource {

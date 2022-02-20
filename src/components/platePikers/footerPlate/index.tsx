@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
-import { MTRL } from 'store/types';
-import './styles.scss';
-import { BasePlatePicker } from '../basePlatePicker';
+import { MTRL, TSelectedMaterial } from 'store/types';
+// import { BasePlatePicker } from '../basePlatePicker';
 import { TStore } from '../../../store';
 import { useStores } from '../../../hooks';
+import { FooterPlate } from '../footerPlatePicker';
+import './styles.scss';
 
-export interface TFooterControlPickerProps {
+export interface TFooterPickerProps {
   title?: string;
   sidePadding?: boolean;
 }
 
-export const FooterControlPicker: React.FC<TFooterControlPickerProps> = observer(({ title, sidePadding = false }) => {
+export const FooterPicker: React.FC<TFooterPickerProps> = observer(({ title, sidePadding = false }) => {
   const { App, Materials }: Partial<TStore> = useStores();
   const footerPickerRef = useRef(null);
-
   const handleClickItem = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       const target = e.currentTarget as HTMLTextAreaElement;
@@ -27,7 +27,6 @@ export const FooterControlPicker: React.FC<TFooterControlPickerProps> = observer
 
   const handleDeleteItem = useCallback(
     (id: number) => {
-      console.log('DELETE', id);
       Materials.removeGeneratedItem(id);
     },
     [Materials.Selected(MTRL.GENERATED)],
@@ -39,19 +38,28 @@ export const FooterControlPicker: React.FC<TFooterControlPickerProps> = observer
     }
   }, [App.mainCell]);
 
+  const renderItem = (item: TSelectedMaterial) => {
+    const isSelected = Materials.Selected(MTRL.GENERATED)?.indexOf(item.id) !== -1;
+    return (
+      <FooterPlate
+        key={item.id}
+        item={item}
+        isSelected={isSelected}
+        zIndex={item.zIndex}
+        onClick={handleClickItem}
+        onRemove={handleDeleteItem}
+      />
+    );
+  };
+
   return (
     <div ref={footerPickerRef} className="footer-picker">
       <div className="footer-picker__body">
-        <BasePlatePicker
-          title={title}
-          titleSelected={Materials.selectedName(MTRL.GENERATED)}
-          data={Materials?.Data(MTRL.GENERATED)}
-          selectedItems={Materials.Selected(MTRL.GENERATED)}
-          onItemClick={handleClickItem}
-          onRemoveControlClick={handleDeleteItem}
-          isMultiSelect={Materials.Multi(MTRL.GENERATED)}
-          isFooter
-        />
+        {Materials?.Data?.(MTRL.GENERATED)?.length &&
+          Materials.Data(MTRL.GENERATED)
+            .slice()
+            .sort((a, b) => b.zIndex - a.zIndex)
+            .map(renderItem)}
       </div>
     </div>
   );

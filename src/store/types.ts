@@ -35,23 +35,17 @@ export type TDataList = Partial<Record<MTRL, any[]>>;
 export type TSelectedList = Partial<Record<MTRL, number[]>>;
 export type TMultiSelectedList = Partial<Record<MTRL, boolean>>;
 
+export type TBox = { top: number; left: number; width: number; height: number };
+
 export interface TMaterialVMProps extends TResponseData {
-  // veneerData: any;
-  // colorData: any;
   searchQuery: string;
-  // multiSelectVeneer?: boolean;
-  // multiSelectColor?: boolean;
-  // elementsCount?: number;
-  // textureCount?: number;
-  // elementsColors?: number[];
-  // elementsMaterials?: number[];
-  // selectedColor?: number[];
-  // selectedVeneer?: number[];
   dataList?: TDataList;
   selectedList?: TSelectedList;
   isMultiSelect?: TMultiSelectedList;
   plateWithControls?: number;
   selectedLayerRange?: TMinMax;
+  isDragging?: boolean;
+  rootBox: TBox;
 }
 // const partitions: Record<string, { [key: string]: TTableStatus }> = {};
 
