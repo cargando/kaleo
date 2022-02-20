@@ -14,7 +14,6 @@ export interface TFooterPlateProps {
 }
 
 export const FooterPlate: React.FC<TFooterPlateProps> = ({ item, isSelected, zIndex, onClick, onRemove }) => {
-  console.log('RND FooterPlate');
   const handleClickItem = useCallback((e: React.MouseEvent<HTMLElement>) => {
     if (typeof onClick === 'function') {
       e.persist();

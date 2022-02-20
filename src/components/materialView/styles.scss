@@ -1,14 +1,7 @@
 @import 'styles/vars';
 
-@keyframes blinkRed {
-  from {
-    border: 5px dotted transparent;
-  }
-
-  to {
-    border: 5px dotted #aa0000;
-  }
-}
+$mtrl-border: 6px;
+$mtrl-double-border: $mtrl-border * 2;
 
 .mtrl {
   display: block;
@@ -16,15 +9,24 @@
   height: $material-block-height;
   box-sizing: border-box;
   position: relative;
-  border: 5px dotted transparent;
-  transition: border ease-out 250ms;
+  border: $mtrl-border dotted transparent;
   &_bordered {
-    border: 5px dotted $accent-color;
+    border: $mtrl-border dotted $accent-color;
     &-blink {
-      animation-duration: 350ms;
+      animation-duration: 750ms;
       animation-name: blinkRed;
       animation-iteration-count: infinite;
-      animation-timing-function: ease-in-out;
+      animation-timing-function: linear;
+
+      @keyframes blinkRed {
+        from {
+          border: $mtrl-border dotted transparent;
+        }
+
+        to {
+          border: $mtrl-border dotted #aa0000;
+        }
+      }
     }
   }
   &__canvas {

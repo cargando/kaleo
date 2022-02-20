@@ -74,10 +74,9 @@ export const MaterialTab: React.FC<TMaterialTabProps> = observer(({ title }) => 
   useEffect(() => {
     if (canvasRef.current) {
       const { left, top, width, height } = canvasRef.current.getBoundingClientRect();
-      console.table({ left, top, width, height });
       Materials.setRoot({ top, left, width, height });
     }
-  }, [canvasRef.current]);
+  }, [canvasRef.current, App.isLeftColOpened, App.mainCell]);
 
   const renderItem = (item: TSelectedMaterial) => {
     return (

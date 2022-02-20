@@ -52,7 +52,6 @@ export class MaterialsStoreVM implements TMaterialVMProps {
       this.plateBox.width = res.width;
       this.plateBox.height = res.height;
     }
-    console.log('box', box.left, this.plateBox.width, this.rootBox.width);
     if (top !== null && left !== null && width !== null && height !== null) {
       br = box.left + this.plateBox.width > width || box.top + this.plateBox.height > height;
       tl = box.top <= 0 || box.left <= 0;
@@ -239,7 +238,6 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     // const { min, max } = this.minMaxLayers(this.dataList[MTRL.GENERATED]);
     // this.setMinMaxLayer(min, max);
     // TODO -------- END REMOVE ------------
-    console.log('Sorted: ', sortedList);
   };
 
   @action private fetchColors = () => {
