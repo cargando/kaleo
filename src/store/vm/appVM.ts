@@ -9,7 +9,7 @@ export interface TAppVM {
   mainCellWidth?: number; // HTMLElement;
   activeLeftStep: number;
 }
-
+// some changes 1
 export enum TopLineTabs {
   MATERIAL,
   KALEIDOSCOPE,
