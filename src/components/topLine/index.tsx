@@ -12,6 +12,7 @@ import { TNavTabItem, NavTabs } from './NavTabs';
 import { ReactComponent as KollazhBtn } from 'assets/icons/kollazh_btn.svg';
 import { ReactComponent as KalaydoscopeBtn } from 'assets/icons/kaleydoscope_btn.svg';
 import { ReactComponent as D3DBtn } from 'assets/icons/3d_btn.svg';
+import { Button } from 'components/button';
 
 const iconList: TNavTabItem[] = [
   {
@@ -32,7 +33,7 @@ const iconList: TNavTabItem[] = [
 ];
 
 export const TopLine = observer(() => {
-  const { App }: Pick<TStore, STOREs.App> = useStores();
+  const { App, Materials }: Partial<TStore> = useStores();
   const topLineRef = React.useRef(null);
   const btnRef = React.useRef(null);
 
@@ -74,7 +75,7 @@ export const TopLine = observer(() => {
               className={`top-line__nav-btn-inner ${App.isLeftColOpened ? 'top-line__nav-btn-inner_active' : ''}`}
             />
           </div>
-          {/* <Button className="btn-topline">Генерировать</Button> */}
+          {Materials.generateButton && <Button className="btn-topline">Генерировать</Button>}
         </div>
         <div className="col-4 no-pad top-line__icons">
           {/* <TabIcons active={App.topLineTab} onChange={handleChangeTab} /> */}

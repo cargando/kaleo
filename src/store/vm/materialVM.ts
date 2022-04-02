@@ -27,6 +27,8 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   public isDragging = false;
 
+  public generateButton = false;
+
   // координаты плашки для всех перетаскиваемых материалов
   public rootBox: TBox = { top: null, left: null, width: null, height: null };
 
@@ -161,6 +163,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
       isDragging = false,
     } = coords;
     const len = this.dataList[MTRL.GENERATED].length;
+
     for (let i = 0; i < len; i++) {
       if (this.dataList[MTRL.GENERATED][i].id === id) {
         const newVal = this.dataList[MTRL.GENERATED][i];
@@ -169,17 +172,13 @@ export class MaterialsStoreVM implements TMaterialVMProps {
         newVal.width = width ?? newVal.width;
         newVal.height = height ?? newVal.height;
         newVal.angle = angle ?? newVal.angle;
+        newVal.zIndex = zIndex ?? newVal.zIndex;
         if (moveLayer) {
-          newVal.zIndex = this.getCorrectLayerIndex(
-            this.dataList[MTRL.GENERATED],
-            newVal.id,
-            newVal.zIndex ?? 0,
-            moveLayer.toUpperCase() as TDirection,
-          );
+          this.switchLayers(MTRL.GENERATED, newVal, moveLayer.toUpperCase() as TDirection);
         } else {
-          newVal.zIndex = zIndex ?? newVal.zIndex;
+          this.dataList[MTRL.GENERATED][i] = observable({ ...newVal });
         }
-        this.dataList[MTRL.GENERATED][i] = observable({ ...newVal });
+
         this.isDragging = isDragging;
         break;
       }
@@ -255,9 +254,10 @@ export class MaterialsStoreVM implements TMaterialVMProps {
       })
       .map((item: TSelectedMaterial, index) => {
         item.zIndex = direction === TDirection.ASC ? index : len - index;
+        item.square = (item.width ?? 0) * (item.height ?? 0);
         return item;
       });
-
+    this.selectedLayerRange.max = len;
     return newList;
   };
 
@@ -265,6 +265,29 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     if (typeof this.selectedList[tp] === 'undefined') {
       this.selectedList[tp] = observable.array([]);
     }
+  };
+
+  private switchLayers = (listType: MTRL, current: TSelectedMaterial, direction: TDirection) => {
+    const len = this.dataList[listType].length;
+    const zIndexToFind = direction === TDirection.UP ? current.zIndex + 1 : current.zIndex - 1;
+
+    if (zIndexToFind < 1 || zIndexToFind > this.selectedLayerRange.max) {
+      return;
+    }
+    let aIndex: number = null;
+    let bIndex: number = null;
+
+    for (let i = 0; i < len; i++) {
+      if (current.id === this.dataList[listType][i].id) {
+        aIndex = i;
+      }
+      if (zIndexToFind === this.dataList[listType][i].zIndex) {
+        bIndex = i;
+      }
+    }
+    const tmp = this.dataList[listType][bIndex].zIndex;
+    this.dataList[listType][bIndex].zIndex = current.zIndex;
+    current.zIndex = tmp;
   };
 
   private normalizeData = (tp: MTRL) => {
@@ -275,47 +298,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     return res;
   };
 
-  private minMaxLayers = (list: TSelectedMaterial[]) => {
-    const len = list.length;
-    let min = list[0].zIndex;
-    let minId = 0;
-    let max = list[0].zIndex;
-    let maxId = 0;
-
-    for (let i = 0; i < len; i++) {
-      if (list[i].zIndex < min) {
-        min = list[i].zIndex;
-        minId = list[i].id;
-      }
-      if (list[i].zIndex > max) {
-        max = list[i].zIndex;
-        maxId = list[i].id;
-      }
-    }
-    this.setMinMaxLayer(min, max);
-    return {
-      min,
-      minId,
-      max,
-      maxId,
-    };
-  };
-
-  private getCorrectLayerIndex = (list: TSelectedMaterial[], id: number, curLayer: number, direction: TDirection) => {
-    const { min, minId, max, maxId } = this.minMaxLayers(list);
-
-    if (direction === TDirection.UP && id !== maxId) {
-      return curLayer + 1;
-    } else if (direction === TDirection.UP && id === maxId) {
-      return max;
-    }
-
-    if (direction === TDirection.DOWN && id !== minId) {
-      return curLayer - 1;
-    }
-
-    return min;
-  };
+  private;
 }
 
 export const MaterialsStore = new MaterialsStoreVM();
