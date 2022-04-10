@@ -34,9 +34,9 @@ export const FooterPicker: React.FC<TFooterPickerProps> = observer(({ title, sid
 
   useEffect(() => {
     if (footerPickerRef.current) {
-      footerPickerRef.current.style.width = `${App.mainCell}px`;
+      footerPickerRef.current.style.width = `${App.mainCell.width}px`;
     }
-  }, [App.mainCell]);
+  }, [App.mainCell.width]);
 
   const renderItem = (item: TSelectedMaterial) => {
     const isSelected = Materials.Selected(MTRL.GENERATED)?.indexOf(item.id) !== -1;

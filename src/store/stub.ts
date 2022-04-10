@@ -51,34 +51,34 @@ import Len10 from '../assets/materials/gen/l10.png';
 import { TMaterial, TColor, TSelectedMaterial } from './types';
 
 export const GeneratedStub: TSelectedMaterial[] = [
-  {
-    id: 1,
-    src: Gen1,
-    srcLarge: Len1,
-    title: 'Шпон 1',
-    width: 176,
-    height: 345,
-    top: 15,
-    left: 25,
-    active: false,
-    bgScale: 103,
-    angle: 0,
-    zIndex: 4,
-  },
-  {
-    id: 2,
-    src: Gen2,
-    srcLarge: Len2,
-    title: 'Шпон 2',
-    width: 238,
-    height: 234,
-    top: 55,
-    left: 40,
-    active: false,
-    bgScale: 100,
-    angle: 0,
-    zIndex: 2,
-  },
+  // {
+  //   id: 1,
+  //   src: Gen1,
+  //   srcLarge: Len1,
+  //   title: 'Шпон 1',
+  //   width: 176,
+  //   height: 345,
+  //   top: 15,
+  //   left: 25,
+  //   active: false,
+  //   bgScale: 103,
+  //   angle: 0,
+  //   zIndex: 4,
+  // },
+  // {
+  //   id: 2,
+  //   src: Gen2,
+  //   srcLarge: Len2,
+  //   title: 'Шпон 2',
+  //   width: 238,
+  //   height: 234,
+  //   top: 55,
+  //   left: 40,
+  //   active: false,
+  //   bgScale: 100,
+  //   angle: 0,
+  //   zIndex: 2,
+  // },
   {
     id: 3,
     src: Gen3,
@@ -92,7 +92,7 @@ export const GeneratedStub: TSelectedMaterial[] = [
     active: false,
     bgScale: 103,
     angle: 0,
-  },
+  } /*
   {
     id: 4,
     src: Gen4,
@@ -190,7 +190,7 @@ export const GeneratedStub: TSelectedMaterial[] = [
     active: false,
     bgScale: 103,
     angle: 0,
-  },
+  }, // */,
 ];
 
 export const MaterialStub: TMaterial[] = [

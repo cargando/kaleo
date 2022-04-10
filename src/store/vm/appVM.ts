@@ -1,4 +1,3 @@
-import React from 'react';
 import { TResponseData } from '../types';
 import { action, computed, makeAutoObservable, observable, runInAction } from 'mobx';
 
@@ -6,7 +5,8 @@ export interface TAppVM {
   navOpened: boolean;
   topLineTab: number;
   isMainPage: boolean;
-  mainCellWidth?: number; // HTMLElement;
+  // mainCellWidth?: number; // HTMLElement;
+  mainCellData?: any;
   activeLeftStep: number;
 }
 // some changes 1
@@ -16,6 +16,12 @@ export enum TopLineTabs {
   INTERIOR,
 }
 
+type Dimension = {
+  width?: number;
+  height?: number;
+  radius?: number;
+};
+
 export class AppVM implements TAppVM {
   public navOpened = true;
 
@@ -23,7 +29,7 @@ export class AppVM implements TAppVM {
 
   public topLineTab: TopLineTabs = TopLineTabs.MATERIAL;
 
-  public mainCellWidth = null;
+  public mainCellData: Dimension = {};
 
   public activeLeftStep = 0;
 
@@ -48,11 +54,12 @@ export class AppVM implements TAppVM {
   }
 
   @computed public get mainCell() {
-    return this.mainCellWidth;
+    return this.mainCellData;
   }
 
-  public set mainCell(width: number) {
-    this.mainCellWidth = width;
+  public set mainCell({ width, height }: Dimension) {
+    this.mainCellData.width = width;
+    this.mainCellData.height = height;
   }
 
   @action toggleNav = () => {

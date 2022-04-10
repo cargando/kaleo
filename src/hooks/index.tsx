@@ -90,8 +90,16 @@ export function useHtmlToggle(
 }
 
 export const useResizeObserver = (ref: React.RefObject<HTMLElement>, callback?: (entry: DOMRectReadOnly) => void) => {
-  const [width, setWidth] = useState<number>(500);
-  const [height, setHeight] = useState<number>(0);
+  // const [width, setWidth] = useState<number>(0);
+  // const [height, setHeight] = useState<number>(0);
+  const [{ width, height, top, left, right, bottom }, setRect] = useState<Record<string, number>>({
+    width: 0,
+    height: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  });
 
   const handleResize = useCallback(
     (entries: ResizeObserverEntry[]) => {
@@ -100,8 +108,14 @@ export const useResizeObserver = (ref: React.RefObject<HTMLElement>, callback?: 
       }
 
       const entry = entries[0];
-      setWidth(entry.contentRect.width);
-      setHeight(entry.contentRect.height);
+      setRect({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+        top: entry.contentRect.top,
+        left: entry.contentRect.left,
+        right: entry.contentRect.right,
+        bottom: entry.contentRect.bottom,
+      });
 
       if (callback) {
         callback(entry.contentRect);
@@ -124,7 +138,7 @@ export const useResizeObserver = (ref: React.RefObject<HTMLElement>, callback?: 
     };
   }, [ref]);
 
-  return [width, height];
+  return [Math.round(width), Math.round(height), top, left, right, bottom];
 };
 
 export const useDNDSubscribe = (

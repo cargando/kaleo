@@ -42,6 +42,11 @@ export const TopLine = observer(() => {
     topLineRef.current.classList.toggle('top-line_opened');
     btnRef.current.classList.toggle('top-line__nav-btn-inner_active');
   };
+
+  const handleRepositionButtonClick = () => {
+    Materials.repositionMaterials();
+  };
+
   useEffect(() => {
     if (topLineRef.current) {
       if (App.isLeftColOpened) {
@@ -75,7 +80,11 @@ export const TopLine = observer(() => {
               className={`top-line__nav-btn-inner ${App.isLeftColOpened ? 'top-line__nav-btn-inner_active' : ''}`}
             />
           </div>
-          {Materials.generateButton && <Button className="btn-topline">Генерировать</Button>}
+          {Materials.isGenerateButton && (
+            <Button className="btn-topline" onClick={handleRepositionButtonClick}>
+              Перемешать
+            </Button>
+          )}
         </div>
         <div className="col-4 no-pad top-line__icons">
           {/* <TabIcons active={App.topLineTab} onChange={handleChangeTab} /> */}

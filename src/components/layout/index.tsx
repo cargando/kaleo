@@ -16,13 +16,16 @@ export interface TLayoutProps {
 export const Layout = observer(({ children }: TLayoutProps) => {
   const { App }: Pick<TStore, STOREs.App> = useStores();
   const mainCellRef = useRef(null);
-  const [width] = useResizeObserver(mainCellRef);
+  const [width, height] = useResizeObserver(mainCellRef);
 
   useEffect(() => {
     if (mainCellRef.current) {
-      App.mainCell = width;
+      App.mainCell = { width, height };
     }
-  }, [mainCellRef.current, width]);
+  }, [mainCellRef.current, width, height]);
+  // useEffect(() => {
+  //   console.log('Layout DONE');
+  // }, []);
 
   return (
     <>

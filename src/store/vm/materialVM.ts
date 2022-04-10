@@ -8,6 +8,7 @@ import {
   TMultiSelectedList,
   TSelectedList,
   TSelectedMaterial,
+  TPetal,
 } from '../types';
 import { ColorsStub, GeneratedStub, MaterialStub, VeneerStub } from '../stub';
 import { TDirection, TElementCoords, TElementSquare } from '../../utils/types';
@@ -27,7 +28,9 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   public isDragging = false;
 
-  public generateButton = false;
+  public isGenerateButton = false;
+
+  public isMaterialCentered = false;
 
   // координаты плашки для всех перетаскиваемых материалов
   public rootBox: TBox = { top: null, left: null, width: null, height: null };
@@ -43,25 +46,6 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     this.isMultiSelectList[MTRL.ALL_TYPES] = true;
     this.isMultiSelectList[MTRL.GENERATED] = false;
   }
-
-  public isOverlap = (box: Partial<TBox>, id: number): boolean => {
-    const { top, left, width, height } = this.rootBox;
-    let tl = false;
-    let br = false;
-    if (this.plateBox.id !== id) {
-      const res = this.findById(id, MTRL.GENERATED);
-      this.plateBox.id = id;
-      this.plateBox.width = res.width;
-      this.plateBox.height = res.height;
-    }
-    if (top !== null && left !== null && width !== null && height !== null) {
-      br = box.left + this.plateBox.width > width || box.top + this.plateBox.height > height;
-      tl = box.top <= 0 || box.left <= 0;
-    } else if (top !== null && left !== null) {
-      tl = box.top <= 0 || box.left <= 0;
-    }
-    return tl || br;
-  };
 
   @computed public Data = (tp: MTRL) => {
     return this.dataList[tp];
@@ -132,6 +116,23 @@ export class MaterialsStoreVM implements TMaterialVMProps {
   }
 
   private sortPick = (tp: 'SQUARE' | 'COLOR') => {};
+
+  @computed public getRootBox() {
+    const { top = null, left = null, width = null, height = null } = this.rootBox;
+
+    return {
+      top,
+      left,
+      width,
+      height,
+      widthHalf: width !== null ? Math.floor(width / 2) : 1,
+      heightHalf: height !== null ? Math.floor(height / 2) : 1,
+    };
+  }
+
+  @action public setIsCentered(val: boolean) {
+    this.isMaterialCentered = val;
+  }
 
   @action public setRoot(box: Partial<TBox>) {
     const { top = null, left = null, width = null, height = null } = box;
@@ -218,10 +219,133 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     });
   };
 
+  public isOverlap = (box: Partial<TBox>, id: number): boolean => {
+    const { top, left, width, height } = this.getRootBox();
+    let tl = false;
+    let br = false;
+    if (this.plateBox.id !== id) {
+      const res = this.findById(id, MTRL.GENERATED);
+      this.plateBox.id = id;
+      this.plateBox.width = res.width;
+      this.plateBox.height = res.height;
+    }
+    if (top !== null && left !== null && width !== null && height !== null) {
+      br = box.left + this.plateBox.width > width || box.top + this.plateBox.height > height;
+      tl = box.top <= 0 || box.left <= 0;
+    } else if (top !== null && left !== null) {
+      tl = box.top <= 0 || box.left <= 0;
+    }
+    return tl || br;
+  };
+
   public fetch = () => {
     this.fetchMaterials();
     this.fetchColors();
     this.fetchVeneer();
+  };
+
+  public centerMaterialsInContainer = () => {
+    // return;
+    const list = this.dataList[MTRL.GENERATED];
+    const len = list.length;
+    console.log('centerMaterialsInContainer');
+    for (let i = 0; i < len; i++) {
+      const [newLeft, newTop] = this.shiftOverlappedCords(list[i]);
+
+      console.log(' --NEW CENTER: ', newLeft, newTop, ', OLD: ', list[i].left, list[i].top);
+      list[i].left = Math.floor(newLeft);
+      list[i].top = Math.floor(newTop);
+    }
+
+    this.isMaterialCentered = true;
+  };
+
+  private shiftOverlappedCords = (item: TSelectedMaterial) => {
+    const {
+      width: containerWidth,
+      height: containerHeight,
+      widthHalf: offsetLeft, // смещение созданное при центрировании
+      heightHalf: offsetTop, // смещение созданное при центрировании
+    } = this.getRootBox();
+
+    if (!containerWidth || !containerHeight) {
+      return [item.left, item.top];
+    }
+
+    let newRealLeft = item.left;
+    const newRealTop = item.top;
+
+    const virtualBox = {
+      left: item.left + offsetLeft,
+      top: item.top + offsetTop,
+      right: newRealLeft + item.width + offsetLeft,
+      bottom: newRealTop + item.height + offsetTop,
+    };
+
+    console.log(
+      '---shiftOverlap id:',
+      item.id,
+      'virtualBox:',
+      virtualBox.right,
+      containerWidth,
+      'IF_R',
+      virtualBox.right > containerWidth,
+      containerWidth,
+      'IF_B',
+      virtualBox.bottom > containerHeight,
+      containerHeight,
+    );
+
+    if (virtualBox.right > containerWidth) {
+      console.log('SWITCH', newRealLeft, containerWidth - (virtualBox.right + 10));
+      newRealLeft -= containerWidth - (virtualBox.right + 20);
+    }
+    // if (virtualBox.bottom > containerHeight) {
+    //   newRealTop -= containerHeight - (virtualBox.bottom + 20);
+    // }
+
+    return [newRealLeft, newRealTop];
+  };
+
+  public repositionMaterials = () => {
+    this.repositionMaterialsBySquare();
+  };
+
+  public repositionMaterialsBySquare = () => {
+    const len = this.dataList[MTRL.GENERATED].length;
+    const listBySquare = this.dataList[MTRL.GENERATED].sort(
+      (a: TSelectedMaterial, b: TSelectedMaterial) => b.square - a.square,
+    );
+    // const center = { left: Math.floor(containerWidth / 2), top: Math.floor(containerHeight / 2) };
+    console.log('>>>>>>>>>');
+    const randomAngleOffset = () => Math.floor(Math.random() * (45 - 10) + 10);
+
+    const itemsPerLayer = this.calculatePetalsPerLayer(len); // количество лепестков/дуг (сколько на слое элементов)
+    const sector = 380 / itemsPerLayer;
+    let radialOffset = 0;
+    let layer = 0; // "слой/этаж" расположения материалов (на одном слое может быть несколько разных zIndex)
+
+    for (let i = 0, sectorIndex = 0; i < len; i++, sectorIndex++) {
+      // const radius = 250;
+      const { width, height } = listBySquare[i];
+      const radius = width;
+      const k = i + 1;
+      // const lap = Math.ceil(k / tp); // какой круг наматывается
+      if (i % itemsPerLayer === 0) {
+        sectorIndex = 0;
+        layer++;
+        radialOffset = 30; // randomAngleOffset();
+      }
+      const angle = Math.floor(sector * k + radialOffset * layer);
+      console.log('Reposition: ID', listBySquare[i].id, 'zIndex', k, 'floor ', layer, 'start angle', angle);
+      listBySquare[i].left = Math.floor(radius * Math.cos(angle)); //  + center.left;
+      listBySquare[i].top = Math.floor(radius * Math.sin(angle)); //  + center.top;
+      listBySquare[i].zIndex = k;
+      console.log(' -COORDS: ', listBySquare[i].left, listBySquare[i].top, 'radius', radius);
+      // console.log('Reposition: ', listBySquare[i].left, listBySquare[i].top, listBySquare[i].zIndex);
+    } // end of FOR
+
+    this.isMaterialCentered = false;
   };
 
   @action private fetchVeneer = () => {
@@ -234,6 +358,7 @@ export class MaterialsStoreVM implements TMaterialVMProps {
     // TODO -------- SELECTED MATERIALS REMOVE ------------
     const sortedList = this.sortMaterialsByDepth(GeneratedStub, TDirection.DESC);
     this.dataList[MTRL.GENERATED] = observable.array(sortedList);
+    this.isGenerateButton = true;
     // const { min, max } = this.minMaxLayers(this.dataList[MTRL.GENERATED]);
     // this.setMinMaxLayer(min, max);
     // TODO -------- END REMOVE ------------
@@ -241,6 +366,17 @@ export class MaterialsStoreVM implements TMaterialVMProps {
 
   @action private fetchColors = () => {
     this.dataList[MTRL.COLOR] = observable.array(ColorsStub);
+  };
+
+  private calculatePetalsPerLayer = (totalItems: number) => {
+    let res = 3; // количество лепестков/дуг (сколько на слое элементов)
+
+    if (Math.floor(totalItems / TPetal.SIX) >= 3) {
+      res = 6;
+    } else if (Math.floor(totalItems / TPetal.FOUR) >= 3) {
+      res = 4;
+    }
+    return res;
   };
 
   private sortMaterialsByDepth = (

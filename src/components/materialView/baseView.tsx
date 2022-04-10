@@ -10,6 +10,8 @@ import ResizableRect from 'components/resizable';
 interface TBaseMaterialViewerProps {
   item: TSelectedMaterial;
   activeID: number;
+  offsetLeft?: number; // смещение для центрирования по Х
+  offsetTop?: number; // смещение для центрирования по Y
   maxLayer?: number;
   onMove: (x?: number, y?: number, id?: number) => void;
   onResize: (t: number, l: number, w: number, h: number, id?: number) => void;
@@ -32,6 +34,10 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
   mouseMoved = false;
 
   action: DNDActions = null;
+
+  componentDidMount() {
+    console.log('BaseMaterialViewer DONE');
+  }
 
   handleChangeActive = () => {
     if (!this.mouseMoved) {
@@ -94,7 +100,7 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
   };
 
   render() {
-    const { activeID, item = {} as TSelectedMaterial, maxLayer = 0 } = this.props;
+    const { activeID, item = {} as TSelectedMaterial, maxLayer = 0, offsetLeft = null, offsetTop = null } = this.props;
     const { id, srcLarge, bgScale, height, width, zIndex = 1, top = 0, left = 0, angle = 0 } = item;
 
     let backgroundSize = 'auto';
@@ -103,32 +109,40 @@ export class BaseMaterialViewer extends React.Component<TBaseMaterialViewerProps
     } else if (typeof bgScale === 'string') {
       backgroundSize = bgScale;
     }
+
+    const topWithOffset = top + (offsetTop === null ? 0 : offsetTop);
+    const leftWithOffset = left + (offsetLeft === null ? 0 : offsetLeft);
+
     const stylesCover: Record<string, any> = {
-      top: `${top}px`,
-      left: `${left}px`,
+      top: `${topWithOffset}px`,
+      left: `${leftWithOffset}px`,
       width: `${width}px`,
       height: `${height}px`,
       backgroundImage: `url(${srcLarge}`,
       transform: `rotate(${angle}deg)`,
       backgroundSize,
       zIndex,
+      padding: '20px',
     };
 
     const isActive = activeID === id;
 
     return (
       <>
-        <div className="mtrl__cover" style={stylesCover}>
+        <div data-id={id} className="mtrl__cover" style={stylesCover} onClick={this.handleChangeActive}>
+          {id}
+          {/*
           <div
             ref={this.elementInnerRef}
             onClick={this.handleChangeActive}
             className={`mtrl__rotator-inner ${isActive ? 'mtrl__rotator-inner_active' : ''}`}
           />
+          */}
         </div>
         {isActive && (
           <ResizableRect
-            left={left}
-            top={top}
+            left={leftWithOffset}
+            top={topWithOffset}
             width={width}
             height={height}
             rotateAngle={angle}

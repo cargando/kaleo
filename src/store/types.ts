@@ -44,8 +44,10 @@ export interface TMaterialVMProps extends TResponseData {
   isMultiSelect?: TMultiSelectedList;
   plateWithControls?: number;
   selectedLayerRange?: TMinMax;
-  isDragging?: boolean;
   rootBox: TBox;
+  isDragging?: boolean;
+  isGenerateButton: boolean;
+  isMaterialCentered: boolean;
 }
 // const partitions: Record<string, { [key: string]: TTableStatus }> = {};
 
@@ -77,4 +79,10 @@ export interface TSelectedMaterial extends TMaterial {
   left?: number;
   active?: boolean;
   square?: number;
+}
+
+export enum TPetal {
+  TREE = 3,
+  FOUR = 4,
+  SIX = 6,
 }
